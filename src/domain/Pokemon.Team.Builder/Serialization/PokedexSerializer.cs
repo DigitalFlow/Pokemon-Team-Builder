@@ -12,7 +12,7 @@ namespace Pokemon.Team.Builder
     {
         public static string SerializePokedex(List<Pokemon> pokemon)
         {
-            var xmlDoc = new XDocument(new XDeclaration("1.0", "UTF-16", null));
+            var xmlDoc = new XDocument(new XDeclaration("1.0", "utf-16", null));
             var pokemonRoot = new XElement("Pokedex");
 
             xmlDoc.Add(pokemonRoot);
