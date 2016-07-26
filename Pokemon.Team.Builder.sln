@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Team.Builder", "src\domain\Pokemon.Team.Builder\Pokemon.Team.Builder.csproj", "{3278BBDB-3579-4834-AAF2-491ABD607503}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Team.Builder.Console", "src\app\Pokemon.Team.Builder.Console\Pokemon.Team.Builder.Console.csproj", "{42ED5075-06DE-45AE-A4DC-701D53837616}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Team.Builder.Tests", "src\test\Pokemon.Team.Builder.Tests\Pokemon.Team.Builder.Tests.csproj", "{D4513E60-B1AC-49F6-B2A7-93C0AF289207}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3278BBDB-3579-4834-AAF2-491ABD607503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3278BBDB-3579-4834-AAF2-491ABD607503}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3278BBDB-3579-4834-AAF2-491ABD607503}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3278BBDB-3579-4834-AAF2-491ABD607503}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42ED5075-06DE-45AE-A4DC-701D53837616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42ED5075-06DE-45AE-A4DC-701D53837616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42ED5075-06DE-45AE-A4DC-701D53837616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42ED5075-06DE-45AE-A4DC-701D53837616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
