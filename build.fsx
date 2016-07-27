@@ -1,5 +1,5 @@
-#I @"tools\FAKE\tools\"
-#r @"tools\FAKE\tools\FakeLib.dll"
+#I @"tools/FAKE/tools/"
+#r @"tools/FAKE/tools/FakeLib.dll"
 
 open Fake
 open Fake.AssemblyInfoFile
