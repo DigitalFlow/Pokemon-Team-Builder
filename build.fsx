@@ -10,17 +10,17 @@ open System.IO
 let projectName           = "Pokemon.Team.Builder"
 
 //Directories
-let buildDir                = @".\build\"
-let domainBuildDir          = buildDir + @"domain\"
-let appBuildDir             = buildDir + @"app\"
+let buildDir                = @"build/"
+let domainBuildDir          = buildDir + @"domain/"
+let appBuildDir             = buildDir + @"app/"
 
-let deployDir               = @".\Publish\"
-let domaindeployDir         = deployDir + @"domain\"
-let appdeployDir            = deployDir + @"app\"
+let deployDir               = @"Publish/"
+let domaindeployDir         = deployDir + @"domain/"
+let appdeployDir            = deployDir + @"app/"
 
-let testDir                 = @".\test"
+let testDir                 = @"test"
 
-let packagesDir             = @".\packages\"
+let packagesDir             = @"packages/"
 
 let mutable version         = "1.0"
 let mutable build           = buildVersion
@@ -89,7 +89,6 @@ Target "NUnit" (fun _ ->
       testFiles
         |> NUnit3 (fun test ->
              {test with
-                   Framework = Net45;
                    ShadowCopy = false;})
 )
 

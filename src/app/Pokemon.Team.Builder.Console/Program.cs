@@ -29,27 +29,32 @@ namespace Pokemon.Team.Builder.Console
                 {
 					var initialTeam = args.Select(arg => Int32.Parse(arg)).ToList();
 
-					var proposedMembers = new Dictionary<int, int> ();
-
-					foreach(var teamMember in initialTeam) {
-						var pokemonInfo = pokemonUsageRetriever.GetPokemonUsageInformation(teamMember);
-
-						foreach (var pokemon in pokemonInfo.rankingPokemonIn) {
-							if (proposedMembers.ContainsKey (pokemon.monsno)) {
-								proposedMembers [pokemon.monsno] += (11 - pokemon.ranking);
-							} else {
-								proposedMembers[pokemon.monsno] = (11 - pokemon.ranking);
-							}
-						}
-					}
-
-					var orderedMembers = proposedMembers.OrderByDescending (pair => pair.Value).ToList();
-
-					for (var i = 0; i < proposedMembers.Keys.Count && i < 6 - initialTeam.Count; i++) {
-						System.Console.WriteLine ($"#{i+1}: {orderedMembers[i].Key} - {orderedMembers[i].Value}");
-					}
+					GetProposedPokemon (initialTeam, pokemonUsageRetriever);
                 }
             }
         }
+
+		private static void GetProposedPokemon(List<int> initialTeam, PokemonUsageRetriever pokemonUsageRetriever) {
+
+			var proposedMembers = new Dictionary<int, int> ();
+
+			foreach(var teamMember in initialTeam) {
+				var pokemonInfo = pokemonUsageRetriever.GetPokemonUsageInformation(teamMember);
+
+				foreach (var pokemon in pokemonInfo.rankingPokemonIn) {
+					if (proposedMembers.ContainsKey (pokemon.monsno)) {
+						proposedMembers [pokemon.monsno] += (11 - pokemon.ranking);
+					} else {
+						proposedMembers[pokemon.monsno] = (11 - pokemon.ranking);
+					}
+				}
+			}
+
+			var orderedMembers = proposedMembers.OrderByDescending (pair => pair.Value).ToList();
+
+			for (var i = 0; i < proposedMembers.Keys.Count && i < 6 - initialTeam.Count; i++) {
+				System.Console.WriteLine ($"#{i+1}: {orderedMembers[i].Key} - {orderedMembers[i].Value}");
+			}
+		}
     }
 }
