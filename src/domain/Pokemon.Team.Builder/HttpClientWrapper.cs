@@ -19,6 +19,11 @@ namespace Pokemon.Team.Builder
             };
         }
 
+        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
+        {
+            return await _client.SendAsync(request);
+        }
+
         public Task<string> GetStringAsync(string requestUri)
         {
             return _client.GetStringAsync(requestUri);
