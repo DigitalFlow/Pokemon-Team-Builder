@@ -23,7 +23,7 @@ namespace Pokemon.Team.Builder
         {
             var request = new HttpRequestMessage
             {
-                RequestUri = new Uri("https://3ds.pokemon-gl.com/frontendApi/gbu/getSeasonPokemon"),
+                RequestUri = new Uri("https://3ds.pokemon-gl.com/frontendApi/gbu/getSeasonPokemonDetail"),
                 Method = HttpMethod.Post,
                 Content = new FormUrlEncodedContent(new[]
                {

@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\RankingPokemonInfo.cs" />
     <Compile Include="Model\RetrievePokemonUsageResponse.cs" />
     <Compile Include="PokemonUsageRetriever.cs" />
     <Compile Include="Serialization\PokedexSerializer.cs" />
