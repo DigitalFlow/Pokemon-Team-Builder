@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pokemon.Team.Builder.Model;
 
 namespace Pokemon.Team.Builder
 {
 	public class PokemonProposer
 	{
 		private IPokemonUsageRetriever _pokemonUsageRetriever;
+		private const int TEAM_SIZE = 6;
 
 		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 		}
 
-		public List<int> GetProposedPokemon(List<int> initialTeam) {
+		public List<Pokemon> GetProposedPokemon(List<int> initialTeam, List<Pokemon> pokemon = null) {
+			// Run one additional time so that last member is also added to pokemon list
+			if (initialTeam.Count == TEAM_SIZE + 1) {
+				return pokemon;
+			}
 
-			if (initialTeam.Count == 6) {
-				return initialTeam;
+			if (pokemon == null) {
+				pokemon = new List<Pokemon> ();
 			}
 
 			var proposedMembers = new Dictionary<int, int> ();
@@ -25,7 +31,14 @@ namespace Pokemon.Team.Builder
 			{
 				var rankedMembers = GetRankedTeamMembersForPokemon (teamMember);
 
-				proposedMembers = proposedMembers.MergeDictionaries(new []{rankedMembers});
+				if (pokemon.All (poke => poke.Id != teamMember)) {
+					pokemon.Add (new Pokemon {
+						Id = teamMember,
+						Name = rankedMembers.Item1.RankingPokemonInfo.Name
+					});
+				}
+
+				proposedMembers = proposedMembers.MergeDictionaries(new []{rankedMembers.Item2.ToDictionary(member => member.Key.MonsNo, member => member.Value)});
 			}
 
 			var orderedMembers = proposedMembers
@@ -34,25 +47,25 @@ namespace Pokemon.Team.Builder
 
 			initialTeam.Add (orderedMembers.First ().Key);
 
-			return GetProposedPokemon (initialTeam);
+			return GetProposedPokemon (initialTeam, pokemon);
 		}
 
-		public Dictionary<int, int> GetRankedTeamMembersForPokemon(int pokemonId)
+		public Tuple<RetrievePokemonUsageResponse, Dictionary<RankingPokemonIn, int>> GetRankedTeamMembersForPokemon(int pokemonId)
 		{
 			var pokemonInfo = _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId);
 
-			var rankedMembers = new Dictionary<int, int> ();
+			var rankedMembers = new Dictionary<RankingPokemonIn, int> ();
 
 			foreach (var pokemon in pokemonInfo.RankingPokemonIn) {
-				if (rankedMembers.ContainsKey (pokemon.MonsNo)) {
+				if (rankedMembers.ContainsKey (pokemon)) {
 					// We retrieve ranks from 1-10, so by substracting rank from 11, we get a score of it
-					rankedMembers [pokemon.MonsNo] += (11 - pokemon.Ranking);
+					rankedMembers [pokemon] += (11 - pokemon.Ranking);
 				} else {
-					rankedMembers[pokemon.MonsNo] = (11 - pokemon.Ranking);
+					rankedMembers[pokemon] = (11 - pokemon.Ranking);
 				}
 			}
 
-			return rankedMembers;
+			return new Tuple<RetrievePokemonUsageResponse, Dictionary<RankingPokemonIn, int>>(pokemonInfo, rankedMembers);
 		}
 	}
 }

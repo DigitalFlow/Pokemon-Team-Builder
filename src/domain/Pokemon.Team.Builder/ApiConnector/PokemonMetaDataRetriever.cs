@@ -19,7 +19,7 @@ namespace Pokemon.Team.Builder
         public List<Pokemon> RetrieveAllPokemon()
         {
             var pokemon = new List<Pokemon>();
-            var url = "pokemon";
+            var url = "pokemon/";
             RetrievePokemonResponse response;
             
             do

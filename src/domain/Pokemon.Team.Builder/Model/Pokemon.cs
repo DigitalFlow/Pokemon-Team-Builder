@@ -9,7 +9,7 @@ namespace Pokemon.Team.Builder
 
         public override string ToString()
         {
-            return $"#{Id} - {Name}";
+            return $"{Id} - {Name}";
         }
     }
 }

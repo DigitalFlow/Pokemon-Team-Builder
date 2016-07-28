@@ -35,5 +35,29 @@ namespace Pokemon.Team.Builder
                 return stringWriter.ToString();
             }
         }
+
+		public static IEnumerable<Pokemon> DeserializePokedex(string filePath)
+		{
+			var file = new FileInfo(filePath);
+
+			if (!file.Exists) {
+				return null;
+			}
+
+			var fileStream = file.OpenRead ();
+
+			var xmlDoc = XDocument.Load (fileStream);
+			var nameSpace = xmlDoc.Root.Name.Namespace;
+
+			var pokemon = 
+				from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
+				select new Pokemon {
+					Name = entry.Descendants("Name").First().Value,
+					Id = int.Parse(entry.Descendants("Id").First().Value),
+					Url = entry.Descendants("Url").First().Value
+				};
+
+			return pokemon;
+		}
     }
 }
