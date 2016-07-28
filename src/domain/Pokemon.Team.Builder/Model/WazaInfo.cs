@@ -8,10 +8,10 @@ namespace Pokemon.Team.Builder.Model
 {
     public class WazaInfo
     {
-        public int ranking { get; set; }
-        public int typeId { get; set; }
-        public double usageRate { get; set; }
-        public string name { get; set; }
-        public int sequenceNumber { get; set; }
+        public int Ranking { get; set; }
+        public int TypeId { get; set; }
+        public double UsageRate { get; set; }
+        public string Name { get; set; }
+        public int SequenceNumber { get; set; }
     }
 }

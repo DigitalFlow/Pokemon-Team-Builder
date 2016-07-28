@@ -8,9 +8,9 @@ namespace Pokemon.Team.Builder
 {
     public class RetrievePokemonResponse
     {
-        public int count { get; set; }
-        public object previous { get; set; }
-        public List<SimplePokemonData> results { get; set; }
-        public string next { get; set; }        
+        public int Count { get; set; }
+        public object Previous { get; set; }
+        public List<SimplePokemonData> Results { get; set; }
+        public string Next { get; set; }        
     }
 }

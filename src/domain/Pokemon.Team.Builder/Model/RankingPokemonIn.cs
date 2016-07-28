@@ -8,18 +8,18 @@ namespace Pokemon.Team.Builder.Model
 {
     public class RankingPokemonIn
     {
-        public int monsno { get; set; }
-        public string formNo { get; set; }
-        public string pokemonId { get; set; }
-        public int ranking { get; set; }
-        public int countBattleByForm { get; set; }
-        public int battlingChangeFlg { get; set; }
-        public string typeName1 { get; set; }
-        public string typeName2 { get; set; }
-        public int typeId1 { get; set; }
-        public int typeId2 { get; set; }
-        public object formName { get; set; }
-        public string name { get; set; }
-        public int sequenceNumber { get; set; }
+        public int MonsNo { get; set; }
+        public string FormNo { get; set; }
+        public string PokemonId { get; set; }
+        public int Ranking { get; set; }
+        public int CountBattleByForm { get; set; }
+        public int BattlingChangeFlg { get; set; }
+        public string TypeName1 { get; set; }
+        public string TypeName2 { get; set; }
+        public int TypeId1 { get; set; }
+        public int TypeId2 { get; set; }
+        public string FormName { get; set; }
+        public string Name { get; set; }
+        public int SequenceNumber { get; set; }
     }
 }

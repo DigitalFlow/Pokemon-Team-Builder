@@ -8,9 +8,9 @@ namespace Pokemon.Team.Builder.Model
 {
     public class ItemInfo
     {
-        public int ranking { get; set; }
-        public double usageRate { get; set; }
-        public string name { get; set; }
-        public int sequenceNumber { get; set; }
+        public int Ranking { get; set; }
+        public double UsageRate { get; set; }
+        public string Name { get; set; }
+        public int SequenceNumber { get; set; }
     }
 }

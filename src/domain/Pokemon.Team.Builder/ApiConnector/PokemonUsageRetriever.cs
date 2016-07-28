@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder
 {
-    public class PokemonUsageRetriever : IDisposable
+	public class PokemonUsageRetriever : IPokemonUsageRetriever, IDisposable
     {
         private IHttpClient _client;
 

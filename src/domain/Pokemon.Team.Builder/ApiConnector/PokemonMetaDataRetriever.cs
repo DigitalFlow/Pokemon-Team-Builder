@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Pokemon.Team.Builder
 {
-    public class PokemonMetaDataRetriever : IDisposable
+	public class PokemonMetaDataRetriever : IPokemonMetaDataRetriever
     {
         private IHttpClient _client;
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -26,16 +26,16 @@ namespace Pokemon.Team.Builder
             {
                 var json = _client.GetStringAsync(url).Result;
                 response = JsonConvert.DeserializeObject<RetrievePokemonResponse>(json);
-                url = response.next;
+                url = response.Next;
 
-                foreach (var item in response.results)
+                foreach (var item in response.Results)
                 {
-                    var idMatch = Regex.Match(item.url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                    var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
                     var id = 0;
 
                     if (!idMatch.Success)
                     {
-                        Logger.Warn($"Failed to find ID in url {item.url}");
+                        Logger.Warn($"Failed to find ID in url {item.Url}");
                         continue;
                     }
 
@@ -47,17 +47,17 @@ namespace Pokemon.Team.Builder
                         continue;
                     }
 
-                    var name = char.ToUpperInvariant(item.name[0]) + item.name.Substring(1);
+                    var name = char.ToUpperInvariant(item.Name[0]) + item.Name.Substring(1);
 
                     pokemon.Add(new Pokemon
                     {
                         Id = id,
                         Name = name,
-                        Url = item.url
+                        Url = item.Url
                     });
                 }
             }
-            while (!string.IsNullOrEmpty(response.next));
+            while (!string.IsNullOrEmpty(response.Next));
 
             return pokemon;
         }

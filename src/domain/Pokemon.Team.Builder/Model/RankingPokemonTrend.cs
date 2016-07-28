@@ -8,9 +8,9 @@ namespace Pokemon.Team.Builder.Model
 {
     public class RankingPokemonTrend
     {
-        public List<TokuseiInfo> tokuseiInfo { get; set; }
-        public List<SeikakuInfo> seikakuInfo { get; set; }
-        public List<ItemInfo> itemInfo { get; set; }
-        public List<WazaInfo> wazaInfo { get; set; }
+        public List<TokuseiInfo> TokuseiInfo { get; set; }
+        public List<SeikakuInfo> SeikakuInfo { get; set; }
+        public List<ItemInfo> ItemInfo { get; set; }
+        public List<WazaInfo> WazaInfo { get; set; }
     }
 }

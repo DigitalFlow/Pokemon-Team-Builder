@@ -42,10 +42,10 @@ namespace Pokemon.Team.Builder.Console
 				var pokemonInfo = pokemonUsageRetriever.GetPokemonUsageInformation(teamMember);
 
 				foreach (var pokemon in pokemonInfo.RankingPokemonIn) {
-					if (proposedMembers.ContainsKey (pokemon.monsno)) {
-						proposedMembers [pokemon.monsno] += (11 - pokemon.ranking);
+					if (proposedMembers.ContainsKey (pokemon.MonsNo)) {
+						proposedMembers [pokemon.MonsNo] += (11 - pokemon.Ranking);
 					} else {
-						proposedMembers[pokemon.monsno] = (11 - pokemon.ranking);
+						proposedMembers[pokemon.MonsNo] = (11 - pokemon.Ranking);
 					}
 				}
 			}
