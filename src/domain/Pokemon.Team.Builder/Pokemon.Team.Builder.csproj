@@ -70,6 +70,8 @@
     <Compile Include="Model\Pokemon.cs" />
     <Compile Include="Web\HttpClientWrapper.cs" />
     <Compile Include="Web\IHttpClient.cs" />
+    <Compile Include="Logic\PokemonProposer.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -86,5 +88,6 @@
   <ItemGroup>
     <Folder Include="ApiConnector\" />
     <Folder Include="Web\" />
+    <Folder Include="Logic\" />
   </ItemGroup>
 </Project>

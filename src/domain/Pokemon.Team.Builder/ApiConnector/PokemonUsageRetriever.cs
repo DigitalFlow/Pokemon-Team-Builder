@@ -19,28 +19,28 @@ namespace Pokemon.Team.Builder
             _client = client;
         }
 
-        public RetrievePokemonUsageResponse GetPokemonUsageInformation(int pokemonId)
+		public RetrievePokemonUsageResponse GetPokemonUsageInformation(int pokemonId, int formNo = 0, int languageId = 2, int seasonId = 117, int battleType = 1)
         {
             var request = new HttpRequestMessage
             {
                 RequestUri = new Uri("https://3ds.pokemon-gl.com/frontendApi/gbu/getSeasonPokemonDetail"),
                 Method = HttpMethod.Post,
                 Content = new FormUrlEncodedContent(new[]
-               {
-                    new KeyValuePair<string, string>("languageId", "2"),
-                    new KeyValuePair<string, string>("seasonId", "117"),
-                    new KeyValuePair<string, string>("battleType", "1"),
-                    new KeyValuePair<string, string>("timezone", "CEST"),
-                    new KeyValuePair<string, string>("pokemonId", $"{pokemonId}-0"),
-                    new KeyValuePair<string, string>("displayNumberWaza", "10"),
-                    new KeyValuePair<string, string>("displayNumberTokusei", "3"),
-                    new KeyValuePair<string, string>("displayNumberSeikaku", "10"),
-                    new KeyValuePair<string, string>("displayNumberItem", "10"),
-                    new KeyValuePair<string, string>("displayNumberLevel", "10"),
-                    new KeyValuePair<string, string>("displayNumberPokemonIn", "10"),
-                    new KeyValuePair<string, string>("dispayNumberPokemonDown", "10"),
-                    new KeyValuePair<string, string>("displayNumberPokemonDownWaza", "10"),
-                    new KeyValuePair<string, string>("timestamp", "1469645951951")
+               	{
+						new KeyValuePair<string, string>("languageId", $"{languageId}"),
+						new KeyValuePair<string, string>("seasonId", $"{seasonId}"),
+						new KeyValuePair<string, string>("battleType", $"{battleType}"),
+	                    new KeyValuePair<string, string>("timezone", "CEST"),
+						new KeyValuePair<string, string>("pokemonId", $"{pokemonId}-{formNo}"),
+	                    new KeyValuePair<string, string>("displayNumberWaza", "10"),
+	                    new KeyValuePair<string, string>("displayNumberTokusei", "3"),
+	                    new KeyValuePair<string, string>("displayNumberSeikaku", "10"),
+	                    new KeyValuePair<string, string>("displayNumberItem", "10"),
+	                    new KeyValuePair<string, string>("displayNumberLevel", "10"),
+	                    new KeyValuePair<string, string>("displayNumberPokemonIn", "10"),
+	                    new KeyValuePair<string, string>("dispayNumberPokemonDown", "10"),
+	                    new KeyValuePair<string, string>("displayNumberPokemonDownWaza", "10"),
+	                    new KeyValuePair<string, string>("timestamp", "1469645951951")
                 })
             };
 

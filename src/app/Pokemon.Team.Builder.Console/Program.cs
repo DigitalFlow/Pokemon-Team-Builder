@@ -29,32 +29,11 @@ namespace Pokemon.Team.Builder.Console
                 {
 					var initialTeam = args.Select(arg => Int32.Parse(arg)).ToList();
 
-					GetProposedPokemon (initialTeam, pokemonUsageRetriever);
+					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
+
+					pokemonProposer.GetProposedPokemon (initialTeam);
                 }
             }
         }
-
-		private static void GetProposedPokemon(List<int> initialTeam, PokemonUsageRetriever pokemonUsageRetriever) {
-
-			var proposedMembers = new Dictionary<int, int> ();
-
-			foreach(var teamMember in initialTeam) {
-				var pokemonInfo = pokemonUsageRetriever.GetPokemonUsageInformation(teamMember);
-
-				foreach (var pokemon in pokemonInfo.RankingPokemonIn) {
-					if (proposedMembers.ContainsKey (pokemon.MonsNo)) {
-						proposedMembers [pokemon.MonsNo] += (11 - pokemon.Ranking);
-					} else {
-						proposedMembers[pokemon.MonsNo] = (11 - pokemon.Ranking);
-					}
-				}
-			}
-
-			var orderedMembers = proposedMembers.OrderByDescending (pair => pair.Value).ToList();
-
-			for (var i = 0; i < proposedMembers.Keys.Count && i < 6 - initialTeam.Count; i++) {
-				System.Console.WriteLine ($"#{i+1}: {orderedMembers[i].Key} - {orderedMembers[i].Value}");
-			}
-		}
     }
 }
