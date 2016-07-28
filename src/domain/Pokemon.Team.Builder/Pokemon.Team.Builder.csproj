@@ -48,7 +48,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ItemInfo.cs" />
+    <Compile Include="Model\RankingPokemonDown.cs" />
+    <Compile Include="Model\RankingPokemonDownWaza.cs" />
+    <Compile Include="Model\RankingPokemonDownWazaOther.cs" />
+    <Compile Include="Model\RankingPokemonIn.cs" />
+    <Compile Include="Model\RankingPokemonInfo.cs" />
+    <Compile Include="Model\RankingPokemonSufferer.cs" />
+    <Compile Include="Model\RankingPokemonSuffererWaza.cs" />
+    <Compile Include="Model\RankingPokemonTrend.cs" />
     <Compile Include="Model\RetrievePokemonUsageResponse.cs" />
+    <Compile Include="Model\SeikakuInfo.cs" />
+    <Compile Include="Model\TokuseiInfo.cs" />
+    <Compile Include="Model\WazaInfo.cs" />
     <Compile Include="PokemonUsageRetriever.cs" />
     <Compile Include="Serialization\PokedexSerializer.cs" />
     <Compile Include="Pokemon.cs" />
