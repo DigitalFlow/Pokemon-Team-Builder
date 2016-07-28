@@ -13,34 +13,28 @@ namespace Pokemon.Team.Builder
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 		}
 
-		public void GetProposedPokemon(List<int> initialTeam) {
+		public List<int> GetProposedPokemon(List<int> initialTeam) {
+
+			if (initialTeam.Count == 6) {
+				return initialTeam;
+			}
 
 			var proposedMembers = new Dictionary<int, int> ();
 
 			foreach (var teamMember in initialTeam) 
 			{
-				var rankedMates = GetRankedTeamMembersForPokemon (teamMember);
+				var rankedMembers = GetRankedTeamMembersForPokemon (teamMember);
 
-				foreach (var rankedMate in rankedMates.ToList()) {
-					if (initialTeam.Contains (rankedMate.Key)) {
-						continue;
-					}
-
-					var distantRankedMates = GetRankedTeamMembersForPokemon (rankedMate.Key);
-
-					rankedMates = rankedMates.MergeDictionaries (new [] { distantRankedMates });
-				}
-
-				proposedMembers = proposedMembers.MergeDictionaries (new[]{ rankedMates });
+				proposedMembers = proposedMembers.MergeDictionaries(new []{rankedMembers});
 			}
 
 			var orderedMembers = proposedMembers
 				.Where (member => !initialTeam.Contains (member.Key))
 				.OrderByDescending (pair => pair.Value).ToList();
 
-			for (var i = 0; i < proposedMembers.Keys.Count && i < 6 - initialTeam.Count; i++) {
-				System.Console.WriteLine ($"#{i+1}: {orderedMembers[i].Key} - {orderedMembers[i].Value}");
-			}
+			initialTeam.Add (orderedMembers.First ().Key);
+
+			return GetProposedPokemon (initialTeam);
 		}
 
 		public Dictionary<int, int> GetRankedTeamMembersForPokemon(int pokemonId)

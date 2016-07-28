@@ -21,6 +21,8 @@ namespace Pokemon.Team.Builder
 
 		public RetrievePokemonUsageResponse GetPokemonUsageInformation(int pokemonId, int formNo = 0, int languageId = 2, int seasonId = 117, int battleType = 1)
         {
+			var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
+
             var request = new HttpRequestMessage
             {
                 RequestUri = new Uri("https://3ds.pokemon-gl.com/frontendApi/gbu/getSeasonPokemonDetail"),
@@ -40,7 +42,7 @@ namespace Pokemon.Team.Builder
 	                    new KeyValuePair<string, string>("displayNumberPokemonIn", "10"),
 	                    new KeyValuePair<string, string>("dispayNumberPokemonDown", "10"),
 	                    new KeyValuePair<string, string>("displayNumberPokemonDownWaza", "10"),
-	                    new KeyValuePair<string, string>("timestamp", "1469645951951")
+						new KeyValuePair<string, string>("timestamp", "{unixTimeStamp}")
                 })
             };
 

@@ -31,7 +31,11 @@ namespace Pokemon.Team.Builder.Console
 
 					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
 
-					pokemonProposer.GetProposedPokemon (initialTeam);
+					var proposedTeam = pokemonProposer.GetProposedPokemon (initialTeam);
+
+					for (var i = 0; i < proposedTeam.Count; i++) {
+						_logger.Info ($"Pokemon Team Member #{i+1}: {proposedTeam[i]}");
+					}
                 }
             }
         }
