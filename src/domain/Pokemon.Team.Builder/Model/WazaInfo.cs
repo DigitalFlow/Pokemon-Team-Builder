@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
+	/// <summary>
+	/// Most often used Moves
+	/// </summary>
     public class WazaInfo
     {
         public int Ranking { get; set; }

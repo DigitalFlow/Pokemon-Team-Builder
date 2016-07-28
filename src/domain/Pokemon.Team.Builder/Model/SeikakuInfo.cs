@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
+	/// <summary>
+	/// Most often used natures
+	/// </summary>
     public class SeikakuInfo
     {
         public int Ranking { get; set; }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
+	/// <summary>
+	/// Most often used abilities
+	/// </summary>
     public class TokuseiInfo
     {
         public int Ranking { get; set; }

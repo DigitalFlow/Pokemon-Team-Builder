@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
+	/// <summary>
+	/// Most often used items
+	/// </summary>
     public class ItemInfo
     {
         public int Ranking { get; set; }
