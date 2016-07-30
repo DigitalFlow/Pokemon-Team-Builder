@@ -55,7 +55,6 @@
     <Compile Include="Model\RankingPokemonSufferer.cs" />
     <Compile Include="Model\RankingPokemonSuffererWaza.cs" />
     <Compile Include="Model\RankingPokemonTrend.cs" />
-    <Compile Include="Model\RetrievePokemonUsageResponse.cs" />
     <Compile Include="Model\SeikakuInfo.cs" />
     <Compile Include="Model\TokuseiInfo.cs" />
     <Compile Include="Model\WazaInfo.cs" />
@@ -72,6 +71,8 @@
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Model\DetailedPokemonInformation.cs" />
+    <Compile Include="Model\PokemonIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

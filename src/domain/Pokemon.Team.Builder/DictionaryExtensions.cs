@@ -6,9 +6,9 @@ namespace Pokemon.Team.Builder
 {
 	public static class DictionaryExtensions
 	{
-		public static Dictionary<int, int> MergeDictionaries(this Dictionary<int, int> first, IEnumerable<Dictionary<int, int>> second)
+		public static Dictionary<T, int> MergeDictionaries<T>(this Dictionary<T, int> first, IEnumerable<Dictionary<T, int>> second)
 		{
-			var dictionaries = new List<Dictionary<int, int>> (second);
+			var dictionaries = new List<Dictionary<T, int>> (second);
 			dictionaries.Add (first);
 
 			return dictionaries

@@ -53,7 +53,7 @@ public partial class MainWindow: Gtk.Window
 			.Where(value => !string.IsNullOrEmpty(value))
 			.Select(value => value.Substring(0, value.IndexOf('-')).Trim())
 			.Where(value => Regex.IsMatch(value, "^[0-9]+$"))
-			.Select(value => int.Parse(value))
+			.Select(value => new PokemonIdentifier(int.Parse(value)))
 			.ToList();
 
 		using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
@@ -64,10 +64,10 @@ public partial class MainWindow: Gtk.Window
 
 				var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
 
-				var proposedTeam = pokemonProposer.GetProposedPokemon (initialTeam);
+				var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
 
 				for (var i = 0; i < proposedTeam.Count; i++) {
-					_comboBoxes [i].Entry.Text = proposedTeam [i].ToString();
+					_comboBoxes [i].Entry.Text = proposedTeam [i].RankingPokemonInfo.ToString();
 				}
 			}
 		}

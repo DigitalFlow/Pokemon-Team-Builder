@@ -21,5 +21,21 @@ namespace Pokemon.Team.Builder.Model
         public string Name { get; set; }
         public int SequenceNumber { get; set; }
         public string Height { get; set; }
+
+		public override bool Equals (object obj)
+		{
+			var otherRanking = obj as RankingPokemonInfo;
+
+			if (otherRanking == null) {
+				return false;
+			}
+
+			return MonsNo == otherRanking.MonsNo && FormNo == otherRanking.FormNo;
+		}
+
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode ();
+		}
     }
 }

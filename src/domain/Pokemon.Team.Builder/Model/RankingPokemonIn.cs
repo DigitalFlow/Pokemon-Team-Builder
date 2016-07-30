@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-    public class RankingPokemonIn
+	public class RankingPokemonIn : IEquatable<RankingPokemonIn>
     {
         public int MonsNo { get; set; }
         public string FormNo { get; set; }
@@ -21,5 +21,33 @@ namespace Pokemon.Team.Builder.Model
         public string FormName { get; set; }
         public string Name { get; set; }
         public int SequenceNumber { get; set; }
+
+		public bool Equals (RankingPokemonIn otherRankingIn) {
+			if (otherRankingIn == null) {
+				return false;
+			}
+
+			return MonsNo == otherRankingIn.MonsNo && FormNo == otherRankingIn.FormNo;
+		}
+
+		public static implicit operator PokemonIdentifier (RankingPokemonIn rankingPokemon) {
+			return new PokemonIdentifier (rankingPokemon.MonsNo, rankingPokemon.FormNo);
+		}	
+
+		public override bool Equals (object obj)
+		{
+			var otherRankingIn = obj as RankingPokemonIn;
+
+			if (otherRankingIn == null) {
+				return false;
+			}
+
+			return Equals(otherRankingIn);
+		}
+
+		public override int GetHashCode ()
+		{
+			return $"{MonsNo}-{FormNo}".GetHashCode();
+		}
     }
 }

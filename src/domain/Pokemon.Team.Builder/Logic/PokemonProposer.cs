@@ -15,45 +15,63 @@ namespace Pokemon.Team.Builder
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 		}
 
-		public List<Pokemon> GetProposedPokemon(List<int> initialTeam, List<Pokemon> pokemon = null) {
-			// Run one additional time so that last member is also added to pokemon list
-			if (initialTeam.Count == TEAM_SIZE + 1) {
-				return pokemon;
+		public List<DetailedPokemonInformation> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
+			if (initialTeam == null || initialTeam.Count == 0) {
+				throw new ArgumentException ("Initial team must not be empty or null!", "initialTeam");
 			}
 
 			if (pokemon == null) {
-				pokemon = new List<Pokemon> ();
+				pokemon = new List<DetailedPokemonInformation> ();
 			}
 
-			var proposedMembers = new Dictionary<int, int> ();
+			if (pokemon.Count == TEAM_SIZE) {
+				return pokemon;
+			}
 
+			var proposedMembers = new Dictionary<RankingPokemonIn, int> ();
+
+			// Retrieve Information on each team member
 			foreach (var teamMember in initialTeam) 
 			{
-				var rankedMembers = GetRankedTeamMembersForPokemon (teamMember);
+				var teamMemberInfo = GetPokemonDetails (teamMember);
 
-				if (pokemon.All (poke => poke.Id != teamMember)) {
-					pokemon.Add (new Pokemon {
-						Id = teamMember,
-						Name = rankedMembers.Item1.RankingPokemonInfo.Name
-					});
+				if (!pokemon.Contains (teamMemberInfo)) {
+					pokemon.Add (teamMemberInfo);
 				}
 
-				proposedMembers = proposedMembers.MergeDictionaries(new []{rankedMembers.Item2.ToDictionary(member => member.Key.MonsNo, member => member.Value)});
+				var rankedMembers = GetRankedTeamMembersForPokemon (teamMemberInfo);
+				proposedMembers = proposedMembers.MergeDictionaries(new []{rankedMembers});
 			}
 
 			var orderedMembers = proposedMembers
-				.Where (member => !initialTeam.Contains (member.Key))
-				.OrderByDescending (pair => pair.Value).ToList();
+				.Where (proposal => pokemon.All(poke => (PokemonIdentifier) poke != (PokemonIdentifier) proposal.Key))
+				.OrderByDescending (pair => pair.Value)
+				.ToList();
 
-			initialTeam.Add (orderedMembers.First ().Key);
+			var bestMember = orderedMembers.First ().Key;
 
-			return GetProposedPokemon (initialTeam, pokemon);
+			initialTeam.Add (bestMember);
+			pokemon.Add (GetPokemonDetails (bestMember));
+
+			return GetProposedPokemonByUsage (initialTeam, pokemon);
 		}
 
-		public Tuple<RetrievePokemonUsageResponse, Dictionary<RankingPokemonIn, int>> GetRankedTeamMembersForPokemon(int pokemonId)
-		{
-			var pokemonInfo = _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId);
+		/// <summary>
+		/// Retrieves pokemon information by pokemon MonsNo / Id
+		/// </summary>
+		/// <returns>The pokemon details.</returns>
+		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
+		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId) {
+			return _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId);
+		}
 
+		/// <summary>
+		/// Creates a ranking for the most often used team members. The higher the rank, the better
+		/// </summary>
+		/// <returns>The ranked team members for pokemon.</returns>
+		/// <param name="pokemonInfo">Pokemon info.</param>
+		private Dictionary<RankingPokemonIn, int> GetRankedTeamMembersForPokemon(DetailedPokemonInformation pokemonInfo)
+		{
 			var rankedMembers = new Dictionary<RankingPokemonIn, int> ();
 
 			foreach (var pokemon in pokemonInfo.RankingPokemonIn) {
@@ -65,7 +83,7 @@ namespace Pokemon.Team.Builder
 				}
 			}
 
-			return new Tuple<RetrievePokemonUsageResponse, Dictionary<RankingPokemonIn, int>>(pokemonInfo, rankedMembers);
+			return rankedMembers;
 		}
 	}
 }

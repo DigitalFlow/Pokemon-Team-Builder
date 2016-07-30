@@ -20,14 +20,14 @@ namespace Pokemon.Team.Builder.Console
 			{
 				using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
 				{
-					var initialTeam = args.Select(arg => Int32.Parse(arg)).ToList();
+					var initialTeam = args.Select(arg => new PokemonIdentifier(Int32.Parse(arg))).ToList();
 
 					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
 
-					var proposedTeam = pokemonProposer.GetProposedPokemon (initialTeam);
+					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
 
 					for (var i = 0; i < proposedTeam.Count; i++) {
-						_logger.Info ($"Pokemon Team Member #{i+1}: {proposedTeam[i].Id} - {proposedTeam[i].Name}");
+						_logger.Info ($"Pokemon Team Member #{i+1}: {proposedTeam[i].RankingPokemonInfo.MonsNo} - {proposedTeam[i].RankingPokemonInfo.Name}");
 					}
 				}
 			}
