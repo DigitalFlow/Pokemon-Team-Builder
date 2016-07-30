@@ -48,7 +48,11 @@ namespace Pokemon.Team.Builder
 				.OrderByDescending (pair => pair.Value)
 				.ToList();
 
-			var bestMember = orderedMembers.First ().Key;
+			var bestMember = orderedMembers.FirstOrDefault ().Key;
+
+			if (bestMember == null) {
+				return pokemon;
+			}
 
 			initialTeam.Add (bestMember);
 			pokemon.Add (GetPokemonDetails (bestMember));
@@ -73,6 +77,10 @@ namespace Pokemon.Team.Builder
 		private Dictionary<RankingPokemonIn, int> GetRankedTeamMembersForPokemon(DetailedPokemonInformation pokemonInfo)
 		{
 			var rankedMembers = new Dictionary<RankingPokemonIn, int> ();
+
+			if (pokemonInfo.RankingPokemonIn == null) {
+				return rankedMembers;
+			}
 
 			foreach (var pokemon in pokemonInfo.RankingPokemonIn) {
 				if (rankedMembers.ContainsKey (pokemon)) {

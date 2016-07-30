@@ -37,5 +37,10 @@ namespace Pokemon.Team.Builder.Model
 		{
 			return base.GetHashCode ();
 		}
+
+		public override string ToString ()
+		{
+			return $"{MonsNo} - {Name}";
+		}
     }
 }
