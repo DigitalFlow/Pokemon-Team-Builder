@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <object class="GtkApplicationWindow">
+  <requires lib="gtk+" version="3.8"/>
+  <object class="GtkApplicationWindow" id="Window">
+    <property name="name">Window</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <signal name="delete-event" handler="OnDeleteEvent" swapped="no"/>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="BoxLayout">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkMenuBar">
+          <object class="GtkMenuBar" id="MenuBar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkMenuItem">
+              <object class="GtkMenuItem" id="File">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Datei</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu">
+                  <object class="GtkMenu" id="FileMenu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="New">
                         <property name="label">gtk-new</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -35,7 +36,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Open">
                         <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -44,7 +45,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Save">
                         <property name="label">gtk-save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -53,7 +54,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Save As">
                         <property name="label">gtk-save-as</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -62,13 +63,13 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem">
+                      <object class="GtkSeparatorMenuItem" id="FileMenuSeparator">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Quit">
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -82,17 +83,17 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem">
+              <object class="GtkMenuItem" id="Edit">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Bearbeiten</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu">
+                  <object class="GtkMenu" id="EditMenu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Cut">
                         <property name="label">gtk-cut</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -101,7 +102,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Copy">
                         <property name="label">gtk-copy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -110,7 +111,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Paste">
                         <property name="label">gtk-paste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -119,7 +120,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Delete">
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -132,7 +133,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem">
+              <object class="GtkMenuItem" id="View">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Ansicht</property>
@@ -140,17 +141,17 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem">
+              <object class="GtkMenuItem" id="Help">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Hilfe</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu">
+                  <object class="GtkMenu" id="HelpMenu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="Info">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -176,7 +177,7 @@
             <property name="can_focus">False</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="PokeEntry1">
                 <property name="can_focus">True</property>
               </object>
             </child>
@@ -194,7 +195,7 @@
             <property name="can_focus">False</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="PokeEntry2">
                 <property name="can_focus">True</property>
               </object>
             </child>
@@ -212,7 +213,7 @@
             <property name="can_focus">False</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="PokeEntry3">
                 <property name="can_focus">True</property>
               </object>
             </child>
@@ -230,7 +231,7 @@
             <property name="can_focus">False</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="PokeEntry4">
                 <property name="can_focus">True</property>
               </object>
             </child>
@@ -248,7 +249,7 @@
             <property name="can_focus">False</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="PokeEntry5">
                 <property name="can_focus">True</property>
               </object>
             </child>
@@ -266,7 +267,7 @@
             <property name="can_focus">False</property>
             <property name="has_entry">True</property>
             <child internal-child="entry">
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="PokeEntry6">
                 <property name="can_focus">True</property>
               </object>
             </child>
