@@ -10,7 +10,7 @@ namespace Pokemon.Team.Builder
 {
     public static class PokedexSerializer
     {
-        public static string SerializePokedex(List<Pokemon> pokemon)
+        private static string SerializePokedex(List<Pokemon> pokemon)
         {
             var xmlDoc = new XDocument(new XDeclaration("1.0", "utf-16", null));
             var pokemonRoot = new XElement("Pokedex");
@@ -36,7 +36,15 @@ namespace Pokemon.Team.Builder
             }
         }
 
-		public static IEnumerable<Pokemon> DeserializePokedex(string filePath)
+		public static void SavePokedexToFile(List<Pokemon> pokemon, string filePath){
+			File.WriteAllText(filePath, PokedexSerializer.SerializePokedex(pokemon), System.Text.Encoding.Unicode);
+		}
+
+		public static List<Pokemon> LoadPokedexFromFile(string filePath){
+			return DeserializePokedex (filePath);
+		}
+
+		private static List<Pokemon> DeserializePokedex(string filePath)
 		{
 			var file = new FileInfo(filePath);
 
@@ -50,12 +58,13 @@ namespace Pokemon.Team.Builder
 			var nameSpace = xmlDoc.Root.Name.Namespace;
 
 			var pokemon = 
-				from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
+				(from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
 				select new Pokemon {
 					Name = entry.Descendants("Name").First().Value,
 					Id = int.Parse(entry.Descendants("Id").First().Value),
 					Url = entry.Descendants("Url").First().Value
-				};
+				})
+				.ToList();
 
 			return pokemon;
 		}

@@ -73,6 +73,7 @@
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Model\DetailedPokemonInformation.cs" />
     <Compile Include="Model\PokemonIdentifier.cs" />
+    <Compile Include="Logic\PokedexManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -41,19 +41,25 @@ public partial class MainWindow : Gtk.Window
 	}
 
 	protected void InitializePokemonComboBoxes(IEnumerable<ComboBoxText> comboBoxes){
-		var pokedex = PokedexSerializer.DeserializePokedex ("pokedex.xml");
+		using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/api/v2/")))
+		{
+			using(var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
+			{
+				var pokedex = new PokedexManager (pokemonMetaDataRetriever).GetPokedex();
 
-		foreach (var comboBox in comboBoxes) {
-			comboBox.Entry.Completion = new EntryCompletion {
-				Model = new ListStore(typeof(string)),
-				TextColumn = 0
-			};
+				foreach (var comboBox in comboBoxes) {
+					comboBox.Entry.Completion = new EntryCompletion {
+						Model = new ListStore(typeof(string)),
+						TextColumn = 0
+					};
 
-			foreach (var pokemon in pokedex) {
-				var text = pokemon.ToString();
+					foreach (var pokemon in pokedex) {
+						var text = pokemon.ToString();
 
-				((ListStore)comboBox.Entry.Completion.Model).AppendValues (text);
-				comboBox.AppendText (text);
+						((ListStore)comboBox.Entry.Completion.Model).AppendValues (text);
+						comboBox.AppendText (text);
+					}
+				}
 			}
 		}
 	}

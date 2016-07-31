@@ -32,19 +32,5 @@ namespace Pokemon.Team.Builder.Console
 				}
 			}
 		}
-
-		private static void RetrievePokemonMetadata(){
-			using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/api/v2/")))
-			{
-				using (var pokemonRetriever = new PokemonMetaDataRetriever(httpClient))
-				{
-					var retriever = new PokemonMetaDataRetriever(httpClient);
-
-					var pokemon = retriever.RetrieveAllPokemon();
-
-					File.WriteAllText("pokedex.xml", PokedexSerializer.SerializePokedex(pokemon), System.Text.Encoding.Unicode);
-				}
-			}
-    	}
 	}
 }
