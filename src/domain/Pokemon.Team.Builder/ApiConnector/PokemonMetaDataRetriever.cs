@@ -3,6 +3,8 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder
 {
@@ -24,18 +26,24 @@ namespace Pokemon.Team.Builder
         }
 
 		public void AppendImage(Pokemon pokemon) {
-			var url = $"api/v2/pokemon/{pokemon.Id}/";
-			var json = _client.GetStringAsync(url).Result;
+			try {
+				var url = $"api/v2/pokemon/{pokemon.Id}/";
+				var json = _client.GetStringAsync (url).Result;
+		
+				var response = JsonConvert.DeserializeObject<FullMetaDataResponse> (json);
+				var defaultFrontSprite = _client.GetAsync (response.sprites.front_default).Result;
+				var imageBytes = defaultFrontSprite.Content.ReadAsByteArrayAsync ().Result;
 
-			var response = JsonConvert.DeserializeObject<FullMetaDataResponse>(json);
-
-			var defaultFrontSprite = _client.GetStringAsync (response.sprites.front_default).Result;
-
-			pokemon.Image = defaultFrontSprite;
+				pokemon.Image = Convert.ToBase64String (imageBytes);
+			}
+			catch (Exception ex) {
+				Logger.Error($"An error occured while retrieving picture for pokemon #{pokemon.Id}, message {ex.Message}");
+			}
 		}
 
 		public List<Pokemon> RetrievePokemonSimpleData() {
 			var pokemon = new List<Pokemon>();
+
 			var url = "api/v2/pokemon/";
 			RetrievePokemonResponse response;
 
@@ -45,8 +53,7 @@ namespace Pokemon.Team.Builder
 				response = JsonConvert.DeserializeObject<RetrievePokemonResponse>(json);
 				url = response.Next;
 
-				foreach (var item in response.Results)
-				{
+				foreach (var item in response.Results) {
 					var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 					var id = 0;
 
@@ -73,7 +80,10 @@ namespace Pokemon.Team.Builder
 							Url = item.Url
 						};
 
-					AppendImage(poke);
+					// Only for the first 10 for now, requests are by far to slow right now
+					if(poke.Id < 10) {
+						AppendImage(poke);
+					}
 
 					pokemon.Add(poke);
 				}

@@ -23,6 +23,7 @@ namespace Pokemon.Team.Builder
 
                 pokedexEntry.Add(new XElement("Id", entry.Id));
                 pokedexEntry.Add(new XElement("Name", entry.Name));
+				pokedexEntry.Add(new XElement("Image", entry.Image));
                 pokedexEntry.Add(new XElement("Url", entry.Url));
 
                 pokemonRoot.Add(pokedexEntry);
@@ -61,6 +62,7 @@ namespace Pokemon.Team.Builder
 				(from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
 				select new Pokemon {
 					Name = entry.Descendants("Name").First().Value,
+					Image = entry.Descendants("Image").FirstOrDefault()?.Value,
 					Id = int.Parse(entry.Descendants("Id").First().Value),
 					Url = entry.Descendants("Url").First().Value
 				})
