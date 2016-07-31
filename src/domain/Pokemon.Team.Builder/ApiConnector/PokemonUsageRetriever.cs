@@ -7,12 +7,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Pokemon.Team.Builder
 {
 	public class PokemonUsageRetriever : IPokemonUsageRetriever, IDisposable
     {
         private IHttpClient _client;
+		private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public PokemonUsageRetriever(IHttpClient client)
         {
@@ -50,12 +52,19 @@ namespace Pokemon.Team.Builder
             request.Headers.Add("Origin", "http://3ds.pokemon-gl.com");
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
 
-            var response = _client.SendAsync(request).Result;
+			try
+			{
+			var response = _client.SendAsync(request).Result;
             var content = response.Content.ReadAsStringAsync().Result;
 
             var pokemonUsageResponse = JsonConvert.DeserializeObject<DetailedPokemonInformation>(content);
 
-            return pokemonUsageResponse;
+				return pokemonUsageResponse;
+			}
+			catch (Exception ex) {
+				_logger.Error($"Exception during contacting of API, message is {ex.Message}");
+				return null;
+			}
         }
 
         public void Dispose()

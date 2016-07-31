@@ -4,21 +4,43 @@ using Pokemon.Team.Builder;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-public partial class MainWindow: Gtk.Window
+public partial class MainWindow : Gtk.Window
 {
-	private List<ComboBoxEntry> _comboBoxes;
+	private List<ComboBoxText> _comboBoxes;
 
-	public MainWindow () : base (Gtk.WindowType.Toplevel)
+	public MainWindow () : base (WindowType.Toplevel)
 	{
-		Build ();
+		var builder = new Builder ();
+		builder.AddFromFile ("PokeUI.glade");
+		builder.Autoconnect (this);
 
-		_comboBoxes = new List<ComboBoxEntry>{ PokemonSlot1, PokemonSlot2, PokemonSlot3, PokemonSlot4, PokemonSlot5, PokemonSlot6 };
+		_comboBoxes = GetComboBoxes (new List<string>{
+			"PokeComboBox1", 
+			"PokeComboBox2",
+			"PokeComboBox3",
+			"PokeComboBox4",
+			"PokeComboBox5",
+			"PokeComboBox6"
+		}, builder);
 
 		InitializePokemonComboBoxes (_comboBoxes);
 	}
 
-	protected void InitializePokemonComboBoxes(IEnumerable<ComboBoxEntry> comboBoxes){
+	protected List<ComboBoxText> GetComboBoxes(List<string> controlNames, Builder builder) {
+		var comboBoxes = new List<ComboBoxText> ();
+
+		foreach (var name in controlNames) {
+			var comboBox = (ComboBoxText)builder.GetObject (name);
+
+			comboBoxes.Add (comboBox);
+		}
+
+		return comboBoxes;
+	}
+
+	protected void InitializePokemonComboBoxes(IEnumerable<ComboBoxText> comboBoxes){
 		var pokedex = PokedexSerializer.DeserializePokedex ("pokedex.xml");
 
 		foreach (var comboBox in comboBoxes) {
@@ -56,20 +78,21 @@ public partial class MainWindow: Gtk.Window
 			.Select(value => new PokemonIdentifier(int.Parse(value)))
 			.ToList();
 
-		using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
-		{
-			using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
+		Task.Run(() => {
+			using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
 			{
-				var initialTeam = comboBoxValues;
+				using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
+				{
+					var initialTeam = comboBoxValues;
 
-				var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
+					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
+					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (comboBoxValues);
 
-				var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
-
-				for (var i = 0; i < proposedTeam.Count; i++) {
-					_comboBoxes [i].Entry.Text = proposedTeam [i].RankingPokemonInfo.ToString();
+					for (var i = 0; i < proposedTeam.Count; i++) {
+						_comboBoxes [i].Entry.Text = proposedTeam [i].RankingPokemonInfo.ToString();
+					}
 				}
 			}
-		}
+		});
 	}
 }
