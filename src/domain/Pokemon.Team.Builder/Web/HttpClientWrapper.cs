@@ -11,13 +11,22 @@ namespace Pokemon.Team.Builder
     {
         private HttpClient _client;
 
+		public Uri BaseAddress { get; set; }
+
         public HttpClientWrapper(Uri baseUrl)
         {
             _client = new HttpClient
             {
                 BaseAddress = baseUrl
             };
+
+			BaseAddress = _client.BaseAddress;
         }
+
+		public async Task<HttpResponseMessage> GetAsync(string requestUri)
+		{
+			return await _client.GetAsync(requestUri);
+		}
 
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {

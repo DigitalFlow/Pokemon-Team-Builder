@@ -41,7 +41,7 @@ public partial class MainWindow : Gtk.Window
 	}
 
 	protected void InitializePokemonComboBoxes(IEnumerable<ComboBoxText> comboBoxes){
-		using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/api/v2/")))
+		using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/")))
 		{
 			using(var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
 			{

@@ -11,5 +11,8 @@ namespace Pokemon.Team.Builder
     {
         Task<string> GetStringAsync(string requestUri);
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
+		Task<HttpResponseMessage> GetAsync (string requestUri);
+
+		Uri BaseAddress { get; set; }
     }
 }

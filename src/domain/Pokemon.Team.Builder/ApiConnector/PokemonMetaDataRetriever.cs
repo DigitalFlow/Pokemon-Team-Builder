@@ -18,49 +18,70 @@ namespace Pokemon.Team.Builder
 
         public List<Pokemon> RetrieveAllPokemon()
         {
-            var pokemon = new List<Pokemon>();
-            var url = "pokemon/";
-            RetrievePokemonResponse response;
-            
-            do
-            {
-                var json = _client.GetStringAsync(url).Result;
-                response = JsonConvert.DeserializeObject<RetrievePokemonResponse>(json);
-                url = response.Next;
+			var simplePokemonData = RetrievePokemonSimpleData ();
 
-                foreach (var item in response.Results)
-                {
-                    var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-                    var id = 0;
-
-                    if (!idMatch.Success)
-                    {
-                        Logger.Warn($"Failed to find ID in url {item.Url}");
-                        continue;
-                    }
-
-                    var idString = idMatch.Value.Trim(new[] { '/' });
-                    
-                    if(!int.TryParse(idString, out id))
-                    {
-                        Logger.Warn($"Failed to parse int {idString}");
-                        continue;
-                    }
-
-                    var name = char.ToUpperInvariant(item.Name[0]) + item.Name.Substring(1);
-
-                    pokemon.Add(new Pokemon
-                    {
-                        Id = id,
-                        Name = name,
-                        Url = item.Url
-                    });
-                }
-            }
-            while (!string.IsNullOrEmpty(response.Next));
-
-            return pokemon;
+			return simplePokemonData;
         }
+
+		public void AppendImage(Pokemon pokemon) {
+			var url = $"api/v2/pokemon/{pokemon.Id}/";
+			var json = _client.GetStringAsync(url).Result;
+
+			var response = JsonConvert.DeserializeObject<FullMetaDataResponse>(json);
+
+			var defaultFrontSprite = _client.GetStringAsync (response.sprites.front_default).Result;
+
+			pokemon.Image = defaultFrontSprite;
+		}
+
+		public List<Pokemon> RetrievePokemonSimpleData() {
+			var pokemon = new List<Pokemon>();
+			var url = "api/v2/pokemon/";
+			RetrievePokemonResponse response;
+
+			do
+			{
+				var json = _client.GetStringAsync(url).Result;
+				response = JsonConvert.DeserializeObject<RetrievePokemonResponse>(json);
+				url = response.Next;
+
+				foreach (var item in response.Results)
+				{
+					var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+					var id = 0;
+
+					if (!idMatch.Success)
+					{
+						Logger.Warn($"Failed to find ID in url {item.Url}");
+						continue;
+					}
+
+					var idString = idMatch.Value.Trim(new[] { '/' });
+
+					if(!int.TryParse(idString, out id))
+					{
+						Logger.Warn($"Failed to parse int {idString}");
+						continue;
+					}
+
+					var name = char.ToUpperInvariant(item.Name[0]) + item.Name.Substring(1);
+
+					var poke = new Pokemon
+						{
+							Id = id,
+							Name = name,
+							Url = item.Url
+						};
+
+					AppendImage(poke);
+
+					pokemon.Add(poke);
+				}
+			}
+			while (!string.IsNullOrEmpty(response.Next));
+
+			return pokemon;
+		}
 
         public void Dispose()
         {
