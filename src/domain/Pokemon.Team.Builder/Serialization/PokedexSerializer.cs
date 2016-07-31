@@ -10,7 +10,7 @@ namespace Pokemon.Team.Builder
 {
     public static class PokedexSerializer
     {
-        private static string SerializePokedex(List<Pokemon> pokemon)
+        public static string SerializePokedex(List<Pokemon> pokemon)
         {
             var xmlDoc = new XDocument(new XDeclaration("1.0", "utf-16", null));
             var pokemonRoot = new XElement("Pokedex");
@@ -44,7 +44,7 @@ namespace Pokemon.Team.Builder
 			return DeserializePokedex (filePath);
 		}
 
-		private static List<Pokemon> DeserializePokedex(string filePath)
+		public static List<Pokemon> DeserializePokedex(string filePath)
 		{
 			var file = new FileInfo(filePath);
 
