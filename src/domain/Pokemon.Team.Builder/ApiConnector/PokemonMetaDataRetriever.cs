@@ -31,10 +31,12 @@ namespace Pokemon.Team.Builder
 				var json = _client.GetStringAsync (url).Result;
 		
 				var response = JsonConvert.DeserializeObject<FullMetaDataResponse> (json);
-				var defaultFrontSprite = _client.GetAsync (response.sprites.front_default).Result;
-				var imageBytes = defaultFrontSprite.Content.ReadAsByteArrayAsync ().Result;
 
-				pokemon.Image = Convert.ToBase64String (imageBytes);
+				using(var defaultFrontSprite = _client.GetAsync (response.sprites.front_default).Result)
+				{
+					var imageBytes = defaultFrontSprite.Content.ReadAsByteArrayAsync ().Result;
+					pokemon.Image = Convert.ToBase64String (imageBytes);
+				}
 			}
 			catch (Exception ex) {
 				Logger.Error($"An error occured while retrieving picture for pokemon #{pokemon.Id}, message {ex.Message}");
