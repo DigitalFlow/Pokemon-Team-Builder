@@ -131,6 +131,7 @@ public partial class MainWindow : Window
 		// Exit on no or invalid input
 		if (string.IsNullOrEmpty (value) || _pokedex.All(poke => 
 			!poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase))) {
+			ClearControlTuple (senderBox);
 			return;
 		}
 
