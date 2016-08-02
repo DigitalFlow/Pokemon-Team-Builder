@@ -17,7 +17,7 @@ namespace Pokemon.Team.Builder.Model
         public string TypeName1 { get; set; }
         public string TypeName2 { get; set; }
         public int TypeId1 { get; set; }
-        public int TypeId2 { get; set; }
+        public int? TypeId2 { get; set; }
         public string FormName { get; set; }
         public string Name { get; set; }
         public int SequenceNumber { get; set; }

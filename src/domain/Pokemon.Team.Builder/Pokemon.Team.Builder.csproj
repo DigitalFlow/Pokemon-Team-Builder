@@ -75,6 +75,7 @@
     <Compile Include="Model\GL\WazaInfo.cs" />
     <Compile Include="Model\PokeAPI\FullMetaDataResponse.cs" />
     <Compile Include="Model\PokeAPI\RetrievePokemonResponse.cs" />
+    <Compile Include="Logic\Pokedex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

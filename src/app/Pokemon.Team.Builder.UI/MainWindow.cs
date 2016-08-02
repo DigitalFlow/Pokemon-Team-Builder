@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 public partial class MainWindow : Window
 {
-	private List<ComboBoxText> _comboBoxes;
-	private List<Pokemon.Team.Builder.Pokemon> _pokedex;
+	private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
+	private Pokedex _pokedex;
 	private Builder _builder;
 
 	public MainWindow () : base (Gtk.WindowType.Toplevel)
@@ -18,29 +18,36 @@ public partial class MainWindow : Window
 		_builder.AddFromFile ("PokeUI.glade");
 		_builder.Autoconnect (this);
 
-		_comboBoxes = GetComboBoxes (new List<string>{
-			"PokeComboBox1", 
-			"PokeComboBox2",
-			"PokeComboBox3",
-			"PokeComboBox4",
-			"PokeComboBox5",
-			"PokeComboBox6"
+		_controlSets = GetComboBoxes (new List<Tuple<string, string, string, string, string>>{
+			Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"), 
+			Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
+			Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
+			Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
+			Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
+			Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
 		});
 	}
 
-	protected List<ComboBoxText> GetComboBoxes(List<string> controlNames) {
-		var comboBoxes = new List<ComboBoxText> ();
+	protected List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> GetComboBoxes(List<Tuple<string, string, string, string, string>> controlNames) {
+		var comboBoxes = new List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> ();
 
 		foreach (var name in controlNames) {
-			var comboBox = (ComboBoxText) _builder.GetObject (name);
+			var controlSet = Tuple.Create(
+				(Image) _builder.GetObject (name.Item1), 
+				(ComboBoxText) _builder.GetObject (name.Item2),
+				(ComboBoxText) _builder.GetObject (name.Item3), 
+				(ComboBoxText) _builder.GetObject (name.Item4), 
+				(Button) _builder.GetObject (name.Item5)
+			);
 
-			comboBoxes.Add (comboBox);
+			comboBoxes.Add (controlSet);
 		}
 
 		return comboBoxes;
 	}
 
-	protected void InitializePokemonComboBoxes(IEnumerable<ComboBoxText> comboBoxes){
+	protected void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes){
+		// Makes problems in windows, will have to investigate
 		var loadWindow = (Window)_builder.GetObject ("LoadPokedexWindow");
 
 		loadWindow.Show ();
@@ -49,19 +56,26 @@ public partial class MainWindow : Window
 		{
 			using(var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
 			{
-				_pokedex = new PokedexManager (pokemonMetaDataRetriever).GetPokedex();
+				_pokedex = new Pokedex(new PokedexManager (pokemonMetaDataRetriever).GetPokemon());
 
 				foreach (var comboBox in comboBoxes) {
-					comboBox.Entry.Completion = new EntryCompletion {
+					
+					comboBox.Item2.Entry.Completion = new EntryCompletion {
+						Model = new ListStore(typeof(string)),
+						TextColumn = 0
+					};
+
+					comboBox.Item4.Entry.Completion = new EntryCompletion {
 						Model = new ListStore(typeof(string)),
 						TextColumn = 0
 					};
 
 					foreach (var pokemon in _pokedex) {
-						var text = pokemon.ToString();
+						((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues (pokemon.Id);
+						comboBox.Item2.AppendText (pokemon.Id.ToString());
 
-						((ListStore)comboBox.Entry.Completion.Model).AppendValues (text);
-						comboBox.AppendText (text);
+						((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues (pokemon.Name);
+						comboBox.Item4.AppendText (pokemon.Name);
 					}
 				}
 			}
@@ -70,33 +84,60 @@ public partial class MainWindow : Window
 		loadWindow.Hide ();
 	}
 
-	protected void OnPokemonSelection (object sender, EventArgs e) {
-		var senderBox = _comboBoxes.Single(box => box == sender);
+	protected void OnPokemonSelectionById (object sender, EventArgs e) {
+		var senderBox = _controlSets.Single(box => box.Item2 == sender);
 
-		// Ok since we only have 6 slots
-		var slotNumber = int.Parse(senderBox.Name [senderBox.Name.Length - 1].ToString());
-
-		if (string.IsNullOrEmpty (senderBox.Entry.Text) || senderBox.Entry.Text.IndexOf('-') == -1) {
-			return;
-		}
-
+		var value = senderBox.Item2.Entry.Text.Trim();
 		var pokemonId = 0;
 
-		if (!int.TryParse (senderBox.Entry.Text.Substring (0, senderBox.Entry.Text.IndexOf ('-')).Trim (), out pokemonId)) {
+		var parseResult = int.TryParse (value, out pokemonId);
+
+		// Exit on no or invalid input
+		if (!parseResult ||  _pokedex.All(poke => poke.Id != pokemonId)) {
+			ClearControlTuple (senderBox);
 			return;
 		}
 
-		var pokemon = _pokedex.SingleOrDefault (poke => poke.Id == pokemonId);
+		var pokemon = _pokedex.GetById (pokemonId);
 
-		if (pokemon == null || pokemon.Image == null) {
-			return;
+		// Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
+		if (senderBox.Item4.Entry.Text != pokemon.Name) 
+		{
+			senderBox.Item4.Entry.Text = pokemon.Name;
 		}
 
+		SetPicture (senderBox.Item1, pokemon);
+
+	}
+
+	protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon)
+	{
 		var pixBuf = new Gdk.Pixbuf (Convert.FromBase64String (pokemon.Image));
-
-		var image = (Image) _builder.GetObject ($"PokeImage{slotNumber}");
-
 		image.Pixbuf = pixBuf;
+	}
+
+	protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple) {
+		controlTuple.Item1.Pixbuf = null;
+		controlTuple.Item2.Entry.Text = string.Empty;
+		controlTuple.Item3.Entry.Text = string.Empty;
+		controlTuple.Item4.Entry.Text = string.Empty;
+	}
+
+	protected void OnPokemonSelectionByName (object sender, EventArgs e) {
+		var senderBox = _controlSets.Single(box => box.Item4 == sender);
+
+		var value = senderBox.Item4.Entry.Text.Trim();
+
+		// Exit on no or invalid input
+		if (string.IsNullOrEmpty (value) || _pokedex.All(poke => 
+			!poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase))) {
+			return;
+		}
+
+		var pokemon = _pokedex.GetByName (value);
+
+		// Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
+		senderBox.Item2.Active = pokemon.Id - 1;
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -106,7 +147,14 @@ public partial class MainWindow : Window
 	}
 
 	protected void OnStateEvent (object sender, WindowStateEventArgs e) {
-		InitializePokemonComboBoxes (_comboBoxes);
+		InitializePokemonComboBoxes (_controlSets);
+	}
+
+	protected void OnClear (object sender, EventArgs e)
+	{
+		foreach (var ctrlSet in _controlSets) {
+			ClearControlTuple (ctrlSet);
+		}
 	}
 
 	protected void OnExit (object sender, EventArgs e)
@@ -116,11 +164,18 @@ public partial class MainWindow : Window
 
 	protected void OnProposeTeam (object sender, EventArgs e)
 	{
-		var initialTeam = _comboBoxes.Select(box => box.Entry.Text)
-			.Where(value => !string.IsNullOrEmpty(value) && value.IndexOf('-') != -1)
-			.Select(value => value.Substring(0, value.IndexOf('-')).Trim())
-			.Where(value => Regex.IsMatch(value, "^[0-9]+$"))
-			.Select(value => new PokemonIdentifier(int.Parse(value)))
+		var initialTeam = _controlSets
+			.Where(ctrl => !string.IsNullOrEmpty(ctrl.Item2.ActiveText) && Regex.IsMatch(ctrl.Item2.ActiveText, "^[0-9]+$"))
+			.Select(ctrl => 
+				{
+					var pokemonId = new PokemonIdentifier(int.Parse(ctrl.Item2.ActiveText));
+
+					if(!string.IsNullOrEmpty(ctrl.Item3.ActiveText)) {
+						pokemonId.FormNo = ctrl.Item3.ActiveText;
+					}
+
+					return pokemonId;
+				})
 			.ToList();
 
 		Task.Run(() => {
@@ -132,7 +187,8 @@ public partial class MainWindow : Window
 					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
 
 					for (var i = 0; i < proposedTeam.Count; i++) {
-						_comboBoxes [i].Entry.Text = proposedTeam [i].RankingPokemonInfo.ToString();
+						_controlSets [i].Item2.Active = proposedTeam [i].RankingPokemonInfo.MonsNo - 1;
+						_controlSets [i].Item3.Active = int.Parse(proposedTeam [i].RankingPokemonInfo.FormNo);
 					}
 				}
 			}

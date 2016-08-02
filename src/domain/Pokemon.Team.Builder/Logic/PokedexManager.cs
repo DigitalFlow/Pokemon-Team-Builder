@@ -12,7 +12,7 @@ namespace Pokemon.Team.Builder
 			_pokemonRetriever = pokemonMetaDataRetriever;
 		}
 
-		public List<Pokemon> GetPokedex(){
+		public List<Pokemon> GetPokemon(){
 			var pokedex = PokedexSerializer.LoadPokedexFromFile ("pokedex.xml");
 
 			if (pokedex == null) {
