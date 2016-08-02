@@ -12,16 +12,16 @@ namespace Pokemon.Team.Builder
 			_pokemonRetriever = pokemonMetaDataRetriever;
 		}
 
-		public List<Pokemon> GetPokemon(){
-			var pokedex = PokedexSerializer.LoadPokedexFromFile ("pokedex.xml");
+		public Pokedex GetPokemon(){
+			var pokemon = PokedexSerializer.LoadPokedexFromFile ("pokedex.xml");
 
-			if (pokedex == null) {
-				pokedex = _pokemonRetriever.RetrieveAllPokemon ();
+			if (pokemon == null) {
+				pokemon = _pokemonRetriever.RetrieveAllPokemon ();
 
-				PokedexSerializer.SavePokedexToFile (pokedex, "pokedex.xml");
+				PokedexSerializer.SavePokedexToFile (pokemon, "pokedex.xml");
 			}
 
-			return pokedex;
+			return new Pokedex(pokemon);
 		}
 	}
 }

@@ -8,191 +8,218 @@ using System.Threading.Tasks;
 
 public partial class MainWindow : Window
 {
-	private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
-	private Pokedex _pokedex;
-	private Builder _builder;
+    private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
+    private Pokedex _pokedex;
+    private Builder _builder;
+    private bool _pokedexLoadedExecuted;
 
-	public MainWindow () : base (Gtk.WindowType.Toplevel)
-	{
-		_builder = new Builder ();
-		_builder.AddFromFile ("PokeUI.glade");
-		_builder.Autoconnect (this);
+    public MainWindow() : base(Gtk.WindowType.Toplevel)
+    {
+        _builder = new Builder();
+        _builder.AddFromFile("PokeUI.glade");
+        _builder.Autoconnect(this);
 
-		_controlSets = GetComboBoxes (new List<Tuple<string, string, string, string, string>>{
-			Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"), 
-			Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
-			Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
-			Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
-			Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
-			Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
-		});
-	}
+        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>{
+            Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"),
+            Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
+            Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
+            Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
+            Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
+            Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
+        });
+    }
 
-	protected List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> GetComboBoxes(List<Tuple<string, string, string, string, string>> controlNames) {
-		var comboBoxes = new List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> ();
+    protected List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> GetComboBoxes(List<Tuple<string, string, string, string, string>> controlNames)
+    {
+        var comboBoxes = new List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>>();
 
-		foreach (var name in controlNames) {
-			var controlSet = Tuple.Create(
-				(Image) _builder.GetObject (name.Item1), 
-				(ComboBoxText) _builder.GetObject (name.Item2),
-				(ComboBoxText) _builder.GetObject (name.Item3), 
-				(ComboBoxText) _builder.GetObject (name.Item4), 
-				(Button) _builder.GetObject (name.Item5)
-			);
+        foreach (var name in controlNames)
+        {
+            var controlSet = Tuple.Create(
+                (Image)_builder.GetObject(name.Item1),
+                (ComboBoxText)_builder.GetObject(name.Item2),
+                (ComboBoxText)_builder.GetObject(name.Item3),
+                (ComboBoxText)_builder.GetObject(name.Item4),
+                (Button)_builder.GetObject(name.Item5)
+            );
 
-			comboBoxes.Add (controlSet);
-		}
+            comboBoxes.Add(controlSet);
+        }
 
-		return comboBoxes;
-	}
+        return comboBoxes;
+    }
 
-	protected void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes){
-		// Makes problems in windows, will have to investigate
-		var loadWindow = (Window)_builder.GetObject ("LoadPokedexWindow");
+    protected void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
+    {
+        // Makes problems in windows, will have to investigate
+        var loadWindow = (Window)_builder.GetObject("LoadPokedexWindow");
 
-		loadWindow.Show ();
+        loadWindow.Show();
 
-		using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/")))
-		{
-			using(var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
-			{
-				_pokedex = new Pokedex(new PokedexManager (pokemonMetaDataRetriever).GetPokemon());
+        var task = Task.Run(() =>
+        {
+            using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/")))
+            {
+                using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
+                {
+                    _pokedex = new PokedexManager(pokemonMetaDataRetriever).GetPokemon();
 
-				foreach (var comboBox in comboBoxes) {
-					
-					comboBox.Item2.Entry.Completion = new EntryCompletion {
-						Model = new ListStore(typeof(string)),
-						TextColumn = 0
-					};
+                    foreach (var comboBox in comboBoxes)
+                    {
 
-					comboBox.Item4.Entry.Completion = new EntryCompletion {
-						Model = new ListStore(typeof(string)),
-						TextColumn = 0
-					};
+                        comboBox.Item2.Entry.Completion = new EntryCompletion
+                        {
+                            Model = new ListStore(typeof(string)),
+                            TextColumn = 0
+                        };
 
-					foreach (var pokemon in _pokedex) {
-						((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues (pokemon.Id);
-						comboBox.Item2.AppendText (pokemon.Id.ToString());
+                        comboBox.Item4.Entry.Completion = new EntryCompletion
+                        {
+                            Model = new ListStore(typeof(string)),
+                            TextColumn = 0
+                        };
 
-						((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues (pokemon.Name);
-						comboBox.Item4.AppendText (pokemon.Name);
-					}
-				}
-			}
-		}
+                        foreach (var pokemon in _pokedex)
+                        {
+                            ((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues(pokemon.Id);
+                            comboBox.Item2.AppendText(pokemon.Id.ToString());
 
-		loadWindow.Hide ();
-	}
+                            ((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues(pokemon.Name);
+                            comboBox.Item4.AppendText(pokemon.Name);
+                        }
+                    }
+                }
+            }
+        });
 
-	protected void OnPokemonSelectionById (object sender, EventArgs e) {
-		var senderBox = _controlSets.Single(box => box.Item2 == sender);
+        task.Wait();
 
-		var value = senderBox.Item2.Entry.Text.Trim();
-		var pokemonId = 0;
+        loadWindow.Hide();
+    }
 
-		var parseResult = int.TryParse (value, out pokemonId);
+    protected void OnPokemonSelectionById(object sender, EventArgs e)
+    {
+        var senderBox = _controlSets.Single(box => box.Item2 == sender);
 
-		// Exit on no or invalid input
-		if (!parseResult ||  _pokedex.All(poke => poke.Id != pokemonId)) {
-			ClearControlTuple (senderBox);
-			return;
-		}
+        var value = senderBox.Item2.Entry.Text.Trim();
+        var pokemonId = 0;
 
-		var pokemon = _pokedex.GetById (pokemonId);
+        var parseResult = int.TryParse(value, out pokemonId);
 
-		// Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
-		if (senderBox.Item4.Entry.Text != pokemon.Name) 
-		{
-			senderBox.Item4.Entry.Text = pokemon.Name;
-		}
+        // Exit on no or invalid input
+        if (!parseResult || _pokedex.All(poke => poke.Id != pokemonId))
+        {
+            ClearControlTuple(senderBox);
+            return;
+        }
 
-		SetPicture (senderBox.Item1, pokemon);
+        var pokemon = _pokedex.GetById(pokemonId);
 
-	}
+        // Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
+        if (senderBox.Item4.Entry.Text != pokemon.Name)
+        {
+            senderBox.Item4.Entry.Text = pokemon.Name;
+        }
 
-	protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon)
-	{
-		var pixBuf = new Gdk.Pixbuf (Convert.FromBase64String (pokemon.Image));
-		image.Pixbuf = pixBuf;
-	}
+        SetPicture(senderBox.Item1, pokemon);
 
-	protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple) {
-		controlTuple.Item1.Pixbuf = null;
-		controlTuple.Item2.Entry.Text = string.Empty;
-		controlTuple.Item3.Entry.Text = string.Empty;
-		controlTuple.Item4.Entry.Text = string.Empty;
-	}
+    }
 
-	protected void OnPokemonSelectionByName (object sender, EventArgs e) {
-		var senderBox = _controlSets.Single(box => box.Item4 == sender);
+    protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon)
+    {
+        var pixBuf = new Gdk.Pixbuf(Convert.FromBase64String(pokemon.Image));
+        image.Pixbuf = pixBuf;
+    }
 
-		var value = senderBox.Item4.Entry.Text.Trim();
+    protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple)
+    {
+        controlTuple.Item1.Pixbuf = null;
+        controlTuple.Item2.Entry.Text = string.Empty;
+        controlTuple.Item3.Entry.Text = string.Empty;
+        controlTuple.Item4.Entry.Text = string.Empty;
+    }
 
-		// Exit on no or invalid input
-		if (string.IsNullOrEmpty (value) || _pokedex.All(poke => 
-			!poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase))) {
-			ClearControlTuple (senderBox);
-			return;
-		}
+    protected void OnPokemonSelectionByName(object sender, EventArgs e)
+    {
+        var senderBox = _controlSets.Single(box => box.Item4 == sender);
 
-		var pokemon = _pokedex.GetByName (value);
+        var value = senderBox.Item4.Entry.Text.Trim();
 
-		// Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
-		senderBox.Item2.Active = pokemon.Id - 1;
-	}
+        // Exit on no or invalid input
+        if (string.IsNullOrEmpty(value) || _pokedex.All(poke =>
+           !poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            ClearControlTuple(senderBox);
+            return;
+        }
 
-	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
-	{
-		Application.Quit ();
-		a.RetVal = true;
-	}
+        var pokemon = _pokedex.GetByName(value);
 
-	protected void OnStateEvent (object sender, WindowStateEventArgs e) {
-		InitializePokemonComboBoxes (_controlSets);
-	}
+        // Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
+        senderBox.Item2.Active = pokemon.Id - 1;
+    }
 
-	protected void OnClear (object sender, EventArgs e)
-	{
-		foreach (var ctrlSet in _controlSets) {
-			ClearControlTuple (ctrlSet);
-		}
-	}
+    protected void OnDeleteEvent(object sender, DeleteEventArgs a)
+    {
+        Application.Quit();
+        a.RetVal = true;
+    }
 
-	protected void OnExit (object sender, EventArgs e)
-	{
-		Application.Quit ();
-	}
+    protected void OnStateEvent(object sender, WindowStateEventArgs e)
+    {
+        if (!_pokedexLoadedExecuted)
+        {
+            _pokedexLoadedExecuted = true;
+            InitializePokemonComboBoxes(_controlSets);
+        }
+    }
 
-	protected void OnProposeTeam (object sender, EventArgs e)
-	{
-		var initialTeam = _controlSets
-			.Where(ctrl => !string.IsNullOrEmpty(ctrl.Item2.ActiveText) && Regex.IsMatch(ctrl.Item2.ActiveText, "^[0-9]+$"))
-			.Select(ctrl => 
-				{
-					var pokemonId = new PokemonIdentifier(int.Parse(ctrl.Item2.ActiveText));
+    protected void OnClear(object sender, EventArgs e)
+    {
+        foreach (var ctrlSet in _controlSets)
+        {
+            ClearControlTuple(ctrlSet);
+        }
+    }
 
-					if(!string.IsNullOrEmpty(ctrl.Item3.ActiveText)) {
-						pokemonId.FormNo = ctrl.Item3.ActiveText;
-					}
+    protected void OnExit(object sender, EventArgs e)
+    {
+        Application.Quit();
+    }
 
-					return pokemonId;
-				})
-			.ToList();
+    protected void OnProposeTeam(object sender, EventArgs e)
+    {
+        var initialTeam = _controlSets
+            .Where(ctrl => !string.IsNullOrEmpty(ctrl.Item2.ActiveText) && Regex.IsMatch(ctrl.Item2.ActiveText, "^[0-9]+$"))
+            .Select(ctrl =>
+                {
+                    var pokemonId = new PokemonIdentifier(int.Parse(ctrl.Item2.ActiveText));
 
-		Task.Run(() => {
-			using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
-			{
-				using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
-				{
-					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever);
-					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
+                    if (!string.IsNullOrEmpty(ctrl.Item3.ActiveText))
+                    {
+                        pokemonId.FormNo = ctrl.Item3.ActiveText;
+                    }
 
-					for (var i = 0; i < proposedTeam.Count; i++) {
-						_controlSets [i].Item2.Active = proposedTeam [i].RankingPokemonInfo.MonsNo - 1;
-						_controlSets [i].Item3.Active = int.Parse(proposedTeam [i].RankingPokemonInfo.FormNo);
-					}
-				}
-			}
-		});
-	}
+                    return pokemonId;
+                })
+            .ToList();
+
+        Task.Run(() =>
+        {
+            using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
+            {
+                using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
+                {
+                    var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
+                    var proposedTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
+
+                    for (var i = 0; i < proposedTeam.Count; i++)
+                    {
+                        _controlSets[i].Item2.Active = proposedTeam[i].RankingPokemonInfo.MonsNo - 1;
+                        _controlSets[i].Item3.Active = int.Parse(proposedTeam[i].RankingPokemonInfo.FormNo);
+                    }
+                }
+            }
+        });
+    }
 }
