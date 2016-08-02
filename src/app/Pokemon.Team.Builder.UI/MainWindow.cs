@@ -11,9 +11,9 @@ public partial class MainWindow : Window
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
     private Builder _builder;
-    private bool _pokedexLoadedExecuted;
+    private bool _pokedexLoadExecuted;
 
-    public MainWindow() : base(Gtk.WindowType.Toplevel)
+    public MainWindow() : base(WindowType.Toplevel)
     {
         _builder = new Builder();
         _builder.AddFromFile("PokeUI.glade");
@@ -146,10 +146,14 @@ public partial class MainWindow : Window
         var value = senderBox.Item4.Entry.Text.Trim();
 
         // Exit on no or invalid input
-        if (string.IsNullOrEmpty(value) || _pokedex.All(poke =>
-           !poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase)))
+        if (string.IsNullOrEmpty(value) || _pokedex.All(poke =>  
+            !poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase)))
         {
-            ClearControlTuple(senderBox);
+            if (_pokedex.All(poke => !poke.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                ClearControlTuple(senderBox); 
+            }
+
             return;
         }
 
@@ -167,9 +171,9 @@ public partial class MainWindow : Window
 
     protected void OnStateEvent(object sender, WindowStateEventArgs e)
     {
-        if (!_pokedexLoadedExecuted)
+        if (!_pokedexLoadExecuted)
         {
-            _pokedexLoadedExecuted = true;
+            _pokedexLoadExecuted = true;
             InitializePokemonComboBoxes(_controlSets);
         }
     }
