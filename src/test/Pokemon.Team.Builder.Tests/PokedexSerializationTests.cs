@@ -42,16 +42,19 @@ namespace Pokemon.Team.Builder.Tests
                                     <Pokemon>
                                         <Id>1</Id>
                                         <Name>Bulbasaur</Name>
+                                        <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
                                     </Pokemon>
                                     <Pokemon>
                                         <Id>4</Id>
                                         <Name>Charmander</Name>
+                                        <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/4/</Url>
                                     </Pokemon>
                                     <Pokemon>
                                         <Id>7</Id>
                                         <Name>Squirtle</Name>
+                                        <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/7/</Url>
                                     </Pokemon>
                                 </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "");
