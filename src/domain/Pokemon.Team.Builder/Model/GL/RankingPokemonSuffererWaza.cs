@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-    public class RankingPokemonSuffererWaza
+	public class RankingPokemonSuffererWaza : IRankable
     {
         public int Ranking { get; set; }
         public int TypeId { get; set; }

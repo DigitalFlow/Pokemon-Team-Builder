@@ -9,7 +9,7 @@ namespace Pokemon.Team.Builder.Model
 	/// <summary>
 	/// Most often used abilities
 	/// </summary>
-    public class TokuseiInfo
+	public class TokuseiInfo : IRankable
     {
         public int Ranking { get; set; }
         public double UsageRate { get; set; }

@@ -5,28 +5,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NLog;
 
 public partial class MainWindow : Window
 {
+	private Logger _logger = LogManager.GetCurrentClassLogger();
+
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
     private Builder _builder;
     private bool _pokedexLoadExecuted;
 
+	private Box _counters;
+	private Box _switchIns;
+	private Box _moves;
+
     public MainWindow() : base(WindowType.Toplevel)
     {
-        _builder = new Builder();
-        _builder.AddFromFile("PokeUI.glade");
-        _builder.Autoconnect(this);
+		try
+		{
+	        _builder = new Builder();
+	        _builder.AddFromFile("PokeUI.glade");
+	        _builder.Autoconnect(this);
 
-        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>{
-            Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"),
-            Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
-            Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
-            Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
-            Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
-            Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
-        });
+			_counters = (Box) _builder.GetObject ("OverViewCounters");
+			_switchIns = (Box) _builder.GetObject ("OverViewSaveSwitchIns");
+			_moves = (Box) _builder.GetObject ("OverViewMoves");
+
+	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
+			{
+	            Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"),
+	            Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
+	            Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
+	            Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
+	            Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
+	            Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
+	        });
+		}
+		catch (Exception ex) {
+			_logger.Error (ex);
+		}
     }
 
     protected List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> GetComboBoxes(List<Tuple<string, string, string, string, string>> controlNames)
@@ -222,8 +240,24 @@ public partial class MainWindow : Window
                         _controlSets[i].Item2.Active = proposedTeam[i].RankingPokemonInfo.MonsNo - 1;
                         _controlSets[i].Item3.Active = int.Parse(proposedTeam[i].RankingPokemonInfo.FormNo);
                     }
-                }
+
+					var mostDangerousCounters = PokemonAnalyzer.GetMostCommonCountersForTeam(proposedTeam, 10);
+
+					foreach (var counter in mostDangerousCounters) {
+						var label = new Label {
+							Text = counter.MonsNo + " - " + counter.Name,
+							Visible = true
+						};
+
+						_counters.PackStart(label, true, true, 0);
+						label.Show();
+					}
+					_switchIns.Hide();
+					_moves.Hide();
+
+					_counters.ShowAll();
+				}
             }
-        });
+    	});
     }
 }

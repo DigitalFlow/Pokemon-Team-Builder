@@ -809,6 +809,35 @@
                     <property name="position">5</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkButton" id="ProposeButton">
+                    <property name="label" translatable="yes">Propose Team</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="OnProposeTeam" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="ClearButton">
+                    <property name="label" translatable="yes">Clear All</property>
+                    <property name="name">ClearButton</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="OnClear" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -824,10 +853,11 @@
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <child>
-                  <object class="GtkBox" id="OverViewListItems">
-                    <property name="name">OverViewListItems</property>
+                  <object class="GtkBox" id="OverViewCountersBox">
+                    <property name="name">OverViewCountersBox</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="sensitive">False</property>
+                    <property name="can_focus">True</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <placeholder/>
@@ -860,10 +890,13 @@
                       <placeholder/>
                     </child>
                   </object>
+                  <packing>
+                    <property name="tab_expand">True</property>
+                  </packing>
                 </child>
                 <child type="tab">
-                  <object class="GtkLabel" id="OverViewCounters">
-                    <property name="name">OverViewCounters</property>
+                  <object class="GtkLabel" id="OverViewCountersLabel">
+                    <property name="name">OverViewCountersLabel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Most Common Counters</property>
@@ -871,15 +904,54 @@
                   <packing>
                     <property name="menu_label">Most Common Counters</property>
                     <property name="tab_expand">True</property>
+                    <property name="tab_fill">False</property>
                     <property name="reorderable">True</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkBox" id="OverViewSaveSwitchInsBox">
+                    <property name="name">OverViewSaveSwitchInsBox</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
                 <child type="tab">
-                  <object class="GtkLabel" id="OverViewSaveSwitchIns">
-                    <property name="name">OverViewSaveSwitchIns</property>
+                  <object class="GtkLabel" id="OverViewSaveSwitchInsLabel">
+                    <property name="name">OverViewSaveSwitchInsLabel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="label" translatable="yes">Save Switch-Ins</property>
@@ -888,15 +960,54 @@
                     <property name="menu_label">Save Switch-Ins</property>
                     <property name="position">1</property>
                     <property name="tab_expand">True</property>
+                    <property name="tab_fill">False</property>
                     <property name="reorderable">True</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkBox" id="OverViewMovesBox">
+                    <property name="name">OverViewMovesBox</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
                 </child>
                 <child type="tab">
-                  <object class="GtkLabel" id="OverViewMoves">
-                    <property name="name">OverViewMoves</property>
+                  <object class="GtkLabel" id="OverViewMovesLabel">
+                    <property name="name">OverViewMovesLabel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Most Dangerous Moves</property>
@@ -905,6 +1016,7 @@
                     <property name="menu_label">Most Dangerous Moves</property>
                     <property name="position">2</property>
                     <property name="tab_expand">True</property>
+                    <property name="tab_fill">False</property>
                     <property name="reorderable">True</property>
                   </packing>
                 </child>
@@ -923,32 +1035,15 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="ProposeButton">
-            <property name="label" translatable="yes">Propose Team</property>
+          <object class="GtkToolbar" id="BottomBar">
+            <property name="name">BottomBar</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="OnProposeTeam" swapped="no"/>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="ClearButton">
-            <property name="label" translatable="yes">Clear All</property>
-            <property name="name">ClearButton</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="OnClear" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
           </packing>
         </child>
       </object>

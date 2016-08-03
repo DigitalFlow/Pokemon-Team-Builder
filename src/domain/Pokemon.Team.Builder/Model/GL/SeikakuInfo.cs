@@ -9,7 +9,7 @@ namespace Pokemon.Team.Builder.Model
 	/// <summary>
 	/// Most often used natures
 	/// </summary>
-    public class SeikakuInfo
+	public class SeikakuInfo : IRankable
     {
         public int Ranking { get; set; }
         public double UsageRate { get; set; }
