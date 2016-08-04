@@ -17,9 +17,9 @@ public partial class MainWindow : Window
     private Builder _builder;
     private bool _pokedexLoadExecuted;
 
-	private Box _counters;
-	private Box _switchIns;
-	private Box _moves;
+	private Grid _counters;
+	private Grid _switchIns;
+	private Grid _moves;
 
 	private List<DetailedPokemonInformation> _latestTeam;
 
@@ -31,9 +31,9 @@ public partial class MainWindow : Window
 	        _builder.AddFromFile("PokeUI.glade");
 	        _builder.Autoconnect(this);
 
-			_counters = (Box) _builder.GetObject ("OverViewCountersBox");
-			_switchIns = (Box) _builder.GetObject ("OverViewSaveSwitchInsBox");
-			_moves = (Box) _builder.GetObject ("OverViewMovesBox");
+			_counters = (Grid) _builder.GetObject ("OverViewCountersGrid");
+			_switchIns = (Grid) _builder.GetObject ("OverViewSaveSwitchInsGrid");
+			_moves = (Grid) _builder.GetObject ("OverViewMovesGrid");
 
 	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
 			{
@@ -146,10 +146,10 @@ public partial class MainWindow : Window
 
     }
 
-    protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon)
+	protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon, int width = 96, int height = 96)
     {
         var pixBuf = new Gdk.Pixbuf(Convert.FromBase64String(pokemon.Image));
-        image.Pixbuf = pixBuf;
+        image.Pixbuf = pixBuf.ScaleSimple (width, height, Gdk.InterpType.Nearest);
     }
 
     protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple)
@@ -233,42 +233,69 @@ public partial class MainWindow : Window
 
 				var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDown, 10);
 
-				foreach (var counter in mostDangerousCounters) {
-					var button = new Label {
-						Text = $"{counter.MonsNo} - {counter.FormNo} - {counter.Name}",
+				for (var i = 0; i < mostDangerousCounters.Count; i++) {
+					var counter = mostDangerousCounters [i];
+
+					var j = 0;
+
+					var image = new Image ();
+					SetPicture (image, _pokedex.GetById(counter.MonsNo), 48, 48);
+
+					_counters.Attach (image, ++j, i, 1, 1);
+					_counters.Attach(new Label {
+						Text = $"{counter.MonsNo}",
 						Visible = true
-
-					};
-
-					_counters.PackStart(button, true, true, 0);
+					}, ++j, i, 1, 1);
+					_counters.Attach(new Label {
+						Text = $"{counter.FormNo}",
+						Visible = true
+					}, ++j, i, 1, 1);
+					_counters.Attach(new Label {
+						Text = $"{counter.Name}",
+						Visible = true
+					}, ++j, i, 1, 1);
 				}
 
 				_counters.ShowAll();
 
-				var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10);
+				var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10,
+					poke => mostDangerousCounters.All(counter => (PokemonIdentifier) poke != (PokemonIdentifier) counter));
 
-				foreach (var counter in saveSwitchIns) {
-					var button = new Label {
-						Text = $"{counter.MonsNo} - {counter.FormNo} - {counter.Name}",
+				for (var i = 0; i < saveSwitchIns.Count; i++) {
+					var switchIn = saveSwitchIns [i];
+
+					var j = 0;
+
+					var image = new Image ();
+					SetPicture (image, _pokedex.GetById(switchIn.MonsNo), 48, 48);
+
+					_switchIns.Attach (image, ++j, i, 1, 1);
+					_switchIns.Attach(new Label {
+						Text = $"{switchIn.MonsNo}",
 						Visible = true
-
-					};
-
-					_switchIns.PackStart(button, true, true, 0);
+					}, ++j, i, 1, 1);
+					_switchIns.Attach(new Label {
+						Text = $"{switchIn.FormNo}",
+						Visible = true
+					}, ++j, i, 1, 1);
+					_switchIns.Attach(new Label {
+						Text = $"{switchIn.Name}",
+						Visible = true
+					}, ++j, i, 1, 1);
 				}
 
 				_switchIns.ShowAll();
 
 				var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
 
-				foreach (var counter in dangerousMoves) {
-					var button = new Label {
-						Text = $"{counter.WazaName}",
+				for (var i = 0; i < dangerousMoves.Count; i++) {
+					var move = dangerousMoves [i];
+					var j = 0;
+
+					_moves.Attach(new Label {
+						Text = $"{move.WazaName}",
 						Visible = true
-
-					};
-
-					_moves.PackStart(button, true, true, 0);
+					}, ++j, i, 1, 1);
 				}
 
 				_moves.ShowAll();
