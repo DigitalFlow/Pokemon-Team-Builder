@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NLog;
+using Pokemon.Team.Builder.Model;
 
 public partial class MainWindow : Window
 {
@@ -20,6 +21,8 @@ public partial class MainWindow : Window
 	private Box _switchIns;
 	private Box _moves;
 
+	private List<DetailedPokemonInformation> _latestTeam;
+
     public MainWindow() : base(WindowType.Toplevel)
     {
 		try
@@ -28,9 +31,9 @@ public partial class MainWindow : Window
 	        _builder.AddFromFile("PokeUI.glade");
 	        _builder.Autoconnect(this);
 
-			_counters = (Box) _builder.GetObject ("OverViewCounters");
-			_switchIns = (Box) _builder.GetObject ("OverViewSaveSwitchIns");
-			_moves = (Box) _builder.GetObject ("OverViewMoves");
+			_counters = (Box) _builder.GetObject ("OverViewCountersBox");
+			_switchIns = (Box) _builder.GetObject ("OverViewSaveSwitchInsBox");
+			_moves = (Box) _builder.GetObject ("OverViewMovesBox");
 
 	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
 			{
@@ -201,6 +204,10 @@ public partial class MainWindow : Window
         foreach (var ctrlSet in _controlSets)
         {
             ClearControlTuple(ctrlSet);
+
+			_counters.Children.ToList ().ForEach (child => child.Destroy ());
+			_switchIns.Children.ToList ().ForEach (child => child.Destroy ());
+			_moves.Children.ToList ().ForEach (child => child.Destroy ());
         }
     }
 
@@ -208,6 +215,66 @@ public partial class MainWindow : Window
     {
         Application.Quit();
     }
+
+	protected void ProposeTeam(List<PokemonIdentifier> initialTeam)
+	{
+		using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
+		{
+			using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
+			{
+				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
+				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
+
+				for (var i = 0; i < _latestTeam.Count; i++)
+				{
+					_controlSets[i].Item2.Active = _latestTeam[i].RankingPokemonInfo.MonsNo - 1;
+					_controlSets[i].Item3.Active = int.Parse(_latestTeam[i].RankingPokemonInfo.FormNo);
+				}
+
+				var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDown, 10);
+
+				foreach (var counter in mostDangerousCounters) {
+					var button = new Label {
+						Text = $"{counter.MonsNo} - {counter.FormNo} - {counter.Name}",
+						Visible = true
+
+					};
+
+					_counters.PackStart(button, true, true, 0);
+				}
+
+				_counters.ShowAll();
+
+				var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10);
+
+				foreach (var counter in saveSwitchIns) {
+					var button = new Label {
+						Text = $"{counter.MonsNo} - {counter.FormNo} - {counter.Name}",
+						Visible = true
+
+					};
+
+					_switchIns.PackStart(button, true, true, 0);
+				}
+
+				_switchIns.ShowAll();
+
+				var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
+
+				foreach (var counter in dangerousMoves) {
+					var button = new Label {
+						Text = $"{counter.WazaName}",
+						Visible = true
+
+					};
+
+					_moves.PackStart(button, true, true, 0);
+				}
+
+				_moves.ShowAll();
+			}
+		}
+	}
 
     protected void OnProposeTeam(object sender, EventArgs e)
     {
@@ -228,36 +295,7 @@ public partial class MainWindow : Window
 
         Task.Run(() =>
         {
-            using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
-            {
-                using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
-                {
-                    var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
-                    var proposedTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
-
-                    for (var i = 0; i < proposedTeam.Count; i++)
-                    {
-                        _controlSets[i].Item2.Active = proposedTeam[i].RankingPokemonInfo.MonsNo - 1;
-                        _controlSets[i].Item3.Active = int.Parse(proposedTeam[i].RankingPokemonInfo.FormNo);
-                    }
-
-					var mostDangerousCounters = PokemonAnalyzer.GetMostCommonCountersForTeam(proposedTeam, 10);
-
-					foreach (var counter in mostDangerousCounters) {
-						var label = new Label {
-							Text = counter.MonsNo + " - " + counter.Name,
-							Visible = true
-						};
-
-						_counters.PackStart(label, true, true, 0);
-						label.Show();
-					}
-					_switchIns.Hide();
-					_moves.Hide();
-
-					_counters.ShowAll();
-				}
-            }
+			ProposeTeam(initialTeam);
     	});
     }
 }
