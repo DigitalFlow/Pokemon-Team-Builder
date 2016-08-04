@@ -184,658 +184,536 @@
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <child>
-              <object class="GtkBox" id="ControlBox">
-                <property name="name">ControlBox</property>
+              <object class="GtkGrid" id="PokemonGrid">
+                <property name="name">PokemonGrid</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="PokeHSlot1">
-                    <property name="name">PokeHSlot1</property>
+                  <object class="GtkImage" id="PokeImage1">
+                    <property name="name">PokeImage1</property>
+                    <property name="width_request">96</property>
+                    <property name="height_request">96</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage" id="PokeImage1">
-                        <property name="name">PokeImage1</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
-                        <property name="icon_size">3</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNrBox1">
-                        <property name="name">PokeNrBox1</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNrEntry1">
-                            <property name="name">PokeNrEntry1</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeFormBox1">
-                        <property name="name">PokeFormBox1</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeFormEntry1">
-                            <property name="name">PokeFormEntry1</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Form</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNameBox1">
-                        <property name="name">PokeNameBox1</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNameEntry1">
-                            <property name="name">PokeNameEntry1</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Name</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="PokeButton1">
-                        <property name="label" translatable="yes">More Information</property>
-                        <property name="name">PokeButton1</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="hexpand">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
+                    <property name="stock">gtk-missing-image</property>
+                    <property name="icon_size">3</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="PokeHSlot2">
-                    <property name="name">PokeHSlot2</property>
+                  <object class="GtkComboBoxText" id="PokeNrBox1">
+                    <property name="name">PokeNrBox1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage" id="PokeImage2">
-                        <property name="name">PokeImage2</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
-                        <property name="icon_size">3</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNrBox2">
-                        <property name="name">PokeNrBox2</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNrEntry2">
-                            <property name="name">PokeNrEntry2</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeFormBox2">
-                        <property name="name">PokeFormBox2</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeFormEntry2">
-                            <property name="name">PokeFormEntry2</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Form</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNameBox2">
-                        <property name="name">PokeNameBox2</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNameEntry2">
-                            <property name="name">PokeNameEntry2</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Name</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="PokeButton2">
-                        <property name="label" translatable="yes">More Information</property>
-                        <property name="name">PokeButton2</property>
-                        <property name="visible">True</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNrEntry1">
+                        <property name="name">PokeNrEntry1</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="hexpand">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="PokeHSlot3">
-                    <property name="name">PokeHSlot3</property>
+                  <object class="GtkComboBoxText" id="PokeFormBox1">
+                    <property name="name">PokeFormBox1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage" id="PokeImage3">
-                        <property name="name">PokeImage3</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
-                        <property name="icon_size">3</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNrBox3">
-                        <property name="name">PokeNrBox3</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNrEntry3">
-                            <property name="name">PokeNrEntry3</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeFormBox3">
-                        <property name="name">PokeFormBox3</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeFormEntry3">
-                            <property name="name">PokeFormEntry3</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Form</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNameBox3">
-                        <property name="name">PokeNameBox3</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNameEntry3">
-                            <property name="name">PokeNameEntry3</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Name</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="PokeButton3">
-                        <property name="label" translatable="yes">More Information</property>
-                        <property name="name">PokeButton3</property>
-                        <property name="visible">True</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeFormEntry1">
+                        <property name="name">PokeFormEntry1</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="hexpand">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Form</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="PokeHSlot4">
-                    <property name="name">PokeHSlot4</property>
+                  <object class="GtkComboBoxText" id="PokeNameBox1">
+                    <property name="name">PokeNameBox1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage" id="PokeImage4">
-                        <property name="name">PokeImage4</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
-                        <property name="icon_size">3</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNrBox4">
-                        <property name="name">PokeNrBox4</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNrEntry4">
-                            <property name="name">PokeNrEntry4</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeFormBox4">
-                        <property name="name">PokeFormBox4</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeFormEntry4">
-                            <property name="name">PokeFormEntry4</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Form</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNameBox4">
-                        <property name="name">PokeNameBox4</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNameEntry4">
-                            <property name="name">PokeNameEntry4</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Name</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="PokeButton4">
-                        <property name="label" translatable="yes">More Information</property>
-                        <property name="name">PokeButton4</property>
-                        <property name="visible">True</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNameEntry1">
+                        <property name="name">PokeNameEntry1</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="hexpand">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Name</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="PokeHSlot5">
-                    <property name="name">PokeHSlot5</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage" id="PokeImage5">
-                        <property name="name">PokeImage5</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
-                        <property name="icon_size">3</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNrBox5">
-                        <property name="name">PokeNrBox5</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNrEntry5">
-                            <property name="name">PokeNrEntry5</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeFormBox5">
-                        <property name="name">PokeFormBox5</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeFormEntry5">
-                            <property name="name">PokeFormEntry5</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Form</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNameBox5">
-                        <property name="name">PokeNameBox5</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNameEntry5">
-                            <property name="name">PokeNameEntry5</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Name</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="PokeButton5">
-                        <property name="label" translatable="yes">More Information</property>
-                        <property name="name">PokeButton5</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="hexpand">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="PokeHSlot6">
-                    <property name="name">PokeHSlot6</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage" id="PokeImage6">
-                        <property name="name">PokeImage6</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
-                        <property name="icon_size">3</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNrBox6">
-                        <property name="name">PokeNrBox6</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNrEntry6">
-                            <property name="name">PokeNrEntry6</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeFormBox6">
-                        <property name="name">PokeFormBox6</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeFormEntry6">
-                            <property name="name">PokeFormEntry6</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Form</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="PokeNameBox6">
-                        <property name="name">PokeNameBox6</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="has_entry">True</property>
-                        <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
-                        <child internal-child="entry">
-                          <object class="GtkEntry" id="PokeNameEntry6">
-                            <property name="name">PokeNameEntry6</property>
-                            <property name="can_focus">True</property>
-                            <property name="placeholder_text" translatable="yes">Pokemon Name</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="PokeButton6">
-                        <property name="label" translatable="yes">More Information</property>
-                        <property name="name">PokeButton6</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="hexpand">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="ProposeButton">
-                    <property name="label" translatable="yes">Propose Team</property>
+                  <object class="GtkButton" id="PokeButton1">
+                    <property name="label" translatable="yes">More Information</property>
+                    <property name="name">PokeButton1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="OnProposeTeam" swapped="no"/>
+                    <property name="hexpand">True</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">6</property>
+                    <property name="left_attach">4</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="ClearButton">
-                    <property name="label" translatable="yes">Clear All</property>
-                    <property name="name">ClearButton</property>
+                  <object class="GtkImage" id="PokeImage2">
+                    <property name="name">PokeImage2</property>
+                    <property name="width_request">96</property>
+                    <property name="height_request">96</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                    <property name="icon_size">3</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNrBox2">
+                    <property name="name">PokeNrBox2</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNrEntry2">
+                        <property name="name">PokeNrEntry2</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeFormBox2">
+                    <property name="name">PokeFormBox2</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeFormEntry2">
+                        <property name="name">PokeFormEntry2</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Form</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNameBox2">
+                    <property name="name">PokeNameBox2</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNameEntry2">
+                        <property name="name">PokeNameEntry2</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Name</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="PokeButton2">
+                    <property name="label" translatable="yes">More Information</property>
+                    <property name="name">PokeButton2</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="OnClear" swapped="no"/>
+                    <property name="hexpand">True</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">7</property>
+                    <property name="left_attach">4</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="PokeImage3">
+                    <property name="name">PokeImage3</property>
+                    <property name="width_request">96</property>
+                    <property name="height_request">96</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                    <property name="icon_size">3</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNrBox3">
+                    <property name="name">PokeNrBox3</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNrEntry3">
+                        <property name="name">PokeNrEntry3</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeFormBox3">
+                    <property name="name">PokeFormBox3</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeFormEntry3">
+                        <property name="name">PokeFormEntry3</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Form</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNameBox3">
+                    <property name="name">PokeNameBox3</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNameEntry3">
+                        <property name="name">PokeNameEntry3</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Name</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="PokeButton3">
+                    <property name="label" translatable="yes">More Information</property>
+                    <property name="name">PokeButton3</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="hexpand">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="PokeImage4">
+                    <property name="name">PokeImage4</property>
+                    <property name="width_request">96</property>
+                    <property name="height_request">96</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                    <property name="icon_size">3</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNrBox4">
+                    <property name="name">PokeNrBox4</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNrEntry4">
+                        <property name="name">PokeNrEntry4</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeFormBox4">
+                    <property name="name">PokeFormBox4</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeFormEntry4">
+                        <property name="name">PokeFormEntry4</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Form</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNameBox4">
+                    <property name="name">PokeNameBox4</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNameEntry4">
+                        <property name="name">PokeNameEntry4</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Name</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="PokeButton4">
+                    <property name="label" translatable="yes">More Information</property>
+                    <property name="name">PokeButton4</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="hexpand">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="PokeImage5">
+                    <property name="name">PokeImage5</property>
+                    <property name="width_request">96</property>
+                    <property name="height_request">96</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                    <property name="icon_size">3</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNrBox5">
+                    <property name="name">PokeNrBox5</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNrEntry5">
+                        <property name="name">PokeNrEntry5</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeFormBox5">
+                    <property name="name">PokeFormBox5</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeFormEntry5">
+                        <property name="name">PokeFormEntry5</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Form</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNameBox5">
+                    <property name="name">PokeNameBox5</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNameEntry5">
+                        <property name="name">PokeNameEntry5</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Name</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="PokeButton5">
+                    <property name="label" translatable="yes">More Information</property>
+                    <property name="name">PokeButton5</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="hexpand">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="PokeImage6">
+                    <property name="name">PokeImage6</property>
+                    <property name="width_request">96</property>
+                    <property name="height_request">96</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                    <property name="icon_size">3</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNrBox6">
+                    <property name="name">PokeNrBox6</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionById" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNrEntry6">
+                        <property name="name">PokeNrEntry6</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Nr</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeFormBox6">
+                    <property name="name">PokeFormBox6</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeFormEntry6">
+                        <property name="name">PokeFormEntry6</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Form</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="PokeNameBox6">
+                    <property name="name">PokeNameBox6</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <signal name="changed" handler="OnPokemonSelectionByName" swapped="no"/>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="PokeNameEntry6">
+                        <property name="name">PokeNameEntry6</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Pokemon Name</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="PokeButton6">
+                    <property name="label" translatable="yes">More Information</property>
+                    <property name="name">PokeButton6</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="hexpand">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="top_attach">5</property>
                   </packing>
                 </child>
               </object>
@@ -1040,6 +918,35 @@
             <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="ProposeButton">
+            <property name="label" translatable="yes">Propose Team</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="OnProposeTeam" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="ClearButton">
+            <property name="label" translatable="yes">Clear All</property>
+            <property name="name">ClearButton</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="OnClear" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

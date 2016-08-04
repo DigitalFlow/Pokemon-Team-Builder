@@ -154,7 +154,7 @@ public partial class MainWindow : Window
 
     protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple)
     {
-        controlTuple.Item1.Pixbuf = null;
+		controlTuple.Item1.SetFromIconName("gtk-missing-image", IconSize.LargeToolbar);
         controlTuple.Item2.Entry.Text = string.Empty;
         controlTuple.Item3.Entry.Text = string.Empty;
         controlTuple.Item4.Entry.Text = string.Empty;
