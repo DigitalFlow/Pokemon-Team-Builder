@@ -109,13 +109,11 @@ public partial class MainWindow : Window
                             comboBox.Item4.AppendText(pokemon.Name);
                         }
                     }
+
+                    loadWindow.Hide();
                 }
             }
         });
-
-        task.Wait();
-
-        loadWindow.Hide();
     }
 
     protected void OnPokemonSelectionById(object sender, EventArgs e)
