@@ -4,14 +4,16 @@
   <requires lib="gtk+" version="3.8"/>
   <object class="GtkApplicationWindow" id="WaitWindow">
     <property name="name">WaitWindow</property>
+    <property name="sensitive">False</property>
     <property name="can_focus">False</property>
-    <property name="type">popup</property>
+    <property name="can_default">True</property>
+    <property name="has_default">True</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="default_width">440</property>
     <property name="default_height">150</property>
     <property name="destroy_with_parent">True</property>
-    <property name="type_hint">popup-menu</property>
+    <property name="type_hint">dialog</property>
     <property name="urgency_hint">True</property>
     <property name="deletable">False</property>
     <child>
@@ -65,6 +67,8 @@
     <property name="name">Window</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="can_default">True</property>
+    <property name="has_default">True</property>
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
     <property name="window_position">center</property>
@@ -1199,19 +1203,20 @@
   </object>
   <object class="GtkApplicationWindow" id="LoadPokedexWindow">
     <property name="name">LoadPokedexWindow</property>
+    <property name="sensitive">False</property>
     <property name="can_focus">False</property>
-    <property name="type">popup</property>
+    <property name="can_default">True</property>
+    <property name="has_default">True</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="default_width">440</property>
     <property name="default_height">150</property>
     <property name="destroy_with_parent">True</property>
-    <property name="type_hint">popup-menu</property>
+    <property name="type_hint">dialog</property>
     <property name="urgency_hint">True</property>
     <property name="deletable">False</property>
     <property name="attached_to">Window</property>
-    <property name="show_menubar">False</property>
     <child>
       <object class="GtkBox" id="LoadPokedexBox">
         <property name="name">LoadPokedexBox</property>

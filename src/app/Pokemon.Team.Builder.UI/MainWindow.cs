@@ -85,11 +85,11 @@ public partial class MainWindow : Window
 		_progressBar.Pulse ();
 	}
 
-    protected void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
+    protected async void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
     {
-        _loadWindow.Show();
+		_loadWindow.Show();
 
-        Task.Run(() =>
+        await Task.Run(() =>
         {
             using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/")))
             {
@@ -124,11 +124,11 @@ public partial class MainWindow : Window
                     }
 
 					UpdateProgressBar(1, 1);
-
-                    _loadWindow.Hide();
                 }
             }
         });
+
+		_loadWindow.Hide();
     }
 
     protected void OnPokemonSelectionById(object sender, EventArgs e)
@@ -316,7 +316,7 @@ public partial class MainWindow : Window
 		}
 	}
 
-    protected void OnProposeTeam(object sender, EventArgs e)
+    protected async void OnProposeTeam(object sender, EventArgs e)
     {
 		_waitWindow.Show ();
 
@@ -335,10 +335,11 @@ public partial class MainWindow : Window
                 })
             .ToList();
 
-        Task.Run(() =>
+        await Task.Run(() =>
         {
 			ProposeTeam(initialTeam);
-			_waitWindow.Hide();
     	});
+
+		_waitWindow.Hide();
     }
 }
