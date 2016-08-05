@@ -82,16 +82,7 @@ namespace Pokemon.Team.Builder
 				return rankedMembers;
 			}
 
-			foreach (var pokemon in pokemonInfo.RankingPokemonIn) {
-				if (rankedMembers.ContainsKey (pokemon)) {
-					// We retrieve ranks from 1-10, so by substracting rank from 11, we get a score of it
-					rankedMembers [pokemon] += (11 - pokemon.Ranking);
-				} else {
-					rankedMembers[pokemon] = (11 - pokemon.Ranking);
-				}
-			}
-
-			return rankedMembers;
+			return RankingCreator.CreateRanking (pokemonInfo.RankingPokemonIn, 11);
 		}
 	}
 }

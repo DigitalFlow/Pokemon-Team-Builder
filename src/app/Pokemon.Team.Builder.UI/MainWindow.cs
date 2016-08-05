@@ -5,28 +5,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NLog;
+using Pokemon.Team.Builder.Model;
 
 public partial class MainWindow : Window
 {
+	private Logger _logger = LogManager.GetCurrentClassLogger();
+
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
     private Builder _builder;
     private bool _pokedexLoadExecuted;
 
+	private Grid _counters;
+	private Grid _switchIns;
+	private Grid _moves;
+
+	private List<DetailedPokemonInformation> _latestTeam;
+
     public MainWindow() : base(WindowType.Toplevel)
     {
-        _builder = new Builder();
-        _builder.AddFromFile("PokeUI.glade");
-        _builder.Autoconnect(this);
+		try
+		{
+	        _builder = new Builder();
+	        _builder.AddFromFile("PokeUI.glade");
+	        _builder.Autoconnect(this);
 
-        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>{
-            Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"),
-            Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
-            Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
-            Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
-            Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
-            Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
-        });
+			_counters = (Grid) _builder.GetObject ("OverViewCountersGrid");
+			_switchIns = (Grid) _builder.GetObject ("OverViewSaveSwitchInsGrid");
+			_moves = (Grid) _builder.GetObject ("OverViewMovesGrid");
+
+	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
+			{
+	            Tuple.Create("PokeImage1", "PokeNrBox1", "PokeFormBox1", "PokeNameBox1", "PokeButton1"),
+	            Tuple.Create("PokeImage2", "PokeNrBox2", "PokeFormBox2", "PokeNameBox2", "PokeButton2"),
+	            Tuple.Create("PokeImage3", "PokeNrBox3", "PokeFormBox3", "PokeNameBox3", "PokeButton3"),
+	            Tuple.Create("PokeImage4", "PokeNrBox4", "PokeFormBox4", "PokeNameBox4", "PokeButton4"),
+	            Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
+	            Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
+	        });
+		}
+		catch (Exception ex) {
+			_logger.Error (ex);
+		}
     }
 
     protected List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> GetComboBoxes(List<Tuple<string, string, string, string, string>> controlNames)
@@ -125,15 +146,15 @@ public partial class MainWindow : Window
 
     }
 
-    protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon)
+	protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon, int width = 96, int height = 96)
     {
         var pixBuf = new Gdk.Pixbuf(Convert.FromBase64String(pokemon.Image));
-        image.Pixbuf = pixBuf;
+        image.Pixbuf = pixBuf.ScaleSimple (width, height, Gdk.InterpType.Nearest);
     }
 
     protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple)
     {
-        controlTuple.Item1.Pixbuf = null;
+		controlTuple.Item1.SetFromIconName("gtk-missing-image", IconSize.LargeToolbar);
         controlTuple.Item2.Entry.Text = string.Empty;
         controlTuple.Item3.Entry.Text = string.Empty;
         controlTuple.Item4.Entry.Text = string.Empty;
@@ -183,6 +204,10 @@ public partial class MainWindow : Window
         foreach (var ctrlSet in _controlSets)
         {
             ClearControlTuple(ctrlSet);
+
+			_counters.Children.ToList ().ForEach (child => child.Destroy ());
+			_switchIns.Children.ToList ().ForEach (child => child.Destroy ());
+			_moves.Children.ToList ().ForEach (child => child.Destroy ());
         }
     }
 
@@ -190,6 +215,93 @@ public partial class MainWindow : Window
     {
         Application.Quit();
     }
+
+	protected void ProposeTeam(List<PokemonIdentifier> initialTeam)
+	{
+		using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
+		{
+			using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
+			{
+				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
+				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
+
+				for (var i = 0; i < _latestTeam.Count; i++)
+				{
+					_controlSets[i].Item2.Active = _latestTeam[i].RankingPokemonInfo.MonsNo - 1;
+					_controlSets[i].Item3.Active = int.Parse(_latestTeam[i].RankingPokemonInfo.FormNo);
+				}
+
+				var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDown, 10);
+
+				for (var i = 0; i < mostDangerousCounters.Count; i++) {
+					var counter = mostDangerousCounters [i];
+
+					var j = 0;
+
+					var image = new Image ();
+					SetPicture (image, _pokedex.GetById(counter.MonsNo), 48, 48);
+
+					_counters.Attach (image, ++j, i, 1, 1);
+					_counters.Attach(new Label {
+						Text = $"{counter.MonsNo}",
+						Visible = true
+					}, ++j, i, 1, 1);
+					_counters.Attach(new Label {
+						Text = $"{counter.FormNo}",
+						Visible = true
+					}, ++j, i, 1, 1);
+					_counters.Attach(new Label {
+						Text = $"{counter.Name}",
+						Visible = true
+					}, ++j, i, 1, 1);
+				}
+
+				_counters.ShowAll();
+
+				var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10,
+					poke => mostDangerousCounters.All(counter => (PokemonIdentifier) poke != (PokemonIdentifier) counter));
+
+				for (var i = 0; i < saveSwitchIns.Count; i++) {
+					var switchIn = saveSwitchIns [i];
+
+					var j = 0;
+
+					var image = new Image ();
+					SetPicture (image, _pokedex.GetById(switchIn.MonsNo), 48, 48);
+
+					_switchIns.Attach (image, ++j, i, 1, 1);
+					_switchIns.Attach(new Label {
+						Text = $"{switchIn.MonsNo}",
+						Visible = true
+					}, ++j, i, 1, 1);
+					_switchIns.Attach(new Label {
+						Text = $"{switchIn.FormNo}",
+						Visible = true
+					}, ++j, i, 1, 1);
+					_switchIns.Attach(new Label {
+						Text = $"{switchIn.Name}",
+						Visible = true
+					}, ++j, i, 1, 1);
+				}
+
+				_switchIns.ShowAll();
+
+				var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
+
+				for (var i = 0; i < dangerousMoves.Count; i++) {
+					var move = dangerousMoves [i];
+					var j = 0;
+
+					_moves.Attach(new Label {
+						Text = $"{move.WazaName}",
+						Visible = true
+					}, ++j, i, 1, 1);
+				}
+
+				_moves.ShowAll();
+			}
+		}
+	}
 
     protected void OnProposeTeam(object sender, EventArgs e)
     {
@@ -210,20 +322,7 @@ public partial class MainWindow : Window
 
         Task.Run(() =>
         {
-            using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
-            {
-                using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
-                {
-                    var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
-                    var proposedTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
-
-                    for (var i = 0; i < proposedTeam.Count; i++)
-                    {
-                        _controlSets[i].Item2.Active = proposedTeam[i].RankingPokemonInfo.MonsNo - 1;
-                        _controlSets[i].Item3.Active = int.Parse(proposedTeam[i].RankingPokemonInfo.FormNo);
-                    }
-                }
-            }
-        });
+			ProposeTeam(initialTeam);
+    	});
     }
 }

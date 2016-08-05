@@ -51,6 +51,9 @@
     <Reference Include="pango-sharp">
       <HintPath>..\..\..\packages\GtkSharp.3.1.3\lib\net45\pango-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\..\packages\NLog.4.3.6\lib\net45\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow.cs" />

@@ -9,7 +9,7 @@ namespace Pokemon.Team.Builder.Model
 	/// <summary>
 	/// Most often used items
 	/// </summary>
-    public class ItemInfo
+	public class ItemInfo : IRankable
     {
         public int Ranking { get; set; }
         public double UsageRate { get; set; }
