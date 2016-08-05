@@ -27,12 +27,9 @@ namespace Pokemon.Team.Builder
 
 		public void AppendImage(Pokemon pokemon) {
 			try {
-				var url = $"api/v2/pokemon/{pokemon.Id}/";
-				var json = _client.GetStringAsync (url).Result;
-		
-				var response = JsonConvert.DeserializeObject<FullMetaDataResponse> (json);
-
-				using(var defaultFrontSprite = _client.GetAsync (response.sprites.front_default).Result)
+				var url = $"media/img/{pokemon.Id}.png";
+				
+				using(var defaultFrontSprite = _client.GetAsync (url).Result)
 				{
 					var imageBytes = defaultFrontSprite.Content.ReadAsByteArrayAsync ().Result;
 					pokemon.Image = Convert.ToBase64String (imageBytes);
@@ -82,11 +79,8 @@ namespace Pokemon.Team.Builder
 							Url = item.Url
 						};
 
-					// Only for the first 10 for now, requests are by far to slow right now
-					if(poke.Id < 10) {
-						AppendImage(poke);
-					}
-
+                    AppendImage(poke);
+					
 					pokemon.Add(poke);
 				}
 			}
