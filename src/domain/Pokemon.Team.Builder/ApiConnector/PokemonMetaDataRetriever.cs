@@ -27,9 +27,9 @@ namespace Pokemon.Team.Builder
 
 		public void AppendImage(Pokemon pokemon) {
 			try {
-				var url = $"media/img/{pokemon.Id}.png";
-				
-				using(var defaultFrontSprite = _client.GetAsync (url).Result)
+				var url = $"media/sprites/pokemon/{pokemon.Id}.png";
+
+                using (var defaultFrontSprite = _client.GetAsync (url).Result)
 				{
 					var imageBytes = defaultFrontSprite.Content.ReadAsByteArrayAsync ().Result;
 					pokemon.Image = Convert.ToBase64String (imageBytes);
