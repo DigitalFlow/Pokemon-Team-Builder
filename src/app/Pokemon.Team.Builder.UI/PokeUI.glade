@@ -2,6 +2,41 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.8"/>
+  <object class="GtkApplicationWindow" id="BattleTypeChooser">
+    <property name="width_request">440</property>
+    <property name="height_request">200</property>
+    <property name="can_focus">True</property>
+    <property name="can_default">True</property>
+    <property name="has_default">True</property>
+    <child>
+      <object class="GtkBox" id="BattleTypeBox">
+        <property name="name">BattleTypeBox</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="can_default">True</property>
+        <property name="has_default">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="BattleTypeLabel">
+            <property name="name">BattleTypeLabel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="label" translatable="yes">Select your Battle Type</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkApplicationWindow" id="WaitWindow">
     <property name="name">WaitWindow</property>
     <property name="sensitive">False</property>
@@ -21,24 +56,20 @@
         <property name="name">WaitBox</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="can_default">True</property>
+        <property name="has_default">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkEntry" id="WaitLabel">
+          <object class="GtkLabel" id="WaitLabel">
             <property name="name">WaitLabel</property>
-            <property name="width_request">150</property>
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="editable">False</property>
-            <property name="max_length">50</property>
-            <property name="max_width_chars">50</property>
-            <property name="text" translatable="yes">Working on it</property>
+            <property name="label" translatable="yes">Working on it</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">45</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -78,6 +109,8 @@
       <object class="GtkBox" id="BoxLayout">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="can_default">True</property>
+        <property name="has_default">True</property>
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
         <property name="orientation">vertical</property>
@@ -162,39 +195,21 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="Cut">
-                        <property name="label">gtk-cut</property>
+                      <object class="GtkMenuItem" id="ChooseBattleTypeItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="can_default">True</property>
+                        <property name="has_default">True</property>
+                        <property name="label" translatable="yes">Choose Battle Type</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="Copy">
-                        <property name="label">gtk-copy</property>
+                      <object class="GtkMenuItem" id="ChooseSeasonItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Choose Season</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="Paste">
-                        <property name="label">gtk-paste</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="Delete">
-                        <property name="label">gtk-delete</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
                       </object>
                     </child>
                   </object>
@@ -244,6 +259,8 @@
             <property name="name">ContentBox</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <child>
@@ -827,69 +844,6 @@
                     <child>
                       <placeholder/>
                     </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
                   </object>
                 </child>
                 <child type="tab">
@@ -913,69 +867,6 @@
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="column_homogeneous">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -1030,69 +921,6 @@
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="column_homogeneous">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -1222,23 +1050,22 @@
         <property name="name">LoadPokedexBox</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="can_default">True</property>
+        <property name="has_default">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkEntry" id="LoadPokedexLabel">
+          <object class="GtkLabel" id="LoadPokedexLabel">
             <property name="name">LoadPokedexLabel</property>
-            <property name="width_request">150</property>
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="editable">False</property>
-            <property name="text" translatable="yes">Loading local pokedex</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="label" translatable="yes">Loading your local Pokedex</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">22</property>
+            <property name="padding">45</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -1250,6 +1077,7 @@
             <property name="app_paintable">True</property>
             <property name="can_focus">True</property>
             <property name="is_focus">True</property>
+            <property name="can_default">True</property>
             <property name="has_default">True</property>
             <property name="receives_default">True</property>
             <property name="halign">center</property>
