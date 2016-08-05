@@ -9,7 +9,10 @@ namespace Pokemon.Team.Builder.UI
 		{
 			Application.Init ();
 
-			MainWindow win = new MainWindow ();
+			// This prevents crashes when waiting for operations and controls are pressed
+			new Gtk.Init ();
+
+			new MainWindow ();
 
 			Application.Run ();
 		}

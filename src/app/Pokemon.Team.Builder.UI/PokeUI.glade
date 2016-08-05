@@ -2,6 +2,65 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.8"/>
+  <object class="GtkApplicationWindow" id="WaitWindow">
+    <property name="name">WaitWindow</property>
+    <property name="can_focus">False</property>
+    <property name="type">popup</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="default_width">440</property>
+    <property name="default_height">150</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">popup-menu</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
+    <child>
+      <object class="GtkBox" id="WaitBox">
+        <property name="name">WaitBox</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkEntry" id="WaitLabel">
+            <property name="name">WaitLabel</property>
+            <property name="width_request">150</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="editable">False</property>
+            <property name="max_length">50</property>
+            <property name="max_width_chars">50</property>
+            <property name="text" translatable="yes">Working on it</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="WaitSpinner">
+            <property name="name">WaitSpinner</property>
+            <property name="width_request">96</property>
+            <property name="height_request">96</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="active">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+  </object>
   <object class="GtkApplicationWindow" id="Window">
     <property name="name">Window</property>
     <property name="visible">True</property>
@@ -827,36 +886,6 @@
                     <child>
                       <placeholder/>
                     </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
                   </object>
                 </child>
                 <child type="tab">
@@ -880,36 +909,6 @@
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="column_homogeneous">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -1057,6 +1056,66 @@
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
                   <packing>
                     <property name="position">2</property>
@@ -1141,7 +1200,16 @@
   <object class="GtkApplicationWindow" id="LoadPokedexWindow">
     <property name="name">LoadPokedexWindow</property>
     <property name="can_focus">False</property>
+    <property name="type">popup</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
     <property name="window_position">center</property>
+    <property name="default_width">440</property>
+    <property name="default_height">150</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">popup-menu</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
     <property name="attached_to">Window</property>
     <property name="show_menubar">False</property>
     <child>
@@ -1153,30 +1221,42 @@
         <child>
           <object class="GtkEntry" id="LoadPokedexLabel">
             <property name="name">LoadPokedexLabel</property>
+            <property name="width_request">150</property>
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="editable">False</property>
             <property name="text" translatable="yes">Loading local pokedex</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">22</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkSpinner" id="LoadPokedexSpinner">
-            <property name="name">LoadPokedexSpinner</property>
+          <object class="GtkProgressBar" id="PokedexProgressBar">
+            <property name="name">PokedexProgressBar</property>
+            <property name="width_request">400</property>
             <property name="visible">True</property>
             <property name="app_paintable">True</property>
             <property name="can_focus">True</property>
-            <property name="has_focus">True</property>
             <property name="is_focus">True</property>
+            <property name="has_default">True</property>
             <property name="receives_default">True</property>
-            <property name="active">True</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="hexpand">True</property>
+            <property name="pulse_step">0.050000000000000003</property>
+            <property name="text" translatable="yes">0 %</property>
+            <property name="show_text">True</property>
+            <property name="ellipsize">start</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>

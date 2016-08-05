@@ -17,6 +17,10 @@ public partial class MainWindow : Window
     private Builder _builder;
     private bool _pokedexLoadExecuted;
 
+	private Window _loadWindow;
+	private ProgressBar _progressBar;
+	private Window _waitWindow;
+
 	private Grid _counters;
 	private Grid _switchIns;
 	private Grid _moves;
@@ -34,6 +38,10 @@ public partial class MainWindow : Window
 			_counters = (Grid) _builder.GetObject ("OverViewCountersGrid");
 			_switchIns = (Grid) _builder.GetObject ("OverViewSaveSwitchInsGrid");
 			_moves = (Grid) _builder.GetObject ("OverViewMovesGrid");
+
+			_loadWindow = (Window)_builder.GetObject("LoadPokedexWindow");
+			_progressBar = (ProgressBar) _builder.GetObject ("PokedexProgressBar");
+			_waitWindow = (Window)_builder.GetObject("WaitWindow");
 
 	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
 			{
@@ -70,24 +78,29 @@ public partial class MainWindow : Window
         return comboBoxes;
     }
 
+	private void UpdateProgressBar (int count, int progress)
+	{
+		_progressBar.Text = $"{progress} / {count}";
+		_progressBar.Fraction = progress / count;
+		_progressBar.Pulse ();
+	}
+
     protected void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
     {
-        // Makes problems in windows, will have to investigate
-        var loadWindow = (Window)_builder.GetObject("LoadPokedexWindow");
+        _loadWindow.Show();
 
-        loadWindow.Show();
-
-        var task = Task.Run(() =>
+        Task.Run(() =>
         {
             using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/")))
             {
                 using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
                 {
+					pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
+
                     _pokedex = new PokedexManager(pokemonMetaDataRetriever).GetPokemon();
 
                     foreach (var comboBox in comboBoxes)
                     {
-
                         comboBox.Item2.Entry.Completion = new EntryCompletion
                         {
                             Model = new ListStore(typeof(string)),
@@ -110,7 +123,9 @@ public partial class MainWindow : Window
                         }
                     }
 
-                    loadWindow.Hide();
+					UpdateProgressBar(1, 1);
+
+                    _loadWindow.Hide();
                 }
             }
         });
@@ -303,6 +318,8 @@ public partial class MainWindow : Window
 
     protected void OnProposeTeam(object sender, EventArgs e)
     {
+		_waitWindow.Show ();
+
         var initialTeam = _controlSets
             .Where(ctrl => !string.IsNullOrEmpty(ctrl.Item2.ActiveText) && Regex.IsMatch(ctrl.Item2.ActiveText, "^[0-9]+$"))
             .Select(ctrl =>
@@ -321,6 +338,7 @@ public partial class MainWindow : Window
         Task.Run(() =>
         {
 			ProposeTeam(initialTeam);
+			_waitWindow.Hide();
     	});
     }
 }

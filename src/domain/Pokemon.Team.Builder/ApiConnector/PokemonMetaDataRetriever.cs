@@ -13,6 +13,9 @@ namespace Pokemon.Team.Builder
         private IHttpClient _client;
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+		public delegate void DataRetrievedEvent(int count, int progress);
+		public event DataRetrievedEvent PokemonDataRetrievedEvent;
+
         public PokemonMetaDataRetriever(IHttpClient client)
         {
             _client = client;
@@ -24,6 +27,13 @@ namespace Pokemon.Team.Builder
 
 			return simplePokemonData;
         }
+
+		private void RaiseDataRetrievedEvent(int count, int progress)
+		{
+			if (PokemonDataRetrievedEvent != null) {
+				PokemonDataRetrievedEvent (count, progress);
+			}
+		}
 
 		public void AppendImage(Pokemon pokemon) {
 			try {
@@ -46,13 +56,18 @@ namespace Pokemon.Team.Builder
 			var url = "api/v2/pokemon/";
 			RetrievePokemonResponse response;
 
+			var progress = 0;
+
 			do
 			{
 				var json = _client.GetStringAsync(url).Result;
+
 				response = JsonConvert.DeserializeObject<RetrievePokemonResponse>(json);
 				url = response.Next;
 
 				foreach (var item in response.Results) {
+					RaiseDataRetrievedEvent(response.Count, ++progress);
+
 					var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 					var id = 0;
 
