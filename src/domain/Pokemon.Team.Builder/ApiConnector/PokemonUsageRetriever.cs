@@ -7,19 +7,21 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Pokemon.Team.Builder
 {
 	public class PokemonUsageRetriever : IPokemonUsageRetriever, IDisposable
     {
         private IHttpClient _client;
+		private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public PokemonUsageRetriever(IHttpClient client)
         {
             _client = client;
         }
 
-		public RetrievePokemonUsageResponse GetPokemonUsageInformation(int pokemonId, int formNo = 0, int languageId = 2, int seasonId = 117, int battleType = 1)
+		public DetailedPokemonInformation GetPokemonUsageInformation(PokemonIdentifier pokemonId, int battleType = 1, int languageId = 2, int seasonId = 117)
         {
 			var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
 
@@ -33,7 +35,7 @@ namespace Pokemon.Team.Builder
 						new KeyValuePair<string, string>("seasonId", $"{seasonId}"),
 						new KeyValuePair<string, string>("battleType", $"{battleType}"),
 	                    new KeyValuePair<string, string>("timezone", "CEST"),
-						new KeyValuePair<string, string>("pokemonId", $"{pokemonId}-{formNo}"),
+						new KeyValuePair<string, string>("pokemonId", pokemonId.ToString()),
 	                    new KeyValuePair<string, string>("displayNumberWaza", "10"),
 	                    new KeyValuePair<string, string>("displayNumberTokusei", "3"),
 	                    new KeyValuePair<string, string>("displayNumberSeikaku", "10"),
@@ -50,17 +52,26 @@ namespace Pokemon.Team.Builder
             request.Headers.Add("Origin", "http://3ds.pokemon-gl.com");
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
 
-            var response = _client.SendAsync(request).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+			using(var response = _client.SendAsync(request).Result)
+			{
+				try
+				{
+            		var content = response.Content.ReadAsStringAsync().Result;
 
-            var pokemonUsageResponse = JsonConvert.DeserializeObject<RetrievePokemonUsageResponse>(content);
+		            var pokemonUsageResponse = JsonConvert.DeserializeObject<DetailedPokemonInformation>(content);
 
-            return pokemonUsageResponse;
-        }
+					return pokemonUsageResponse;
+				}
+				catch (Exception ex) {
+					_logger.Error($"Exception during contacting of API, message is {ex.Message}");
+					return null;
+				}
+			}	
+    	}
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
-    }
+	    public void Dispose()
+	    {
+	        _client.Dispose();
+	    }
+	}
 }

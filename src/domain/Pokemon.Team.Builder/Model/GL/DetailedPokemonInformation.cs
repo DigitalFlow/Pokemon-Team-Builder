@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-    public class RetrievePokemonUsageResponse
+	public class DetailedPokemonInformation : IEquatable<DetailedPokemonInformation>
     {
 		/// <summary>
 		/// 0000 => OK, 4000 Otherwise
@@ -79,5 +79,34 @@ namespace Pokemon.Team.Builder.Model
 		/// </summary>
 		/// <value>The name of the timezone.</value>
         public string TimezoneName { get; set; }
+
+		public bool Equals (DetailedPokemonInformation otherDetail) {
+			if (otherDetail == null) {
+				return false;
+			}
+
+			return RankingPokemonInfo.MonsNo == otherDetail.RankingPokemonInfo.MonsNo
+				&& RankingPokemonInfo.FormNo == otherDetail.RankingPokemonInfo.FormNo;
+		}
+
+		public override bool Equals (object obj)
+		{
+			var otherDetail = obj as DetailedPokemonInformation;
+
+			if (otherDetail == null) {
+				return false;
+			}
+
+			return Equals (otherDetail);
+		}
+
+		public override int GetHashCode ()
+		{
+			return $"{RankingPokemonInfo.MonsNo}-{RankingPokemonInfo.FormNo}".GetHashCode();
+		}
+
+		public static implicit operator PokemonIdentifier (DetailedPokemonInformation detailedInfo) {
+			return new PokemonIdentifier (detailedInfo.RankingPokemonInfo.MonsNo, detailedInfo.RankingPokemonInfo.FormNo);
+		}
     }
 }

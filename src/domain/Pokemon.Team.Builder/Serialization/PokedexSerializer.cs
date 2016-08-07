@@ -23,6 +23,7 @@ namespace Pokemon.Team.Builder
 
                 pokedexEntry.Add(new XElement("Id", entry.Id));
                 pokedexEntry.Add(new XElement("Name", entry.Name));
+				pokedexEntry.Add(new XElement("Image", entry.Image));
                 pokedexEntry.Add(new XElement("Url", entry.Url));
 
                 pokemonRoot.Add(pokedexEntry);
@@ -35,5 +36,39 @@ namespace Pokemon.Team.Builder
                 return stringWriter.ToString();
             }
         }
+
+		public static void SavePokedexToFile(List<Pokemon> pokemon, string filePath){
+			File.WriteAllText(filePath, PokedexSerializer.SerializePokedex(pokemon), System.Text.Encoding.Unicode);
+		}
+
+		public static List<Pokemon> LoadPokedexFromFile(string filePath){
+			return DeserializePokedex (filePath);
+		}
+
+		public static List<Pokemon> DeserializePokedex(string filePath)
+		{
+			var file = new FileInfo(filePath);
+
+			if (!file.Exists) {
+				return null;
+			}
+
+			var fileStream = file.OpenRead ();
+
+			var xmlDoc = XDocument.Load (fileStream);
+			var nameSpace = xmlDoc.Root.Name.Namespace;
+
+			var pokemon = 
+				(from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
+				select new Pokemon {
+					Name = entry.Descendants("Name").First().Value,
+					Image = entry.Descendants("Image").FirstOrDefault()?.Value,
+					Id = int.Parse(entry.Descendants("Id").First().Value),
+					Url = entry.Descendants("Url").First().Value
+				})
+				.ToList();
+
+			return pokemon;
+		}
     }
 }

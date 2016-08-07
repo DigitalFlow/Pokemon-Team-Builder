@@ -9,7 +9,7 @@ namespace Pokemon.Team.Builder.Model
 	/// <summary>
 	/// Most often used Moves
 	/// </summary>
-    public class WazaInfo
+	public class WazaInfo : IRankable
     {
         public int Ranking { get; set; }
         public int TypeId { get; set; }

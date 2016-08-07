@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Pokemon.Team.Builder.Model
 {
 	/// <summary>
-	/// Most often used abilities
+	/// Most often used natures
 	/// </summary>
-    public class TokuseiInfo
+	public class SeikakuInfo : IRankable
     {
         public int Ranking { get; set; }
         public double UsageRate { get; set; }

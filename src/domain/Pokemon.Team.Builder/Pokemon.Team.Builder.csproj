@@ -46,23 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\ItemInfo.cs" />
-    <Compile Include="Model\RankingPokemonDown.cs" />
-    <Compile Include="Model\RankingPokemonDownWaza.cs" />
-    <Compile Include="Model\RankingPokemonDownWazaOther.cs" />
-    <Compile Include="Model\RankingPokemonIn.cs" />
-    <Compile Include="Model\RankingPokemonInfo.cs" />
-    <Compile Include="Model\RankingPokemonSufferer.cs" />
-    <Compile Include="Model\RankingPokemonSuffererWaza.cs" />
-    <Compile Include="Model\RankingPokemonTrend.cs" />
-    <Compile Include="Model\RetrievePokemonUsageResponse.cs" />
-    <Compile Include="Model\SeikakuInfo.cs" />
-    <Compile Include="Model\TokuseiInfo.cs" />
-    <Compile Include="Model\WazaInfo.cs" />
     <Compile Include="Serialization\PokedexSerializer.cs" />
     <Compile Include="Model\SimplePokemonData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Model\RetrievePokemonResponse.cs" />
     <Compile Include="ApiConnector\IPokemonMetaDataRetriever.cs" />
     <Compile Include="ApiConnector\IPokemonUsageRetriever.cs" />
     <Compile Include="ApiConnector\PokemonMetaDataRetriever.cs" />
@@ -72,6 +58,27 @@
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Model\PokemonIdentifier.cs" />
+    <Compile Include="Logic\PokedexManager.cs" />
+    <Compile Include="Model\GL\DetailedPokemonInformation.cs" />
+    <Compile Include="Model\GL\ItemInfo.cs" />
+    <Compile Include="Model\GL\RankingPokemonDown.cs" />
+    <Compile Include="Model\GL\RankingPokemonDownWaza.cs" />
+    <Compile Include="Model\GL\RankingPokemonDownWazaOther.cs" />
+    <Compile Include="Model\GL\RankingPokemonIn.cs" />
+    <Compile Include="Model\GL\RankingPokemonInfo.cs" />
+    <Compile Include="Model\GL\RankingPokemonSufferer.cs" />
+    <Compile Include="Model\GL\RankingPokemonSuffererWaza.cs" />
+    <Compile Include="Model\GL\RankingPokemonTrend.cs" />
+    <Compile Include="Model\GL\SeikakuInfo.cs" />
+    <Compile Include="Model\GL\TokuseiInfo.cs" />
+    <Compile Include="Model\GL\WazaInfo.cs" />
+    <Compile Include="Model\PokeAPI\FullMetaDataResponse.cs" />
+    <Compile Include="Model\PokeAPI\RetrievePokemonResponse.cs" />
+    <Compile Include="Logic\Pokedex.cs" />
+    <Compile Include="Logic\PokemonAnalyzer.cs" />
+    <Compile Include="Model\IRankable.cs" />
+    <Compile Include="Logic\RankingCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -89,5 +96,7 @@
     <Folder Include="ApiConnector\" />
     <Folder Include="Web\" />
     <Folder Include="Logic\" />
+    <Folder Include="Model\GL\" />
+    <Folder Include="Model\PokeAPI\" />
   </ItemGroup>
 </Project>
