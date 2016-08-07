@@ -218,6 +218,8 @@ public partial class MainWindow : Window
 			_chooseBox.AppendText (battlyType);	
 		}
 
+		_chooseBox.Active =int.Parse(ConfigManager.GetSetting (BattleTypeConfigKey));
+
 		_chooseDialog.Show ();
 	}
 
