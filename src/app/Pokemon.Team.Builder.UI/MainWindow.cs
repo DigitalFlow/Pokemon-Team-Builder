@@ -30,7 +30,7 @@ public partial class MainWindow : Window
 	private Grid _switchIns;
 	private Grid _moves;
 
-	private List<DetailedPokemonInformation> _latestTeam;
+	private List<DetailedPokemonInformation> _latestTeam = new List<DetailedPokemonInformation> ();
 
     public MainWindow() : base(WindowType.Toplevel)
     {
@@ -295,70 +295,38 @@ public partial class MainWindow : Window
 
 				var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDown, 10);
 
-				for (var i = 0; i < mostDangerousCounters.Count; i++) {
-					var counter = mostDangerousCounters [i];
-
-					var j = 0;
-
-					var image = new Image ();
-					image.SetPicture(_pokedex.GetById(counter.MonsNo), 48, 48);
-
-					_counters.Attach (image, ++j, i, 1, 1);
-					_counters.Attach(new Label {
-						Text = $"{counter.MonsNo}",
-						Visible = true
-					}, ++j, i, 1, 1);
-					_counters.Attach(new Label {
-						Text = $"{counter.FormNo}",
-						Visible = true
-					}, ++j, i, 1, 1);
-					_counters.Attach(new Label {
-						Text = $"{counter.Name}",
-						Visible = true
-					}, ++j, i, 1, 1);
-				}
+				_counters
+					.AddItems (mostDangerousCounters,
+					new List<Func<RankingPokemonDown, Widget>> {
+							rank => new Image().SetPicture(_pokedex.GetById (((RankingPokemonDown) rank).MonsNo), 48, 48),
+							rank => new Label(((RankingPokemonDown) rank).MonsNo.ToString()),
+							rank => new Label(((RankingPokemonDown) rank).FormNo),
+							rank => new Label(((RankingPokemonDown) rank).Name)
+					});
 
 				_counters.ShowAll();
 
 				var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10,
 					poke => mostDangerousCounters.All(counter => (PokemonIdentifier) poke != (PokemonIdentifier) counter));
 
-				for (var i = 0; i < saveSwitchIns.Count; i++) {
-					var switchIn = saveSwitchIns [i];
-
-					var j = 0;
-
-					var image = new Image ();
-					image.SetPicture(_pokedex.GetById(switchIn.MonsNo), 48, 48);
-
-					_switchIns.Attach (image, ++j, i, 1, 1);
-					_switchIns.Attach(new Label {
-						Text = $"{switchIn.MonsNo}",
-						Visible = true
-					}, ++j, i, 1, 1);
-					_switchIns.Attach(new Label {
-						Text = $"{switchIn.FormNo}",
-						Visible = true
-					}, ++j, i, 1, 1);
-					_switchIns.Attach(new Label {
-						Text = $"{switchIn.Name}",
-						Visible = true
-					}, ++j, i, 1, 1);
-				}
+				_switchIns
+					.AddItems (saveSwitchIns,
+						new List<Func<RankingPokemonSufferer, Widget>> {
+							rank => new Image().SetPicture(_pokedex.GetById (((RankingPokemonSufferer) rank).MonsNo), 48, 48),
+							rank => new Label(((RankingPokemonSufferer) rank).MonsNo.ToString()),
+							rank => new Label(((RankingPokemonSufferer) rank).FormNo),
+							rank => new Label(((RankingPokemonSufferer) rank).Name)
+						});
 
 				_switchIns.ShowAll();
 
 				var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
 
-				for (var i = 0; i < dangerousMoves.Count; i++) {
-					var move = dangerousMoves [i];
-					var j = 0;
-
-					_moves.Attach(new Label {
-						Text = $"{move.WazaName}",
-						Visible = true
-					}, ++j, i, 1, 1);
-				}
+				_moves
+					.AddItems (dangerousMoves,
+						new List<Func<RankingPokemonDownWaza, Widget>> {
+							rank => new Label(((RankingPokemonDownWaza) rank).WazaName)
+						});
 
 				_moves.ShowAll();
 			}
