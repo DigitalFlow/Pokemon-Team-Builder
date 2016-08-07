@@ -21,7 +21,7 @@ namespace Pokemon.Team.Builder
             _client = client;
         }
 
-		public DetailedPokemonInformation GetPokemonUsageInformation(PokemonIdentifier pokemonId, int languageId = 2, int seasonId = 117, int battleType = 1)
+		public DetailedPokemonInformation GetPokemonUsageInformation(PokemonIdentifier pokemonId, int battleType = 1, int languageId = 2, int seasonId = 117)
         {
 			var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
 

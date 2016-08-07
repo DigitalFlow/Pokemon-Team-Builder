@@ -7,10 +7,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NLog;
 using Pokemon.Team.Builder.Model;
+using Pokemon.Team.Builder.UI;
 
 public partial class MainWindow : Window
 {
-	private Logger _logger = LogManager.GetCurrentClassLogger();
+	private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+	private const string BattleTypeConfigKey = "BattleType";
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
@@ -20,6 +23,8 @@ public partial class MainWindow : Window
 	private Window _loadWindow;
 	private ProgressBar _progressBar;
 	private Window _waitWindow;
+	private Dialog _chooseDialog;
+	private ComboBoxText _chooseBox;
 
 	private Grid _counters;
 	private Grid _switchIns;
@@ -42,6 +47,8 @@ public partial class MainWindow : Window
 			_loadWindow = (Window)_builder.GetObject("LoadPokedexWindow");
 			_progressBar = (ProgressBar) _builder.GetObject ("PokedexProgressBar");
 			_waitWindow = (Window)_builder.GetObject("WaitWindow");
+			_chooseDialog = (Dialog)_builder.GetObject("ChooseDialog");
+			_chooseBox = (ComboBoxText)_builder.GetObject("ChooseBox");
 
 	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
 			{
@@ -203,6 +210,31 @@ public partial class MainWindow : Window
         a.RetVal = true;
     }
 
+	protected void OnChooseBattleType(object sender, EventArgs e)
+	{
+		var battleTypes = new List<string>{ "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
+
+		foreach (var battlyType in battleTypes) {
+			_chooseBox.AppendText (battlyType);	
+		}
+
+		_chooseDialog.Show ();
+	}
+
+	protected void OnChooseDialogOk(object sender, EventArgs e)
+	{
+		var value = _chooseBox.Active;
+
+		ConfigManager.WriteSetting (BattleTypeConfigKey, value.ToString ());
+		_chooseDialog.Hide ();
+	}
+
+	protected void OnChooseDialogCancel(object sender, EventArgs e)
+	{
+		_chooseBox.RemoveAll ();
+		_chooseDialog.Hide ();
+	}
+
     protected void OnStateEvent(object sender, WindowStateEventArgs e)
     {
         if (!_pokedexLoadExecuted)
@@ -236,7 +268,10 @@ public partial class MainWindow : Window
 			using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
 			{
 				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
-				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
+
+				var battleType = int.Parse(ConfigManager.GetSetting (BattleTypeConfigKey));
+
+				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam, battleType);
 
 				for (var i = 0; i < _latestTeam.Count; i++)
 				{

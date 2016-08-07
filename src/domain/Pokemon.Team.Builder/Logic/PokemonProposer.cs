@@ -15,7 +15,7 @@ namespace Pokemon.Team.Builder
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 		}
 
-		public List<DetailedPokemonInformation> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
+		public List<DetailedPokemonInformation> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, int battleType, List<DetailedPokemonInformation> pokemon = null) {
 			if (initialTeam == null || initialTeam.Count == 0) {
 				throw new ArgumentException ("Initial team must not be empty or null!", "initialTeam");
 			}
@@ -33,7 +33,7 @@ namespace Pokemon.Team.Builder
 			// Retrieve Information on each team member
 			foreach (var teamMember in initialTeam) 
 			{
-				var teamMemberInfo = GetPokemonDetails (teamMember);
+				var teamMemberInfo = GetPokemonDetails (teamMember, battleType);
 
 				if (!pokemon.Contains (teamMemberInfo)) {
 					pokemon.Add (teamMemberInfo);
@@ -55,9 +55,9 @@ namespace Pokemon.Team.Builder
 			}
 
 			initialTeam.Add (bestMember);
-			pokemon.Add (GetPokemonDetails (bestMember));
+			pokemon.Add (GetPokemonDetails (bestMember, battleType));
 
-			return GetProposedPokemonByUsage (initialTeam, pokemon);
+			return GetProposedPokemonByUsage (initialTeam, battleType, pokemon);
 		}
 
 		/// <summary>
@@ -65,8 +65,8 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
-		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId) {
-			return _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId);
+		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId, int battleType) {
+			return _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, battleType);
 		}
 
 		/// <summary>
