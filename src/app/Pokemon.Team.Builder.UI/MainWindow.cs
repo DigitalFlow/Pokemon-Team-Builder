@@ -162,14 +162,8 @@ public partial class MainWindow : Window
             senderBox.Item4.Entry.Text = pokemon.Name;
         }
 
-        SetPicture(senderBox.Item1, pokemon);
+		senderBox.Item1.SetPicture(pokemon);
 
-    }
-
-	protected void SetPicture(Image image, Pokemon.Team.Builder.Pokemon pokemon, int width = 96, int height = 96)
-    {
-        var pixBuf = new Gdk.Pixbuf(Convert.FromBase64String(pokemon.Image));
-        image.Pixbuf = pixBuf.ScaleSimple (width, height, Gdk.InterpType.Nearest);
     }
 
     protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple)
@@ -179,6 +173,24 @@ public partial class MainWindow : Window
         controlTuple.Item3.Entry.Text = string.Empty;
         controlTuple.Item4.Entry.Text = string.Empty;
     }
+
+	protected void OnMoreInformationClicked(object sender, EventArgs e)
+	{
+		var senderTuple = _controlSets.Single (ctrl => ctrl.Item5 == sender);
+
+		// Zero-Based in ComboBox
+		var selectedPokemonId = senderTuple.Item2.Active + 1;
+
+		var pokemonToShow = _latestTeam
+			.Where (poke => poke.RankingPokemonInfo.MonsNo == selectedPokemonId)
+			.ToList();
+
+		if (pokemonToShow.Count != 1) {
+			return;
+		}
+
+		new PokemonDetailWindow (pokemonToShow.Single(), _pokedex);
+	}
 
     protected void OnPokemonSelectionByName(object sender, EventArgs e)
     {
@@ -289,7 +301,7 @@ public partial class MainWindow : Window
 					var j = 0;
 
 					var image = new Image ();
-					SetPicture (image, _pokedex.GetById(counter.MonsNo), 48, 48);
+					image.SetPicture(_pokedex.GetById(counter.MonsNo), 48, 48);
 
 					_counters.Attach (image, ++j, i, 1, 1);
 					_counters.Attach(new Label {
@@ -317,7 +329,7 @@ public partial class MainWindow : Window
 					var j = 0;
 
 					var image = new Image ();
-					SetPicture (image, _pokedex.GetById(switchIn.MonsNo), 48, 48);
+					image.SetPicture(_pokedex.GetById(switchIn.MonsNo), 48, 48);
 
 					_switchIns.Attach (image, ++j, i, 1, 1);
 					_switchIns.Attach(new Label {

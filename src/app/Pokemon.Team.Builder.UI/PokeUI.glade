@@ -417,6 +417,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
+                    <signal name="clicked" handler="OnMoreInformationClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
@@ -505,6 +506,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
+                    <signal name="clicked" handler="OnMoreInformationClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
@@ -593,6 +595,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
+                    <signal name="clicked" handler="OnMoreInformationClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
@@ -681,6 +684,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
+                    <signal name="clicked" handler="OnMoreInformationClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
@@ -769,6 +773,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
+                    <signal name="clicked" handler="OnMoreInformationClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
@@ -857,6 +862,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
+                    <signal name="clicked" handler="OnMoreInformationClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">4</property>
