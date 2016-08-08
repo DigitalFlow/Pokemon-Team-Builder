@@ -6,10 +6,15 @@ namespace Pokemon.Team.Builder
 {
 	public static class RankingCreator
 	{
-		public static Dictionary<T, int> CreateRanking<T>(List<T> rankables, int rankingSubtractor) where T : IRankable, IEquatable<T>
+		public static Dictionary<T, int> CreateRanking<T>(List<T> rankables) where T : IRankable, IEquatable<T>
 		{
+			if (rankables == null) {
+				return new Dictionary<T, int> ();
+			}
+
 			return rankables
-				.ToDictionary (rank => rank, rank => rankingSubtractor - rank.Ranking);
+				.Where (rank => rank != null)
+				.ToDictionary (rank => rank, rank => rankables.Count - rank.Ranking);
 		}
 	}
 }

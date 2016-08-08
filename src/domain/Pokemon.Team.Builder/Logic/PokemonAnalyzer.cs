@@ -21,7 +21,7 @@ namespace Pokemon.Team.Builder
 						.ToList();
 				}
 
-				var counterRanking = RankingCreator.CreateRanking (selection, 11);
+				var counterRanking = RankingCreator.CreateRanking (selection);
 
 				ranked = ranked.MergeDictionaries (new[] { counterRanking });
 			}

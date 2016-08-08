@@ -82,7 +82,7 @@ namespace Pokemon.Team.Builder
 				return rankedMembers;
 			}
 
-			return RankingCreator.CreateRanking (pokemonInfo.RankingPokemonIn, 11);
+			return RankingCreator.CreateRanking (pokemonInfo.RankingPokemonIn);
 		}
 	}
 }
