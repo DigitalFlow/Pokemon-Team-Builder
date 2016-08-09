@@ -15,6 +15,10 @@ namespace Pokemon.Team.Builder
 			foreach (var pokemon in team) {
 				var selection = selector (pokemon);
 
+				if (selection == null) {
+					continue;
+				}
+
 				if (filterFunc != null) {
 					selection = selection
 						.Where(filterFunc)
