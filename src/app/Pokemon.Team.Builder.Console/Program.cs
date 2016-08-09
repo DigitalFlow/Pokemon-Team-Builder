@@ -13,6 +13,17 @@ namespace Pokemon.Team.Builder.Console
         static void Main(string[] args)
         {
 			ProposeTeamMembers (args);
+
+			/*
+			 using (var httpClient = new HttpClientWrapper (new Uri ("https://play.pokemonshowdown.com/data/"))) {
+				using (var tierRetriever = new TierListRetriever (httpClient)) {
+
+					var tierManager = new TierListManager (tierRetriever);
+
+					tierManager.GetTierList ();
+				}
+			}
+			 */ 
         }
 
 		private static void ProposeTeamMembers(string[] args){

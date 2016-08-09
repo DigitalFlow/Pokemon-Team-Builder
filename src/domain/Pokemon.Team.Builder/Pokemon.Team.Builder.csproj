@@ -79,6 +79,12 @@
     <Compile Include="Logic\PokemonAnalyzer.cs" />
     <Compile Include="Model\IRankable.cs" />
     <Compile Include="Logic\RankingCreator.cs" />
+    <Compile Include="ApiConnector\ITierListRetriever.cs" />
+    <Compile Include="ApiConnector\TierListRetriever.cs" />
+    <Compile Include="Logic\TierListManager.cs" />
+    <Compile Include="Serialization\TierListSerializer.cs" />
+    <Compile Include="Logic\TierList.cs" />
+    <Compile Include="Model\Tiers\PokemonTierEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -98,5 +104,6 @@
     <Folder Include="Logic\" />
     <Folder Include="Model\GL\" />
     <Folder Include="Model\PokeAPI\" />
+    <Folder Include="Model\Tiers\" />
   </ItemGroup>
 </Project>
