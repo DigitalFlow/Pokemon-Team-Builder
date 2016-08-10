@@ -14,6 +14,7 @@ public partial class MainWindow : Window
 	private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private const string BattleTypeConfigKey = "BattleType";
+	private const string TierConfigKey = "Tier";
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
@@ -24,7 +25,9 @@ public partial class MainWindow : Window
 	private ProgressBar _progressBar;
 	private Window _waitWindow;
 	private Dialog _chooseDialog;
-	private ComboBoxText _chooseBox;
+	private Label _chooseLabel;
+	private ComboBox _chooseBox;
+	private Button _dialogBoxOk;
 
 	private Grid _counters;
 	private Grid _switchIns;
@@ -48,7 +51,9 @@ public partial class MainWindow : Window
 			_progressBar = (ProgressBar) _builder.GetObject ("PokedexProgressBar");
 			_waitWindow = (Window)_builder.GetObject("WaitWindow");
 			_chooseDialog = (Dialog)_builder.GetObject("ChooseDialog");
-			_chooseBox = (ComboBoxText)_builder.GetObject("ChooseBox");
+			_chooseLabel = (Label)_builder.GetObject("ChooseLabel");
+			_chooseBox = (ComboBox)_builder.GetObject("ChooseBox");
+			_dialogBoxOk = (Button)_builder.GetObject("ChooseOk");
 
 	        _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
 			{
@@ -192,6 +197,28 @@ public partial class MainWindow : Window
 		new PokemonDetailWindow (pokemonToShow.Single(), _pokedex);
 	}
 
+	protected void OnSelectTier(object sender, EventArgs e)
+	{
+		var tiers = new List<string>{ "AG", "Uber", "OU", "LC" };
+
+		var listStore = new ListStore (typeof(string));
+
+		_chooseLabel.Text = "Select your Tier";
+		_chooseBox.Model = listStore;
+
+		var renderer = new CellRendererText ();
+		_chooseBox.PackStart (renderer, false);
+		_chooseBox.AddAttribute (renderer, "text", 0);
+
+		foreach (var tier in tiers) {
+			listStore.AppendValues (tier);
+		}
+
+		_dialogBoxOk.Clicked += OnChooseTierOk;
+
+		_chooseDialog.Show ();
+	}
+
     protected void OnPokemonSelectionByName(object sender, EventArgs e)
     {
         var senderBox = _controlSets.Single(box => box.Item4 == sender);
@@ -226,27 +253,54 @@ public partial class MainWindow : Window
 	{
 		var battleTypes = new List<string>{ "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
 
-		foreach (var battlyType in battleTypes) {
-			_chooseBox.AppendText (battlyType);	
+		var listStore = new ListStore (typeof(string));
+
+		_chooseLabel.Text = "Select your Battle Type";
+		_chooseBox.Model = listStore;
+
+		var renderer = new CellRendererText ();
+		_chooseBox.PackStart (renderer, false);
+		_chooseBox.AddAttribute (renderer, "text", 0);
+
+		foreach (var battleType in battleTypes) {
+			listStore.AppendValues (battleType);
 		}
 
-		_chooseBox.Active =int.Parse(ConfigManager.GetSetting (BattleTypeConfigKey));
+		_chooseBox.Active = int.Parse(ConfigManager.GetSetting (BattleTypeConfigKey));
+
+		_dialogBoxOk.Clicked += OnChooseBattleTypeOk;
 
 		_chooseDialog.Show ();
 	}
 
-	protected void OnChooseDialogOk(object sender, EventArgs e)
+	protected void OnChooseTierOk(object sender, EventArgs e)
+	{
+		var value = _chooseBox.Active;
+
+		ConfigManager.WriteSetting (TierConfigKey, value.ToString ());
+
+		ResetChooseDialog ();
+	}
+
+	protected void OnChooseBattleTypeOk(object sender, EventArgs e)
 	{
 		var value = _chooseBox.Active;
 
 		ConfigManager.WriteSetting (BattleTypeConfigKey, value.ToString ());
+
+		ResetChooseDialog ();
+	}
+
+	private void ResetChooseDialog()
+	{
+		//_dialogBoxOk.Clicked -= OnChooseBattleTypeOk;
+		_chooseBox.Clear ();
 		_chooseDialog.Hide ();
 	}
 
 	protected void OnChooseDialogCancel(object sender, EventArgs e)
 	{
-		_chooseBox.RemoveAll ();
-		_chooseDialog.Hide ();
+		ResetChooseDialog ();
 	}
 
     protected void OnStateEvent(object sender, WindowStateEventArgs e)
