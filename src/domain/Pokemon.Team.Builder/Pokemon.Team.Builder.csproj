@@ -54,6 +54,7 @@
     <Compile Include="ApiConnector\PokemonMetaDataRetriever.cs" />
     <Compile Include="ApiConnector\PokemonUsageRetriever.cs" />
     <Compile Include="Model\Pokemon.cs" />
+    <Compile Include="Serialization\Tier.cs" />
     <Compile Include="Web\HttpClientWrapper.cs" />
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />
@@ -98,12 +99,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="ApiConnector\" />
-    <Folder Include="Web\" />
-    <Folder Include="Logic\" />
-    <Folder Include="Model\GL\" />
-    <Folder Include="Model\PokeAPI\" />
-    <Folder Include="Model\Tiers\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

@@ -33,6 +33,8 @@ public partial class MainWindow : Window
 	private Grid _switchIns;
 	private Grid _moves;
 
+    private TierList _tierList;
+
 	private List<DetailedPokemonInformation> _latestTeam = new List<DetailedPokemonInformation> ();
 
     public MainWindow() : base(WindowType.Toplevel)
@@ -96,6 +98,19 @@ public partial class MainWindow : Window
 		_progressBar.Fraction = progress / count;
 		_progressBar.Pulse ();
 	}
+
+    protected TierList InitializeTierList()
+    {
+        using (var httpClient = new HttpClientWrapper(new Uri("https://play.pokemonshowdown.com/data/")))
+        {
+            using (var tierRetriever = new TierListRetriever(httpClient))
+            {
+                var tierManager = new TierListManager(tierRetriever);
+
+                return tierManager.GetTierList();
+            }
+        }
+    }
 
     protected async void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
     {
@@ -308,6 +323,8 @@ public partial class MainWindow : Window
         if (!_pokedexLoadExecuted)
         {
             _pokedexLoadExecuted = true;
+            _tierList = InitializeTierList();
+
             InitializePokemonComboBoxes(_controlSets);
         }
     }

@@ -7,45 +7,55 @@ using Newtonsoft.Json;
 
 namespace Pokemon.Team.Builder
 {
-	public class TierListRetriever : ITierListRetriever
-	{
-		private IHttpClient _client;
-		private Logger _logger = LogManager.GetCurrentClassLogger();
+    public class TierListRetriever : ITierListRetriever
+    {
+        private IHttpClient _client;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
-		public TierListRetriever(IHttpClient client)
-		{
-			_client = client;
-		}
+        public TierListRetriever(IHttpClient client)
+        {
+            _client = client;
+        }
 
-		public List<PokemonTierEntry> RetrieveTierLists(){
-			var js = _client.GetStringAsync ("pokedex.js?v0.9xy31").Result;
+        public List<PokemonTierEntry> RetrieveTierLists()
+        {
+            var js = _client.GetStringAsync("pokedex.js?v0.9xy31").Result;
 
-			// Remove beginning
-			js = js.Replace ("exports.BattlePokedex = {", "");
+            // Remove beginning
+            js = js.Replace("exports.BattlePokedex = {", "");
 
-			// Remove pokemon object names
-			js = Regex.Replace (js, "[a-zA-Z0-9]+:{num", "{num");
+            // Remove pokemon object names
+            js = Regex.Replace(js, "[a-zA-Z0-9]+:{num", "{num");
 
-			js = Regex.Replace (js, "([a-zA-Z0-9]+):", "\"$1\":");
+            js = Regex.Replace(js, "([a-zA-Z0-9]+):", "\"$1\":");
 
-			js = js.Replace ("\"0\":", "\"_0\":");
-			js = js.Replace ("\"1\":", "\"_1\":");
+            js = js.Replace("\"0\":", "\"_0\":");
+            js = js.Replace("\"1\":", "\"_1\":");
 
-			js = js.Substring (0, js.Length - 2);
+            js = js.Substring(0, js.Length - 2);
 
-			js = $"[{js}]";
+            js = $"[{js}]";
 
-			var count = Regex.Matches (js, "\"num\":").Count;
+            var count = Regex.Matches(js, "\"num\":").Count;
 
-			var parsed = JsonConvert.DeserializeObject<List<PokemonTierEntry>> (js);
+            var parsed = JsonConvert.DeserializeObject<List<PokemonTierEntry>>(js);
 
-			return parsed;
-		}
+            // Some OU pokemon have parenthesis around their tier
+            parsed.ForEach(entry =>
+            {
+                if (entry != null && !string.IsNullOrEmpty(entry.tier))
+                {
+                    entry.tier = entry.tier.Replace("(", "").Replace(")", "");
+                }
+            });
 
-		public void Dispose()
-		{
-			_client.Dispose();
-		}
-	}
+            return parsed;
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
+        }
+    }
 }
 
