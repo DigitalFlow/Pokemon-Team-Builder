@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-	public class RankingPokemonIn : IEquatable<RankingPokemonIn>, IRankable
+	public class RankingPokemonIn : IEquatable<RankingPokemonIn>, IRankable, IPokemonIdentifiable
     {
         public int MonsNo { get; set; }
         public string FormNo { get; set; }

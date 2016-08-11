@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Pokemon.Team.Builder.Model;
+using Pokemon.Team.Builder.Serialization;
 
 namespace Pokemon.Team.Builder
 {
@@ -9,13 +10,34 @@ namespace Pokemon.Team.Builder
 	{
 		private IPokemonUsageRetriever _pokemonUsageRetriever;
 		private const int TEAM_SIZE = 6;
+		private TierList _tierList;
+		private Tier _activeTier;
+		private int _battleType;
+		private int _season;
+		private int _rankingPokemonInCount;
+		private int _rankingPokemonDownCount;
 
-		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever)
+		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
+			TierList tierList, Tier activeTier)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
+			_tierList = tierList;
+			_activeTier = activeTier;
+			_battleType = battleType;
+			_season = season;
+			_rankingPokemonInCount = rankingPokemonInCount;
+			_rankingPokemonDownCount = rankingPokemonDownCount;
 		}
 
-		public List<DetailedPokemonInformation> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, int battleType, List<DetailedPokemonInformation> pokemon = null) {
+		private readonly Func<IPokemonIdentifiable, TierList, Tier, bool> IsInActiveTierOrBelow = (proposal, tierList, activeTier) => 
+		{
+			var proposalTierEntry = tierList.GetById (proposal.MonsNo, proposal.FormNo);
+
+			return proposalTierEntry.IsInTierOrBelow(activeTier);
+		};
+
+		public List<DetailedPokemonInformation> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
+
 			if (initialTeam == null || initialTeam.Count == 0) {
 				throw new ArgumentException ("Initial team must not be empty or null!", "initialTeam");
 			}
@@ -33,7 +55,7 @@ namespace Pokemon.Team.Builder
 			// Retrieve Information on each team member
 			foreach (var teamMember in initialTeam) 
 			{
-				var teamMemberInfo = GetPokemonDetails (teamMember, battleType);
+				var teamMemberInfo = GetPokemonDetails (teamMember);
 
 				if (!pokemon.Contains (teamMemberInfo)) {
 					pokemon.Add (teamMemberInfo);
@@ -44,6 +66,7 @@ namespace Pokemon.Team.Builder
 			}
 
 			var orderedMembers = proposedMembers
+				.Where (proposal => IsInActiveTierOrBelow(proposal.Key, _tierList, _activeTier))
 				.Where (proposal => pokemon.All(poke => (PokemonIdentifier) poke != (PokemonIdentifier) proposal.Key))
 				.OrderByDescending (pair => pair.Value)
 				.ToList();
@@ -55,9 +78,9 @@ namespace Pokemon.Team.Builder
 			}
 
 			initialTeam.Add (bestMember);
-			pokemon.Add (GetPokemonDetails (bestMember, battleType));
+			pokemon.Add (GetPokemonDetails (bestMember));
 
-			return GetProposedPokemonByUsage (initialTeam, battleType, pokemon);
+			return GetProposedPokemonByUsage (initialTeam, pokemon);
 		}
 
 		/// <summary>
@@ -65,8 +88,17 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
-		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId, int battleType) {
-			return _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, battleType);
+		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId) {
+			var information = _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount);
+
+			if (information.RankingPokemonDown != null) 
+			{
+				information.RankingPokemonDown = information.RankingPokemonDown
+					.Where (poke => IsInActiveTierOrBelow (poke, _tierList, _activeTier))
+					.ToList ();
+			}
+
+			return information;
 		}
 
 		/// <summary>

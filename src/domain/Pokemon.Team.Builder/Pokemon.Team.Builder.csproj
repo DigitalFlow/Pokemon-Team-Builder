@@ -54,7 +54,6 @@
     <Compile Include="ApiConnector\PokemonMetaDataRetriever.cs" />
     <Compile Include="ApiConnector\PokemonUsageRetriever.cs" />
     <Compile Include="Model\Pokemon.cs" />
-    <Compile Include="Serialization\Tier.cs" />
     <Compile Include="Web\HttpClientWrapper.cs" />
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />
@@ -86,6 +85,10 @@
     <Compile Include="Serialization\TierListSerializer.cs" />
     <Compile Include="Logic\TierList.cs" />
     <Compile Include="Model\Tiers\PokemonTierEntry.cs" />
+    <Compile Include="Serialization\TierSerializer.cs" />
+    <Compile Include="Logic\Tier.cs" />
+    <Compile Include="Logic\TierHierarchy.cs" />
+    <Compile Include="Model\IPokemonIdentifiable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 using NLog;
 using Pokemon.Team.Builder.Model;
 using Pokemon.Team.Builder.UI;
+using Pokemon.Team.Builder.Serialization;
 
 public partial class MainWindow : Window
 {
 	private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private const string BattleTypeConfigKey = "BattleType";
+	private const string SeasonConfigKey = "Season";
 	private const string TierConfigKey = "Tier";
+	private const string AvailableTiersConfigKey = "PathToAvailableTiersXml";
+	private const string TierListConfigKey = "PathToTierListXml";
+	private const string RankingPokemonInCountConfigKey = "RankingPokemonInCount";
+	private const string RankingPokemonDownCountConfigKey = "RankingPokemonDownCount";
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
@@ -34,6 +40,7 @@ public partial class MainWindow : Window
 	private Grid _moves;
 
     private TierList _tierList;
+	private TierHierarchy _tierHierarchy;
 
 	private List<DetailedPokemonInformation> _latestTeam = new List<DetailedPokemonInformation> ();
 
@@ -99,18 +106,23 @@ public partial class MainWindow : Window
 		_progressBar.Pulse ();
 	}
 
-    protected TierList InitializeTierList()
+	protected TierList GetTierList()
     {
-        using (var httpClient = new HttpClientWrapper(new Uri("https://play.pokemonshowdown.com/data/")))
+		using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeShowdownUrl"))))
         {
             using (var tierRetriever = new TierListRetriever(httpClient))
             {
                 var tierManager = new TierListManager(tierRetriever);
 
-                return tierManager.GetTierList();
+				return tierManager.GetTierList (ConfigManager.GetSetting(TierListConfigKey));
             }
         }
     }
+
+	protected List<Tier> GetTiers()
+	{
+		return TierSerializer.ParseFromFile(ConfigManager.GetSetting(AvailableTiersConfigKey));
+	}
 
     protected async void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
     {
@@ -118,7 +130,7 @@ public partial class MainWindow : Window
 
         await Task.Run(() =>
         {
-            using (var httpClient = new HttpClientWrapper(new Uri("http://pokeapi.co/")))
+				using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeApiUrl"))))
             {
                 using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
                 {
@@ -214,7 +226,9 @@ public partial class MainWindow : Window
 
 	protected void OnSelectTier(object sender, EventArgs e)
 	{
-		var tiers = new List<string>{ "AG", "Uber", "OU", "LC" };
+		var tiers = _tierHierarchy.GetAllWithSubTiers();
+
+		var activeTier = ConfigManager.GetSetting (TierConfigKey);
 
 		var listStore = new ListStore (typeof(string));
 
@@ -225,8 +239,12 @@ public partial class MainWindow : Window
 		_chooseBox.PackStart (renderer, false);
 		_chooseBox.AddAttribute (renderer, "text", 0);
 
-		foreach (var tier in tiers) {
-			listStore.AppendValues (tier);
+		for (var i = 0; i < tiers.Count; i++) {
+			listStore.AppendValues (tiers[i]);
+
+			if (tiers [i].Equals (activeTier, StringComparison.InvariantCultureIgnoreCase)) {
+				_chooseBox.Active = i;
+			}
 		}
 
 		_dialogBoxOk.Clicked += OnChooseTierOk;
@@ -290,10 +308,12 @@ public partial class MainWindow : Window
 
 	protected void OnChooseTierOk(object sender, EventArgs e)
 	{
-		var value = _chooseBox.Active;
+		TreeIter tree;
+		_chooseBox.GetActiveIter (out tree);
 
-		ConfigManager.WriteSetting (TierConfigKey, value.ToString ());
+		var tierName = (string)_chooseBox.Model.GetValue (tree, 0);
 
+		ConfigManager.WriteSetting (TierConfigKey, tierName);
 		ResetChooseDialog ();
 	}
 
@@ -308,7 +328,8 @@ public partial class MainWindow : Window
 
 	private void ResetChooseDialog()
 	{
-		//_dialogBoxOk.Clicked -= OnChooseBattleTypeOk;
+		_dialogBoxOk.Clicked -= OnChooseTierOk;
+		_dialogBoxOk.Clicked -= OnChooseBattleTypeOk;
 		_chooseBox.Clear ();
 		_chooseDialog.Hide ();
 	}
@@ -323,7 +344,8 @@ public partial class MainWindow : Window
         if (!_pokedexLoadExecuted)
         {
             _pokedexLoadExecuted = true;
-            _tierList = InitializeTierList();
+			_tierList = GetTierList();
+			_tierHierarchy = new TierHierarchy(GetTiers ());
 
             InitializePokemonComboBoxes(_controlSets);
         }
@@ -348,15 +370,28 @@ public partial class MainWindow : Window
 
 	protected void ProposeTeam(List<PokemonIdentifier> initialTeam)
 	{
-		using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
+		using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeGLUrl"))))
 		{
 			using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
 			{
-				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever);
+				var activeTierName = ConfigManager.GetSetting (TierConfigKey);
+
+				var activeTier = _tierHierarchy.GetByShortName (activeTierName);
+
+				if (activeTier == null) {
+					_logger.Error ($"Team {activeTierName} is invalid, can't propose team");
+					return;
+				}
 
 				var battleType = int.Parse(ConfigManager.GetSetting (BattleTypeConfigKey));
+				var season = int.Parse(ConfigManager.GetSetting (SeasonConfigKey));
+				var rankingPokemonInCount = int.Parse(ConfigManager.GetSetting (RankingPokemonInCountConfigKey));
+				var rankingPokemonDownCount = int.Parse(ConfigManager.GetSetting (RankingPokemonDownCountConfigKey));
 
-				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam, battleType);
+				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
+					_tierList, activeTier);
+
+				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
 
 				for (var i = 0; i < _latestTeam.Count; i++)
 				{

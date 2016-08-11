@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pokemon.Team.Builder
 {
@@ -47,6 +48,11 @@ namespace Pokemon.Team.Builder
 		public string forme { get; set; }
 		public string formeLetter { get; set; }
 		public string requiredItem { get; set; }
+
+		public bool IsInTierOrBelow (Tier tier) {
+			return this.tier.Equals (tier.ShortName, StringComparison.InvariantCultureIgnoreCase)
+				|| (tier.SubTiers != null && tier.SubTiers.Any (t => IsInTierOrBelow(t)));
+		}
 	}
 }
 

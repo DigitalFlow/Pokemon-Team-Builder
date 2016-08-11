@@ -29,9 +29,13 @@ namespace Pokemon.Team.Builder
 			return _tierList.SingleOrDefault (poke => poke.species.Equals (name, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public PokemonTierEntry GetById(int id) 
+		public PokemonTierEntry GetById(int id, string formNo) 
 		{
-			return _tierList.SingleOrDefault (poke => poke.num == id);
+			var tierEntries = _tierList.Where (poke => poke.num == id);
+
+			var mega = tierEntries.FirstOrDefault(tier => tier.forme.Contains("Mega"));
+
+			return mega ?? tierEntries.FirstOrDefault ();
 		}
 	}
 }
