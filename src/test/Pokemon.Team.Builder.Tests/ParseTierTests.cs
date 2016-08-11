@@ -33,7 +33,7 @@ namespace Pokemon.Team.Builder.Tests
 
             var stream = new MemoryStream(Encoding.Unicode.GetBytes(xml));
 
-            var tiers = Tier.ParseFromStream(stream);
+			var tiers = TierSerializer.ParseFromStream(stream);
 
             var expected = new List<Tier>
             {
