@@ -53,7 +53,6 @@
     <Compile Include="ApiConnector\IPokemonUsageRetriever.cs" />
     <Compile Include="ApiConnector\PokemonMetaDataRetriever.cs" />
     <Compile Include="ApiConnector\PokemonUsageRetriever.cs" />
-    <Compile Include="Model\Pokemon.cs" />
     <Compile Include="Web\HttpClientWrapper.cs" />
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="Logic\Pokedex.cs" />
     <Compile Include="Logic\PokemonAnalyzer.cs" />
     <Compile Include="Model\IRankable.cs" />
+    <Compile Include="Model\Pokemon.cs" />
     <Compile Include="Logic\RankingCreator.cs" />
     <Compile Include="ApiConnector\ITierListRetriever.cs" />
     <Compile Include="ApiConnector\TierListRetriever.cs" />
@@ -89,6 +89,26 @@
     <Compile Include="Logic\Tier.cs" />
     <Compile Include="Logic\TierHierarchy.cs" />
     <Compile Include="Model\IPokemonIdentifiable.cs" />
+    <Compile Include="Model\PokeAPI\AdvancedMetaDataResponse.cs" />
+    <Compile Include="Model\PokeAPI\Habitat.cs" />
+    <Compile Include="Model\PokeAPI\Color.cs" />
+    <Compile Include="Model\PokeAPI\Shape.cs" />
+    <Compile Include="Model\PokeAPI\Name.cs" />
+    <Compile Include="Model\PokeAPI\EggGroup.cs" />
+    <Compile Include="Model\PokeAPI\Generation.cs" />
+    <Compile Include="Model\PokeAPI\Version.cs" />
+    <Compile Include="Model\PokeAPI\Language.cs" />
+    <Compile Include="Model\PokeAPI\FlavorTextEntry.cs" />
+    <Compile Include="Model\PokeAPI\GrowthRate.cs" />
+    <Compile Include="Model\PokeAPI\Genera.cs" />
+    <Compile Include="Model\PokeAPI\EvolvesFromSpecies.cs" />
+    <Compile Include="Model\PokeAPI\PokemonDescriptor.cs" />
+    <Compile Include="Model\PokeAPI\Variety.cs" />
+    <Compile Include="Model\PokeAPI\EvolutionChain.cs" />
+    <Compile Include="Model\PokeAPI\Area.cs" />
+    <Compile Include="Model\PokeAPI\PalParkEncounter.cs" />
+    <Compile Include="Model\PokeAPI\PokedexRef.cs" />
+    <Compile Include="Model\PokeAPI\PokedexNumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

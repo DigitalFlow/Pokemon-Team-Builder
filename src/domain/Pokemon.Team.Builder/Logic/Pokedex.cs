@@ -26,7 +26,7 @@ namespace Pokemon.Team.Builder
 
 		public Pokemon GetByName(string name) 
 		{
-			return _pokemon.SingleOrDefault (poke => poke.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase));
+			return _pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));
 		}
 
 		public Pokemon GetById(int id) 

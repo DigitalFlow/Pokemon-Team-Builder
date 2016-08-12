@@ -21,8 +21,21 @@ namespace Pokemon.Team.Builder
             {
                 var pokedexEntry = new XElement("Pokemon");
 
-                pokedexEntry.Add(new XElement("Id", entry.Id));
-                pokedexEntry.Add(new XElement("Name", entry.Name));
+				pokedexEntry.Add(new XElement("Id", entry.Id));     
+
+				var names = new XElement("Names");
+
+				foreach (var name in entry.Names) {
+					var nameElement = new XElement("Name");
+
+					nameElement.Add (new XElement ("Name", name.name));
+					nameElement.Add (new XElement ("Language", name.language.name));
+
+					names.Add (nameElement);
+				}
+
+				pokedexEntry.Add(names);
+
 				pokedexEntry.Add(new XElement("Image", entry.Image));
                 pokedexEntry.Add(new XElement("Url", entry.Url));
 
@@ -61,7 +74,10 @@ namespace Pokemon.Team.Builder
 			var pokemon = 
 				(from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
 				select new Pokemon {
-					Name = entry.Descendants("Name").First().Value,
+					Names = entry.Descendants("Names").Select(n => 
+						new Name { name = n.Element("Name").Element("Name").Value, 
+						language = new Language {name = n.Element("Name").Element("Language").Value }})
+						.ToList(),
 					Image = entry.Descendants("Image").FirstOrDefault()?.Value,
 					Id = int.Parse(entry.Descendants("Id").First().Value),
 					Url = entry.Descendants("Url").First().Value

@@ -157,8 +157,10 @@ public partial class MainWindow : Window
                             ((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues(pokemon.Id);
                             comboBox.Item2.AppendText(pokemon.Id.ToString());
 
-                            ((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues(pokemon.Name);
-                            comboBox.Item4.AppendText(pokemon.Name);
+							var name = pokemon.GetName("en");
+
+							((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues(name);
+                            comboBox.Item4.AppendText(name);
                         }
                     }
 
@@ -187,11 +189,12 @@ public partial class MainWindow : Window
         }
 
         var pokemon = _pokedex.GetById(pokemonId);
+		var name = pokemon.GetName ("en");
 
         // Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
-        if (senderBox.Item4.Entry.Text != pokemon.Name)
+        if (senderBox.Item4.Entry.Text != name)
         {
-            senderBox.Item4.Entry.Text = pokemon.Name;
+            senderBox.Item4.Entry.Text = name;
         }
 
 		senderBox.Item1.SetPicture(pokemon);
@@ -260,9 +263,9 @@ public partial class MainWindow : Window
 
         // Exit on no or invalid input
         if (string.IsNullOrEmpty(value) || _pokedex.All(poke =>  
-            !poke.Name.Equals(value, StringComparison.InvariantCultureIgnoreCase)))
+			!poke.GetName("en").Equals(value, StringComparison.InvariantCultureIgnoreCase)))
         {
-            if (_pokedex.All(poke => !poke.Name.StartsWith(value, StringComparison.InvariantCultureIgnoreCase)))
+			if (_pokedex.All(poke => !poke.GetName("en").StartsWith(value, StringComparison.InvariantCultureIgnoreCase)))
             {
                 ClearControlTuple(senderBox); 
             }

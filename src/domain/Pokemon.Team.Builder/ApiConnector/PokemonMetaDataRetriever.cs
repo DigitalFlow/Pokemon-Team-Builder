@@ -35,6 +35,21 @@ namespace Pokemon.Team.Builder
 			}
 		}
 
+		public void AppendAdvancedData(Pokemon pokemon) {
+			try {
+				var url = $"pokemon-species/{pokemon.Id}";
+
+				var json = _client.GetStringAsync (url).Result;
+				var advancedData = JsonConvert.DeserializeObject<AdvancedMetaDataResponse>(json);
+
+				pokemon.Names = advancedData.names;
+				pokemon.Varieties = advancedData.varieties;
+			}
+			catch (Exception ex) {
+				Logger.Error($"An error occured while retrieving picture for pokemon #{pokemon.Id}, message {ex.Message}");
+			}
+		}
+
 		public void AppendImage(Pokemon pokemon) {
 			try {
 				var url = $"media/sprites/pokemon/{pokemon.Id}.png";
@@ -90,12 +105,13 @@ namespace Pokemon.Team.Builder
 					var poke = new Pokemon
 						{
 							Id = id,
-							Name = name,
 							Url = item.Url
 						};
 
                     AppendImage(poke);
-					
+
+					AppendAdvancedData(poke);
+
 					pokemon.Add(poke);
 				}
 			}

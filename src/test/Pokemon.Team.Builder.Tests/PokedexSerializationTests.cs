@@ -20,19 +20,19 @@ namespace Pokemon.Team.Builder.Tests
                 new Pokemon
                 {
                     Id = 1,
-                    Name = "Bulbasaur",
+					Names = new List<Name>{ new Name { name = "Bulbasaur", language = new Language { name = "en" }}},
                     Url = "http://pokeapi.co/api/v2/pokemon/1/",
                 },
                 new Pokemon
                 {
                     Id = 4,
-                    Name = "Charmander",
+					Names = new List<Name>{ new Name { name = "Charmander", language = new Language { name = "en" }}},
                     Url = "http://pokeapi.co/api/v2/pokemon/4/",
                 },
                 new Pokemon
                 {
                     Id = 7,
-                    Name = "Squirtle",
+					Names = new List<Name>{ new Name { name = "Squirtle", language = new Language { name = "en" }}},
                     Url = "http://pokeapi.co/api/v2/pokemon/7/",
                 }
             };
@@ -41,23 +41,38 @@ namespace Pokemon.Team.Builder.Tests
                                 <Pokedex>
                                     <Pokemon>
                                         <Id>1</Id>
-                                        <Name>Bulbasaur</Name>
+										<Names>
+                                        	<Name>
+												<Name>Bulbasaur</Name>
+												<Language>en</Language>
+											</Name>
+										</Names>
                                         <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
                                     </Pokemon>
                                     <Pokemon>
                                         <Id>4</Id>
-                                        <Name>Charmander</Name>
+                                        <Names>
+                                        	<Name>
+												<Name>Charmander</Name>
+												<Language>en</Language>
+											</Name>
+										</Names>
                                         <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/4/</Url>
                                     </Pokemon>
                                     <Pokemon>
                                         <Id>7</Id>
-                                        <Name>Squirtle</Name>
+                                        <Names>
+                                        	<Name>
+												<Name>Squirtle</Name>
+												<Language>en</Language>
+											</Name>
+										</Names>
                                         <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/7/</Url>
                                     </Pokemon>
-                                </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "");
+                                </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "");
 
             // Act
             var xml = PokedexSerializer.SerializePokedex(pokemon)
