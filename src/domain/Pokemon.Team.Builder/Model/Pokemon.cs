@@ -6,7 +6,8 @@ using System.Xml.Serialization;
 
 namespace Pokemon.Team.Builder
 {
-    [Serializable]
+	[Serializable]
+	[XmlRoot("Pokemon")]
     public class Pokemon
     {
         public int Id { get; set; }

@@ -35,7 +35,7 @@ namespace Pokemon.Team.Builder.Console
 
 					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever, 1, 117, 10, 10, 2, new TierList(new List<PokemonTierEntry>()), new Tier());
 
-					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
+					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam).Result;
 
 					for (var i = 0; i < proposedTeam.Count; i++) {
 						_logger.Info ($"Pokemon Team Member #{i+1}: {proposedTeam[i].RankingPokemonInfo.MonsNo} - {proposedTeam[i].RankingPokemonInfo.Name}");
