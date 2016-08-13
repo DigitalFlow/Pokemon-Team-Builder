@@ -16,9 +16,10 @@ namespace Pokemon.Team.Builder
 		private int _season;
 		private int _rankingPokemonInCount;
 		private int _rankingPokemonDownCount;
+        private int _languageId;
 
 		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
-			TierList tierList, Tier activeTier)
+			int languageId, TierList tierList, Tier activeTier)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 			_tierList = tierList;
@@ -27,6 +28,7 @@ namespace Pokemon.Team.Builder
 			_season = season;
 			_rankingPokemonInCount = rankingPokemonInCount;
 			_rankingPokemonDownCount = rankingPokemonDownCount;
+            _languageId = languageId;
 		}
 
 		private readonly Func<IPokemonIdentifiable, TierList, Tier, bool> IsInActiveTierOrBelow = (proposal, tierList, activeTier) => 
@@ -89,7 +91,7 @@ namespace Pokemon.Team.Builder
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
 		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId) {
-			var information = _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount);
+			var information = _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId);
 
 			if (information.RankingPokemonDown != null) 
 			{
@@ -97,7 +99,7 @@ namespace Pokemon.Team.Builder
 					.Where (poke => IsInActiveTierOrBelow (poke, _tierList, _activeTier))
 					.ToList ();
 			}
-
+            
 			return information;
 		}
 

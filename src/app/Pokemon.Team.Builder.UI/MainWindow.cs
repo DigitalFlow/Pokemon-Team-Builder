@@ -396,9 +396,12 @@ public partial class MainWindow : Window
 				var season = int.Parse(ConfigManager.GetSetting (SeasonConfigKey));
 				var rankingPokemonInCount = int.Parse(ConfigManager.GetSetting (RankingPokemonInCountConfigKey));
 				var rankingPokemonDownCount = int.Parse(ConfigManager.GetSetting (RankingPokemonDownCountConfigKey));
+                var languageCode = ConfigManager.GetSetting(LanguageConfigKey);
+
+                var languageId = languageCode.ToLanguageId();
 
 				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
-					_tierList, activeTier);
+					languageId, _tierList, activeTier);
 
 				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
 

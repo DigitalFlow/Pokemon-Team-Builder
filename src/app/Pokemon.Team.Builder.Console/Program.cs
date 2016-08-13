@@ -33,7 +33,7 @@ namespace Pokemon.Team.Builder.Console
 				{
 					var initialTeam = args.Select(arg => new PokemonIdentifier(Int32.Parse(arg))).ToList();
 
-					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever, 1, 117, 10, 10, new TierList(new List<PokemonTierEntry>()), new Tier());
+					var pokemonProposer = new PokemonProposer (pokemonUsageRetriever, 1, 117, 10, 10, 2, new TierList(new List<PokemonTierEntry>()), new Tier());
 
 					var proposedTeam = pokemonProposer.GetProposedPokemonByUsage (initialTeam);
 
