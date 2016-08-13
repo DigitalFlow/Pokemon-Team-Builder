@@ -8,6 +8,7 @@ namespace Pokemon.Team.Builder
 {
     [Serializable]
     [XmlRoot("Pokedex")]
+	[XmlInclude(typeof(Pokemon))]
 	public class Pokedex : IEnumerable<Pokemon>
 	{
 		public List<Pokemon> Pokemon;

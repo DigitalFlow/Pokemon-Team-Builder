@@ -43,6 +43,7 @@ namespace Pokemon.Team.Builder
 				var advancedData = JsonConvert.DeserializeObject<AdvancedMetaDataResponse>(json);
 
 				pokemon.Names = advancedData.names;
+				pokemon.TextEntries = advancedData.flavor_text_entries;
 				pokemon.Varieties = advancedData.varieties;
 			}
 			catch (Exception ex) {
@@ -100,19 +101,19 @@ namespace Pokemon.Team.Builder
 						continue;
 					}
 
-					var name = char.ToUpperInvariant(item.Name[0]) + item.Name.Substring(1);
-
 					var poke = new Pokemon
-						{
-							Id = id,
-							Url = item.Url
-						};
+					{
+						Id = id,
+						Url = item.Url
+					};
 
                     AppendImage(poke);
 
 					AppendAdvancedData(poke);
 
 					pokemon.Add(poke);
+
+					return pokemon;
 				}
 			}
 			while (!string.IsNullOrEmpty(response.Next));

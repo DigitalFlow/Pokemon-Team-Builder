@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using System.Xml;
 
 namespace Pokemon.Team.Builder
 {
@@ -41,7 +42,13 @@ namespace Pokemon.Team.Builder
             using (var fileStream = file.OpenRead())
             {
                 var serializer = new XmlSerializer(typeof(TierList));
-                return (TierList) serializer.Deserialize(fileStream);
+
+				// Use this to not fail on invalid characters
+				var xmlReader = new XmlTextReader (fileStream) {
+					Normalization = false
+				};
+
+				return (TierList) serializer.Deserialize(xmlReader);
             }
         }
 	}

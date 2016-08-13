@@ -2,6 +2,7 @@
 
 namespace Pokemon.Team.Builder
 {
+	[Serializable]
 	public class FlavorTextEntry
 	{
 		public Version version { get; set; }

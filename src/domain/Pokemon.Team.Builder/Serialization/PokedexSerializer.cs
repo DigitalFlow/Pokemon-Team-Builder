@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using System.Xml;
 
 namespace Pokemon.Team.Builder
 {
@@ -15,14 +17,25 @@ namespace Pokemon.Team.Builder
             
             using (var stringWriter = new StringWriter())
             {
-                serializer.Serialize(stringWriter, pokedex);
+				var settings = new XmlWriterSettings 
+				{
+					// TODO: Fix issues with text escapers (such as \n) from response that break xml and check characters
+					CheckCharacters = false,
+					Encoding = Encoding.Unicode,
+					NewLineHandling = NewLineHandling.Entitize,
+					Indent = true
+				};
 
-                return stringWriter.ToString();
+				using (var writer = XmlTextWriter.Create (stringWriter, settings))  {
+					serializer.Serialize (writer, pokedex);
+
+					return stringWriter.ToString ();
+				}
             }
         }
 
 		public static void SavePokedexToFile(Pokedex pokedex, string filePath){
-			File.WriteAllText(filePath, SerializePokedex(pokedex), System.Text.Encoding.Unicode);
+			File.WriteAllText(filePath, SerializePokedex(pokedex), Encoding.Unicode);
 		}
 
 		public static Pokedex LoadPokedexFromFile(string filePath){
@@ -37,10 +50,17 @@ namespace Pokemon.Team.Builder
 				return null;
 			}
 
-            using (var fileStream = file.OpenRead())
+			using (var fileStream = file.OpenRead())
             {
                 var serializer = new XmlSerializer(typeof(Pokedex));
-                return (Pokedex) serializer.Deserialize(fileStream);
+
+				// Use this to not fail on invalid characters
+				var xmlReader = new XmlTextReader (fileStream) {
+					// TODO: Enable normalization once text escaper issues are fixed
+					Normalization = false
+				};
+
+				return (Pokedex) serializer.Deserialize(xmlReader);
             }		
 		}
     }
