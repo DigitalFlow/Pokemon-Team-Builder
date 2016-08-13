@@ -19,14 +19,13 @@ namespace Pokemon.Team.Builder
             {
 				var settings = new XmlWriterSettings 
 				{
-					// TODO: Fix issues with text escapers (such as \n) from response that break xml and check characters
-					CheckCharacters = false,
+					CheckCharacters = true,
 					Encoding = Encoding.Unicode,
 					NewLineHandling = NewLineHandling.Entitize,
 					Indent = true
 				};
 
-				using (var writer = XmlTextWriter.Create (stringWriter, settings))  {
+				using (var writer = XmlWriter.Create(stringWriter, settings))  {
 					serializer.Serialize (writer, pokedex);
 
 					return stringWriter.ToString ();
@@ -56,8 +55,7 @@ namespace Pokemon.Team.Builder
 
 				// Use this to not fail on invalid characters
 				var xmlReader = new XmlTextReader (fileStream) {
-					// TODO: Enable normalization once text escaper issues are fixed
-					Normalization = false
+					Normalization = true
 				};
 
 				return (Pokedex) serializer.Deserialize(xmlReader);
