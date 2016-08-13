@@ -22,8 +22,9 @@ namespace Pokemon.Team.Builder.UI
                     return 4;
                 case "de":
                     return 5;
-                default:
-                    throw new InvalidOperationException($"The language code {languageCode} is not valid");
+				default:
+					// Fall back to english for all other languages, since the GL API does not support more languages
+					return 2;
             }
         }
     }
