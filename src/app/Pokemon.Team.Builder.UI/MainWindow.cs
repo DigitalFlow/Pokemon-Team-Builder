@@ -21,6 +21,7 @@ public partial class MainWindow : Window
 	private const string TierListConfigKey = "PathToTierListXml";
 	private const string RankingPokemonInCountConfigKey = "RankingPokemonInCount";
 	private const string RankingPokemonDownCountConfigKey = "RankingPokemonDownCount";
+    private const string LanguageConfigKey = "Language";
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
     private Pokedex _pokedex;
@@ -152,12 +153,14 @@ public partial class MainWindow : Window
                             TextColumn = 0
                         };
 
+                        var language = ConfigManager.GetSetting(LanguageConfigKey);
+
                         foreach (var pokemon in _pokedex)
                         {
                             ((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues(pokemon.Id);
                             comboBox.Item2.AppendText(pokemon.Id.ToString());
 
-							var name = pokemon.GetName("en");
+                            var name = pokemon.GetName(language);
 
 							((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues(name);
                             comboBox.Item4.AppendText(name);
@@ -189,7 +192,8 @@ public partial class MainWindow : Window
         }
 
         var pokemon = _pokedex.GetById(pokemonId);
-		var name = pokemon.GetName ("en");
+        var language = ConfigManager.GetSetting(LanguageConfigKey);
+        var name = pokemon.GetName (language);
 
         // Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
         if (senderBox.Item4.Entry.Text != name)
@@ -261,11 +265,13 @@ public partial class MainWindow : Window
 
         var value = senderBox.Item4.Entry.Text.Trim();
 
+        var language = ConfigManager.GetSetting(LanguageConfigKey);
+
         // Exit on no or invalid input
         if (string.IsNullOrEmpty(value) || _pokedex.All(poke =>  
-			!poke.GetName("en").Equals(value, StringComparison.InvariantCultureIgnoreCase)))
+			!poke.GetName(language).Equals(value, StringComparison.InvariantCultureIgnoreCase)))
         {
-			if (_pokedex.All(poke => !poke.GetName("en").StartsWith(value, StringComparison.InvariantCultureIgnoreCase)))
+			if (_pokedex.All(poke => !poke.GetName(language).StartsWith(value, StringComparison.InvariantCultureIgnoreCase)))
             {
                 ClearControlTuple(senderBox); 
             }
