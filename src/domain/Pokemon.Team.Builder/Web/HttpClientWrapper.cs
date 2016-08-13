@@ -15,13 +15,22 @@ namespace Pokemon.Team.Builder
 
 		public Uri BaseAddress { get; set; }
 
+        public TimeSpan TimeOut { get
+            {
+                return _client.Timeout;
+            }
+            set
+            {
+                _client.Timeout = value;
+            }
+        }
+
         public HttpClientWrapper(Uri baseUrl)
         {
             _client = new HttpClient
             {
                 BaseAddress = baseUrl
             };
-
 			BaseAddress = _client.BaseAddress;
         }
 

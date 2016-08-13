@@ -129,15 +129,15 @@ public partial class MainWindow : Window
     {
 		_loadWindow.Show();
 
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
-				using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeApiUrl"))))
+			using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeApiUrl"))))
             {
                 using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
                 {
 					pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
 
-                    _pokedex = new PokedexManager(pokemonMetaDataRetriever).GetPokemon();
+                    _pokedex = await new PokedexManager(pokemonMetaDataRetriever).GetPokemon().ConfigureAwait(false);
 
                     foreach (var comboBox in comboBoxes)
                     {
@@ -170,7 +170,7 @@ public partial class MainWindow : Window
 					UpdateProgressBar(1, 1);
                 }
             }
-        });
+        }).ConfigureAwait(false);
 
 		_loadWindow.Hide();
     }

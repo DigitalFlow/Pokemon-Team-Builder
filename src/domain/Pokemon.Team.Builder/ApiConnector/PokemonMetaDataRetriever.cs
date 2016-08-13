@@ -19,13 +19,15 @@ namespace Pokemon.Team.Builder
         public PokemonMetaDataRetriever(IHttpClient client)
         {
             _client = client;
+
+            _client.TimeOut = new TimeSpan(0, 30, 0);
         }
 
-        public List<Pokemon> RetrieveAllPokemon()
+        public async Task<List<Pokemon>> RetrieveAllPokemon()
         {
 			var simplePokemonData = RetrievePokemonSimpleData ();
 
-			return simplePokemonData;
+			return await simplePokemonData.ConfigureAwait(false);
         }
 
 		private void RaiseDataRetrievedEvent(int count, int progress)
@@ -35,11 +37,11 @@ namespace Pokemon.Team.Builder
 			}
 		}
 
-		public void AppendAdvancedData(Pokemon pokemon) {
+		public async Task AppendAdvancedData(Pokemon pokemon) {
 			try {
 				var url = $"api/v2/pokemon-species/{pokemon.Id}";
 
-				var json = _client.GetStringAsync (url).Result;
+				var json = await _client.GetStringAsync (url).ConfigureAwait(false);
 				var advancedData = JsonConvert.DeserializeObject<AdvancedMetaDataResponse>(json);
 
 				pokemon.Names = advancedData.names;
@@ -51,11 +53,11 @@ namespace Pokemon.Team.Builder
 			}
 		}
 
-		public void AppendImage(Pokemon pokemon) {
+		public async Task AppendImage(Pokemon pokemon) {
 			try {
 				var url = $"media/sprites/pokemon/{pokemon.Id}.png";
 
-                using (var defaultFrontSprite = _client.GetAsync (url).Result)
+                using (var defaultFrontSprite = await _client.GetAsync (url).ConfigureAwait(false))
 				{
 					var imageBytes = defaultFrontSprite.Content.ReadAsByteArrayAsync ().Result;
 					pokemon.Image = Convert.ToBase64String (imageBytes);
@@ -66,7 +68,7 @@ namespace Pokemon.Team.Builder
 			}
 		}
 
-		public List<Pokemon> RetrievePokemonSimpleData() {
+		public async Task<List<Pokemon>> RetrievePokemonSimpleData() {
 			var pokemon = new List<Pokemon>();
 
 			var url = "api/v2/pokemon/";
@@ -76,44 +78,55 @@ namespace Pokemon.Team.Builder
 
 			do
 			{
-				var json = _client.GetStringAsync(url).Result;
+				var json = await _client.GetStringAsync(url).ConfigureAwait(false);
+
+                var requests = new List<Task>();
 
 				response = JsonConvert.DeserializeObject<RetrievePokemonResponse>(json);
 				url = response.Next;
 
-				foreach (var item in response.Results) {
-					RaiseDataRetrievedEvent(response.Count, ++progress);
+                foreach (var item in response.Results)
+                {
+                    requests.Add(Task.Run(async () =>
+                    {
+                        RaiseDataRetrievedEvent(response.Count, ++progress);
 
-					var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-					var id = 0;
+                        var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                        var id = 0;
 
-					if (!idMatch.Success)
-					{
-						Logger.Warn($"Failed to find ID in url {item.Url}");
-						continue;
-					}
+                        if (!idMatch.Success)
+                        {
+                            Logger.Warn($"Failed to find ID in url {item.Url}");
+                            return;
+                        }
 
-					var idString = idMatch.Value.Trim(new[] { '/' });
+                        var idString = idMatch.Value.Trim(new[] { '/' });
 
-					if(!int.TryParse(idString, out id))
-					{
-						Logger.Warn($"Failed to parse int {idString}");
-						continue;
-					}
+                        if (!int.TryParse(idString, out id))
+                        {
+                            Logger.Warn($"Failed to parse int {idString}");
+                            return;
+                        }
 
-					var poke = new Pokemon
-					{
-						Id = id,
-						Url = item.Url
-					};
+                        var poke = new Pokemon
+                        {
+                            Id = id,
+                            Url = item.Url
+                        };
 
-                    AppendImage(poke);
+                        var tasks = new List<Task>();
 
-					AppendAdvancedData(poke);
+                        tasks.Add(AppendImage(poke));
+                        tasks.Add(AppendAdvancedData(poke));
 
-					pokemon.Add(poke);
-				}
-			}
+                        await Task.WhenAll(tasks.ToArray());
+
+                        pokemon.Add(poke);
+                    }));
+                }
+
+                await Task.WhenAll(requests.ToArray());
+            }
 			while (!string.IsNullOrEmpty(response.Next));
 
 			return pokemon;

@@ -16,7 +16,8 @@ namespace Pokemon.Team.Builder
 		Task<HttpResponseMessage> GetAsync (string requestUri);
 		Task<byte[]> GetByteArrayAsync (string requestUri);
 		Task<Stream> GetStreamAsync (string requestUri);
+        TimeSpan TimeOut { get; set; }
 
-		Uri BaseAddress { get; set; }
+        Uri BaseAddress { get; set; }
     }
 }
