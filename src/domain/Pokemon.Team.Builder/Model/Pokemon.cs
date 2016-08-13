@@ -14,7 +14,12 @@ namespace Pokemon.Team.Builder
 		public string Image { get; set; }
 
 		public string GetName(string language) {
-			return Names.SingleOrDefault(n => n.language.name == language).name;
+            if (Names == null)
+            {
+                return string.Empty;
+            }
+
+			return Names.SingleOrDefault(n => n.language != null && n.language.name == language)?.name ?? string.Empty;
 		}
 
         public override string ToString()
