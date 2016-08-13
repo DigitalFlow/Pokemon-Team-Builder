@@ -42,10 +42,10 @@ namespace Pokemon.Team.Builder.Tests
                                     <Pokemon>
                                         <Id>1</Id>
 										<Names>
-                                        	<Name>
+                                        	<NameByLanguage>
 												<Name>Bulbasaur</Name>
 												<Language>en</Language>
-											</Name>
+											</NameByLanguage>
 										</Names>
                                         <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
@@ -53,10 +53,10 @@ namespace Pokemon.Team.Builder.Tests
                                     <Pokemon>
                                         <Id>4</Id>
                                         <Names>
-                                        	<Name>
+                                        	<NameByLanguage>
 												<Name>Charmander</Name>
 												<Language>en</Language>
-											</Name>
+											</NameByLanguage>
 										</Names>
                                         <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/4/</Url>
@@ -64,10 +64,10 @@ namespace Pokemon.Team.Builder.Tests
                                     <Pokemon>
                                         <Id>7</Id>
                                         <Names>
-                                        	<Name>
+                                        	<NameByLanguage>
 												<Name>Squirtle</Name>
 												<Language>en</Language>
-											</Name>
+											</NameByLanguage>
 										</Names>
                                         <Image />
                                         <Url>http://pokeapi.co/api/v2/pokemon/7/</Url>

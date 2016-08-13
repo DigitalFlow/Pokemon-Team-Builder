@@ -26,7 +26,7 @@ namespace Pokemon.Team.Builder
 				var names = new XElement("Names");
 
 				foreach (var name in entry.Names) {
-					var nameElement = new XElement("Name");
+					var nameElement = new XElement("NameByLanguage");
 
 					nameElement.Add (new XElement ("Name", name.name));
 					nameElement.Add (new XElement ("Language", name.language.name));
@@ -74,9 +74,9 @@ namespace Pokemon.Team.Builder
 			var pokemon = 
 				(from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
 				select new Pokemon {
-					Names = entry.Descendants("Names").Select(n => 
-						new Name { name = n.Element("Name").Element("Name").Value, 
-						language = new Language {name = n.Element("Name").Element("Language").Value }})
+					Names = entry.Descendants("NameByLanguage").Select(n => 
+						new Name { name = n.Element("Name").Value, 
+						language = new Language {name = n.Element("Language").Value }})
 						.ToList(),
 					Image = entry.Descendants("Image").FirstOrDefault()?.Value,
 					Id = int.Parse(entry.Descendants("Id").First().Value),
