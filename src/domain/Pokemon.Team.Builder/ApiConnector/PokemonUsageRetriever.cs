@@ -21,7 +21,7 @@ namespace Pokemon.Team.Builder
             _client = client;
         }
 
-		public DetailedPokemonInformation GetPokemonUsageInformation(PokemonIdentifier pokemonId, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
+		public async Task<DetailedPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier pokemonId, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
 			int rankingPokemonDownCount = 10, int languageId = 2)
         {
 			var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
@@ -57,7 +57,7 @@ namespace Pokemon.Team.Builder
 			{
 				try
 				{
-            		var content = response.Content.ReadAsStringAsync().Result;
+					var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
 		            var pokemonUsageResponse = JsonConvert.DeserializeObject<DetailedPokemonInformation>(content);
 

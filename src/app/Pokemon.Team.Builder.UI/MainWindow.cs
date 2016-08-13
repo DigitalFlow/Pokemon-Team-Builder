@@ -102,9 +102,14 @@ public partial class MainWindow : Window
 
 	private void UpdateProgressBar (int count, int progress)
 	{
-		_progressBar.Text = $"{progress} / {count}";
-		_progressBar.Fraction = progress / count;
-		_progressBar.Pulse ();
+		// We need to use Application.Invoke since we receive events on another thread.
+		// Only the main thread may access UI components.
+		// By using Application.Invoke, we're sure that the main thread is used for the actions.
+		Application.Invoke (delegate {
+			_progressBar.Text = $"{progress} / {count}";
+			_progressBar.Fraction = progress / count;
+			_progressBar.Pulse ();
+		});
 	}
 
 	protected TierList GetTierList()
@@ -138,42 +143,46 @@ public partial class MainWindow : Window
 					pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
 
                     _pokedex = await new PokedexManager(pokemonMetaDataRetriever).GetPokemon().ConfigureAwait(false);
-
-                    foreach (var comboBox in comboBoxes)
-                    {
-                        comboBox.Item2.Entry.Completion = new EntryCompletion
-                        {
-                            Model = new ListStore(typeof(string)),
-                            TextColumn = 0
-                        };
-
-                        comboBox.Item4.Entry.Completion = new EntryCompletion
-                        {
-                            Model = new ListStore(typeof(string)),
-                            TextColumn = 0
-                        };
-
-                        var language = ConfigManager.GetSetting(LanguageConfigKey);
-
-                        foreach (var pokemon in _pokedex)
-                        {
-                            ((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues(pokemon.Id);
-                            comboBox.Item2.AppendText(pokemon.Id.ToString());
-
-                            var name = pokemon.GetName(language);
-
-							((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues(name);
-                            comboBox.Item4.AppendText(name);
-                        }
-                    }
-
-					UpdateProgressBar(1, 1);
                 }
             }
         }).ConfigureAwait(false);
 
+		FillComboBoxes (comboBoxes);
+
 		_loadWindow.Hide();
     }
+
+	protected void FillComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes) 
+	{
+		foreach (var comboBox in comboBoxes)
+		{
+			Application.Invoke (delegate {
+				comboBox.Item2.Entry.Completion = new EntryCompletion {
+					Model = new ListStore (typeof(string)),
+					TextColumn = 0
+				};
+
+				comboBox.Item4.Entry.Completion = new EntryCompletion {
+					Model = new ListStore (typeof(string)),
+					TextColumn = 0
+				};
+
+				var language = ConfigManager.GetSetting (LanguageConfigKey);
+
+				foreach (var pokemon in _pokedex) {
+					((ListStore)comboBox.Item2.Entry.Completion.Model).AppendValues (pokemon.Id);
+					comboBox.Item2.AppendText (pokemon.Id.ToString ());
+
+					var name = pokemon.GetName (language);
+
+					((ListStore)comboBox.Item4.Entry.Completion.Model).AppendValues (name);
+					comboBox.Item4.AppendText (name);
+				}
+			});
+		}
+
+		UpdateProgressBar(1, 1);
+	}
 
     protected void OnPokemonSelectionById(object sender, EventArgs e)
     {
@@ -377,7 +386,7 @@ public partial class MainWindow : Window
         Application.Quit();
     }
 
-	protected void ProposeTeam(List<PokemonIdentifier> initialTeam)
+	protected async Task ProposeTeam(List<PokemonIdentifier> initialTeam)
 	{
 		using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeGLUrl"))))
 		{
@@ -403,50 +412,57 @@ public partial class MainWindow : Window
 				var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
 					languageId, _tierList, activeTier);
 
-				_latestTeam = pokemonProposer.GetProposedPokemonByUsage(initialTeam);
+				_latestTeam = await pokemonProposer.GetProposedPokemonByUsage(initialTeam).ConfigureAwait(false);
 
-				for (var i = 0; i < _latestTeam.Count; i++)
-				{
-					_controlSets[i].Item2.Active = _latestTeam[i].RankingPokemonInfo.MonsNo - 1;
-					_controlSets[i].Item3.Active = int.Parse(_latestTeam[i].RankingPokemonInfo.FormNo);
-				}
+				Application.Invoke (delegate {
+					for (var i = 0; i < _latestTeam.Count; i++) {
+						_controlSets [i].Item2.Active = _latestTeam [i].RankingPokemonInfo.MonsNo - 1;
+						_controlSets [i].Item3.Active = int.Parse (_latestTeam [i].RankingPokemonInfo.FormNo);
+					}
+				});
 
 				var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDown, 10);
 
-				_counters
+				Application.Invoke (delegate {
+					_counters
 					.AddItems (mostDangerousCounters,
-					new List<Func<RankingPokemonDown, Widget>> {
-							rank => new Image().SetPicture(_pokedex.GetById (((RankingPokemonDown) rank).MonsNo), 48, 48),
-							rank => new Label(((RankingPokemonDown) rank).MonsNo.ToString()),
-							rank => new Label(((RankingPokemonDown) rank).FormNo),
-							rank => new Label(((RankingPokemonDown) rank).Name)
-					});
+						new List<Func<RankingPokemonDown, Widget>> {
+							rank => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonDown)rank).MonsNo), 48, 48),
+							rank => new Label (((RankingPokemonDown)rank).MonsNo.ToString ()),
+							rank => new Label (((RankingPokemonDown)rank).FormNo),
+							rank => new Label (((RankingPokemonDown)rank).Name)
+						});
 
-				_counters.ShowAll();
+					_counters.ShowAll ();
+				});
 
 				var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10,
 					poke => mostDangerousCounters.All(counter => (PokemonIdentifier) poke != (PokemonIdentifier) counter));
 
-				_switchIns
+				Application.Invoke (delegate {
+					_switchIns
 					.AddItems (saveSwitchIns,
 						new List<Func<RankingPokemonSufferer, Widget>> {
-							rank => new Image().SetPicture(_pokedex.GetById (((RankingPokemonSufferer) rank).MonsNo), 48, 48),
-							rank => new Label(((RankingPokemonSufferer) rank).MonsNo.ToString()),
-							rank => new Label(((RankingPokemonSufferer) rank).FormNo),
-							rank => new Label(((RankingPokemonSufferer) rank).Name)
+							rank => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonSufferer)rank).MonsNo), 48, 48),
+							rank => new Label (((RankingPokemonSufferer)rank).MonsNo.ToString ()),
+							rank => new Label (((RankingPokemonSufferer)rank).FormNo),
+							rank => new Label (((RankingPokemonSufferer)rank).Name)
 						});
 
-				_switchIns.ShowAll();
+					_switchIns.ShowAll ();
+				});
 
 				var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
 
-				_moves
+				Application.Invoke (delegate {
+					_moves
 					.AddItems (dangerousMoves,
 						new List<Func<RankingPokemonDownWaza, Widget>> {
-							rank => new Label(((RankingPokemonDownWaza) rank).WazaName)
+							rank => new Label (((RankingPokemonDownWaza)rank).WazaName)
 						});
 
-				_moves.ShowAll();
+					_moves.ShowAll ();
+				});
 			}
 		}
 	}
@@ -470,10 +486,7 @@ public partial class MainWindow : Window
                 })
             .ToList();
 
-        await Task.Run(() =>
-        {
-			ProposeTeam(initialTeam);
-    	});
+		await ProposeTeam (initialTeam).ConfigureAwait (false);
 
 		_waitWindow.Hide();
     }

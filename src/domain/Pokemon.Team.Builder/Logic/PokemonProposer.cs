@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Pokemon.Team.Builder.Model;
 using Pokemon.Team.Builder.Serialization;
+using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder
 {
@@ -38,7 +39,7 @@ namespace Pokemon.Team.Builder
 			return proposalTierEntry.IsInTierOrBelow(activeTier);
 		};
 
-		public List<DetailedPokemonInformation> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
+		public async Task<List<DetailedPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
 
 			if (initialTeam == null || initialTeam.Count == 0) {
 				throw new ArgumentException ("Initial team must not be empty or null!", "initialTeam");
@@ -57,7 +58,7 @@ namespace Pokemon.Team.Builder
 			// Retrieve Information on each team member
 			foreach (var teamMember in initialTeam) 
 			{
-				var teamMemberInfo = GetPokemonDetails (teamMember);
+				var teamMemberInfo = await GetPokemonDetails (teamMember).ConfigureAwait(false);
 
 				if (!pokemon.Contains (teamMemberInfo)) {
 					pokemon.Add (teamMemberInfo);
@@ -80,9 +81,9 @@ namespace Pokemon.Team.Builder
 			}
 
 			initialTeam.Add (bestMember);
-			pokemon.Add (GetPokemonDetails (bestMember));
+			pokemon.Add (await GetPokemonDetails (bestMember).ConfigureAwait(false));
 
-			return GetProposedPokemonByUsage (initialTeam, pokemon);
+			return await GetProposedPokemonByUsage (initialTeam, pokemon).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -90,8 +91,9 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
-		private DetailedPokemonInformation GetPokemonDetails(PokemonIdentifier pokemonId) {
-			var information = _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId);
+		private async Task<DetailedPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
+			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
+				.ConfigureAwait(false);
 
 			if (information.RankingPokemonDown != null) 
 			{
