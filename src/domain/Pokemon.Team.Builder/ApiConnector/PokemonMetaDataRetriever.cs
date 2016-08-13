@@ -112,8 +112,6 @@ namespace Pokemon.Team.Builder
 					AppendAdvancedData(poke);
 
 					pokemon.Add(poke);
-
-					return pokemon;
 				}
 			}
 			while (!string.IsNullOrEmpty(response.Next));
