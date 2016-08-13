@@ -2,36 +2,49 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.Xml.Serialization;
 
 namespace Pokemon.Team.Builder
 {
+    [Serializable]
+    [XmlRoot("Pokedex")]
 	public class Pokedex : IEnumerable<Pokemon>
 	{
-		private List<Pokemon> _pokemon;
+		public List<Pokemon> Pokemon;
+
+        public Pokedex ()
+        {
+            Pokemon = new List<Pokemon>();
+        }
 
 		public Pokedex (List<Pokemon> pokemon)
 		{
-			_pokemon = pokemon;
+			Pokemon = pokemon;
 		}
+
+        public void Add(object o)
+        {
+            Pokemon.Add(o as Pokemon);
+        }
 
 		IEnumerator<Pokemon> IEnumerable<Pokemon>.GetEnumerator() 
 		{
-			return _pokemon.GetEnumerator ();
+			return Pokemon.GetEnumerator ();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator() 
 		{
-			return _pokemon.GetEnumerator ();
+			return Pokemon.GetEnumerator ();
 		}
 
 		public Pokemon GetByName(string name) 
 		{
-			return _pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));
+			return Pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));
 		}
 
 		public Pokemon GetById(int id) 
 		{
-			return _pokemon.SingleOrDefault (poke => poke.Id == id);
+			return Pokemon.SingleOrDefault (poke => poke.Id == id);
 		}
 	}
 }

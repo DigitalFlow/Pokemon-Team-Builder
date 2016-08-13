@@ -2,63 +2,34 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Pokemon.Team.Builder
 {
     public static class PokedexSerializer
     {
-        public static string SerializePokedex(List<Pokemon> pokemon)
+        public static string SerializePokedex(Pokedex pokedex)
         {
-            var xmlDoc = new XDocument(new XDeclaration("1.0", "utf-16", null));
-            var pokemonRoot = new XElement("Pokedex");
-
-            xmlDoc.Add(pokemonRoot);
-
-            foreach (var entry in pokemon)
-            {
-                var pokedexEntry = new XElement("Pokemon");
-
-				pokedexEntry.Add(new XElement("Id", entry.Id));     
-
-				var names = new XElement("Names");
-
-				foreach (var name in entry.Names) {
-					var nameElement = new XElement("NameByLanguage");
-
-					nameElement.Add (new XElement ("Name", name.name));
-					nameElement.Add (new XElement ("Language", name.language.name));
-
-					names.Add (nameElement);
-				}
-
-				pokedexEntry.Add(names);
-
-				pokedexEntry.Add(new XElement("Image", entry.Image));
-                pokedexEntry.Add(new XElement("Url", entry.Url));
-
-                pokemonRoot.Add(pokedexEntry);
-            }
-
+            var serializer = new XmlSerializer(typeof(Pokedex));
+            
             using (var stringWriter = new StringWriter())
             {
-                xmlDoc.Save(stringWriter);
+                serializer.Serialize(stringWriter, pokedex);
 
                 return stringWriter.ToString();
             }
         }
 
-		public static void SavePokedexToFile(List<Pokemon> pokemon, string filePath){
-			File.WriteAllText(filePath, PokedexSerializer.SerializePokedex(pokemon), System.Text.Encoding.Unicode);
+		public static void SavePokedexToFile(Pokedex pokedex, string filePath){
+			File.WriteAllText(filePath, SerializePokedex(pokedex), System.Text.Encoding.Unicode);
 		}
 
-		public static List<Pokemon> LoadPokedexFromFile(string filePath){
+		public static Pokedex LoadPokedexFromFile(string filePath){
 			return DeserializePokedex (filePath);
 		}
 
-		public static List<Pokemon> DeserializePokedex(string filePath)
+		public static Pokedex DeserializePokedex(string filePath)
 		{
 			var file = new FileInfo(filePath);
 
@@ -66,25 +37,11 @@ namespace Pokemon.Team.Builder
 				return null;
 			}
 
-			var fileStream = file.OpenRead ();
-
-			var xmlDoc = XDocument.Load (fileStream);
-			var nameSpace = xmlDoc.Root.Name.Namespace;
-
-			var pokemon = 
-				(from entry in xmlDoc.Descendants (nameSpace + "Pokemon")
-				select new Pokemon {
-					Names = entry.Descendants("NameByLanguage").Select(n => 
-						new Name { name = n.Element("Name").Value, 
-						language = new Language {name = n.Element("Language").Value }})
-						.ToList(),
-					Image = entry.Descendants("Image").FirstOrDefault()?.Value,
-					Id = int.Parse(entry.Descendants("Id").First().Value),
-					Url = entry.Descendants("Url").First().Value
-				})
-				.ToList();
-
-			return pokemon;
+            using (var fileStream = file.OpenRead())
+            {
+                var serializer = new XmlSerializer(typeof(Pokedex));
+                return (Pokedex) serializer.Deserialize(fileStream);
+            }		
 		}
     }
 }

@@ -5,6 +5,7 @@ using Pokemon.Team.Builder;
 
 namespace Pokemon.Team.Builder
 {
+    [Serializable]
     public class Pokemon
     {
         public int Id { get; set; }

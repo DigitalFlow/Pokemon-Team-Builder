@@ -13,15 +13,15 @@ namespace Pokemon.Team.Builder
 		}
 
 		public Pokedex GetPokemon(){
-			var pokemon = PokedexSerializer.LoadPokedexFromFile ("pokedex.xml");
+			var pokedex = PokedexSerializer.LoadPokedexFromFile ("pokedex.xml");
 
-			if (pokemon == null) {
-				pokemon = _pokemonRetriever.RetrieveAllPokemon ();
+			if (pokedex == null) {
+				pokedex = new Pokedex(_pokemonRetriever.RetrieveAllPokemon ());
 
-				PokedexSerializer.SavePokedexToFile (pokemon, "pokedex.xml");
+				PokedexSerializer.SavePokedexToFile (pokedex, "pokedex.xml");
 			}
 
-			return new Pokedex(pokemon);
+			return pokedex;
 		}
 	}
 }

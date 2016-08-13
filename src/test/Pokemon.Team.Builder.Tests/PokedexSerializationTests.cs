@@ -20,62 +20,64 @@ namespace Pokemon.Team.Builder.Tests
                 new Pokemon
                 {
                     Id = 1,
-					Names = new List<Name>{ new Name { name = "Bulbasaur", language = new Language { name = "en" }}},
+                    Names = new List<Name>
+                    {
+                        new Name
+                        {
+                            name = "Bulbasaur",
+                            language = new Language
+                            {
+                                name = "en",
+                                url = "http://pokeapi.co/api/v2/language/9/"
+                            }
+                        }
+                    },
+                    Varieties = new List<Variety>
+                    {
+                        new Variety
+                        {
+                            is_default = true,
+                            pokemon = new PokemonDescriptor
+                            {
+                                name = "bulbasaur",
+                                url = "http://pokeapi.co/api/v2/pokemon/1/"
+                            }
+                        }
+                    },
                     Url = "http://pokeapi.co/api/v2/pokemon/1/",
-                },
-                new Pokemon
-                {
-                    Id = 4,
-					Names = new List<Name>{ new Name { name = "Charmander", language = new Language { name = "en" }}},
-                    Url = "http://pokeapi.co/api/v2/pokemon/4/",
-                },
-                new Pokemon
-                {
-                    Id = 7,
-					Names = new List<Name>{ new Name { name = "Squirtle", language = new Language { name = "en" }}},
-                    Url = "http://pokeapi.co/api/v2/pokemon/7/",
                 }
             };
 
+            var pokedex = new Pokedex(pokemon);
+
             var expectedXml = @"<?xml version=""1.0"" encoding=""utf-16""?>
-                                <Pokedex>
-                                    <Pokemon>
-                                        <Id>1</Id>
-										<Names>
-                                        	<NameByLanguage>
-												<Name>Bulbasaur</Name>
-												<Language>en</Language>
-											</NameByLanguage>
-										</Names>
-                                        <Image />
-                                        <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
-                                    </Pokemon>
-                                    <Pokemon>
-                                        <Id>4</Id>
-                                        <Names>
-                                        	<NameByLanguage>
-												<Name>Charmander</Name>
-												<Language>en</Language>
-											</NameByLanguage>
-										</Names>
-                                        <Image />
-                                        <Url>http://pokeapi.co/api/v2/pokemon/4/</Url>
-                                    </Pokemon>
-                                    <Pokemon>
-                                        <Id>7</Id>
-                                        <Names>
-                                        	<NameByLanguage>
-												<Name>Squirtle</Name>
-												<Language>en</Language>
-											</NameByLanguage>
-										</Names>
-                                        <Image />
-                                        <Url>http://pokeapi.co/api/v2/pokemon/7/</Url>
-                                    </Pokemon>
+                                <Pokedex xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+                                  <Pokemon>
+                                    <Id>1</Id>
+                                    <Names>
+                                      <Name>
+                                        <name>Bulbasaur</name>
+                                        <language>
+                                          <url>http://pokeapi.co/api/v2/language/9/</url>
+                                          <name>en</name>
+                                        </language>
+                                      </Name>
+                                    </Names>
+                                    <Varieties>
+                                      <Variety>
+                                        <is_default>true</is_default>
+                                        <pokemon>
+                                          <url>http://pokeapi.co/api/v2/pokemon/1/</url>
+                                          <name>bulbasaur</name>
+                                        </pokemon>
+                                      </Variety>
+                                    </Varieties>
+                                    <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
+                                  </Pokemon>
                                 </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "");
 
             // Act
-            var xml = PokedexSerializer.SerializePokedex(pokemon)
+            var xml = PokedexSerializer.SerializePokedex(pokedex, string.Empty)
                         .Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
             // Assert

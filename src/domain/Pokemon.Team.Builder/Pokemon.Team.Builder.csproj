@@ -46,6 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Tiers\Abilities.cs" />
+    <Compile Include="Model\Tiers\BaseStats.cs" />
+    <Compile Include="Model\Tiers\GenderRatio.cs" />
     <Compile Include="Serialization\PokedexSerializer.cs" />
     <Compile Include="Model\SimplePokemonData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

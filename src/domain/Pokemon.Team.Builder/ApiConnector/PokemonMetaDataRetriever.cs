@@ -37,7 +37,7 @@ namespace Pokemon.Team.Builder
 
 		public void AppendAdvancedData(Pokemon pokemon) {
 			try {
-				var url = $"pokemon-species/{pokemon.Id}";
+				var url = $"api/v2/pokemon-species/{pokemon.Id}";
 
 				var json = _client.GetStringAsync (url).Result;
 				var advancedData = JsonConvert.DeserializeObject<AdvancedMetaDataResponse>(json);
@@ -113,6 +113,8 @@ namespace Pokemon.Team.Builder
 					AppendAdvancedData(poke);
 
 					pokemon.Add(poke);
+
+                    return pokemon;
 				}
 			}
 			while (!string.IsNullOrEmpty(response.Next));

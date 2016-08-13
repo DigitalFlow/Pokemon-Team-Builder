@@ -1,34 +1,13 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Model.Tiers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Pokemon.Team.Builder
 {
+    [Serializable]
 	public class PokemonTierEntry
 	{
-		public class GenderRatio
-		{
-			public double M { get; set; }
-			public double F { get; set; }
-		}
-
-		public class BaseStats
-		{
-			public int hp { get; set; }
-			public int atk { get; set; }
-			public int def { get; set; }
-			public int spa { get; set; }
-			public int spd { get; set; }
-			public int spe { get; set; }
-		}
-
-		public class Abilities
-		{
-			public string _0 { get; set; }
-			public string _1 { get; set; }
-			public string H { get; set; }
-		}
-
 		public int num { get; set; }
 		public string species { get; set; }
 		public List<string> types { get; set; }
