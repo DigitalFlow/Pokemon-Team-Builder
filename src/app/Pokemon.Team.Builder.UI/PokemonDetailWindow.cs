@@ -61,7 +61,11 @@ namespace Pokemon.Team.Builder.UI
                     label => label.Value
             });
 
-            var pokedexNotebook = new Notebook();
+            var pokedexNotebook = new Notebook
+            {
+                Scrollable = true
+            };
+
             var pokedexEntries = _pokedex.GetPokedexDescriptions(pokemon, _languageCode);
 
             foreach (var pokedexEntry in pokedexEntries)
