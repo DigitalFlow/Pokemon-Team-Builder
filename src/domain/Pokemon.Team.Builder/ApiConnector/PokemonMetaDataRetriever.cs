@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Pokemon.Team.Builder
 {
@@ -126,10 +127,12 @@ namespace Pokemon.Team.Builder
                 }
 
                 await Task.WhenAll(requests.ToArray());
-            }
+			}
 			while (!string.IsNullOrEmpty(response.Next));
 
-			return pokemon;
+			return pokemon
+				.OrderBy(poke => poke.Id)
+				.ToList();
 		}
 
         public void Dispose()
