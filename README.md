@@ -5,7 +5,7 @@ For running this tool you need a Windows or Linux operating system.
 
 For both of them you need to have GTK3 installed in at least version 3.8.
 
-You can find GTK3 for Windows [here](https://sourceforge.net/projects/gtk3win/). For Linux have a look at your package manager.
+You can find GTK3 for Windows [here](https://sourceforge.net/projects/gtk3win/). Be sure to reboot after installing GTK for Windows, otherwise it won't work. For Linux have a look at your package manager.
 
 For Linux you additionally need Mono.
 
