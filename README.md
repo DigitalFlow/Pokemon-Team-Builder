@@ -52,7 +52,7 @@ Newest version: English UI, Tier set to OU, Battle Type Single, Main Window
 ![mainwindowenglish](https://cloud.githubusercontent.com/assets/4287938/17649759/ad5621a4-623c-11e6-96ee-9dd6523dd1bd.png)
 
 Newest version: English UI, Tier set to OU, Battle Type Single, Info Window
-![infoenglish](https://cloud.githubusercontent.com/assets/4287938/17649763/b17dc46c-623c-11e6-85e2-8ff6be978fbf.png)
+![blastoiseinfo](https://cloud.githubusercontent.com/assets/4287938/17651926/16ec2ee0-6271-11e6-804f-ea8c576339cd.png)
 
 ## Build Status
 [![Build status](https://ci.appveyor.com/api/projects/status/m0bvnx6ae3n2o06q/branch/master?svg=true)](https://ci.appveyor.com/project/DigitalFlow/pokemon-team-builder/branch/master)
