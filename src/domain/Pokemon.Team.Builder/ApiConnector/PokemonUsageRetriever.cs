@@ -53,7 +53,7 @@ namespace Pokemon.Team.Builder
             request.Headers.Add("Origin", "http://3ds.pokemon-gl.com");
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
 
-			using(var response = _client.SendAsync(request).Result)
+			using(var response = await _client.SendAsync(request).ConfigureAwait(false))
 			{
 				try
 				{
