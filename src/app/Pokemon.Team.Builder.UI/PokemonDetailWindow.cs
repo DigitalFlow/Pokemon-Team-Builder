@@ -10,12 +10,14 @@ namespace Pokemon.Team.Builder.UI
 	{
 		private Pokedex _pokedex;
 		private DetailedPokemonInformation _pokeInfo;
+        private string _languageCode;
 
-		public PokemonDetailWindow(DetailedPokemonInformation pokeInfo, Pokedex pokedex) : base(WindowType.Toplevel) {
+		public PokemonDetailWindow(DetailedPokemonInformation pokeInfo, Pokedex pokedex, string languageCode) : base(WindowType.Toplevel) {
 			_pokeInfo = pokeInfo;
 			_pokedex = pokedex;
+            _languageCode = languageCode;
 
-			Initialize ();
+            Initialize ();
 
 			this.ShowAll ();
 		}
@@ -24,24 +26,69 @@ namespace Pokemon.Team.Builder.UI
 		{
 			var vBox = new Box (Orientation.Vertical, 0);
 			var hBox = new Box (Orientation.Horizontal, 0);
-			var hvBox = new Box (Orientation.Vertical, 0);
+
+            var hvGrid = new Grid
+            {
+                Hexpand = true,
+                Vexpand = true,
+                ColumnHomogeneous = true,
+                WidthRequest = 200 
+            };
 
 			var image = new Image ();
 			var pokemon = _pokedex.GetById (_pokeInfo.RankingPokemonInfo.MonsNo);
 			image.SetPicture (pokemon);
 
+            var nameLabel = new Label("Name");
 			var pokeName = new Label(_pokeInfo.RankingPokemonInfo.Name);
-			var pokeType1 = new Label(_pokeInfo.RankingPokemonInfo.TypeName1);
+
+            var type1Label = new Label("Type 1");
+            var type2Label = new Label("Type 2");
+
+            var pokeType1 = new Label(_pokeInfo.RankingPokemonInfo.TypeName1);
 			var pokeType2 = new Label(_pokeInfo.RankingPokemonInfo.TypeName2);
 
-			hvBox.Add (pokeName);
-			hvBox.Add (pokeType1);
-			hvBox.Add (pokeType2);
+            var gridLines = new Dictionary<Label, Label>
+            {
+                { nameLabel, pokeName },
+                { type1Label, pokeType1 },
+                { type2Label, pokeType2 }
+            };
 
-			hBox.Add (image);
-			hBox.Add (hvBox);
+            hvGrid.AddItems(gridLines.ToList(),
+                new List<Func<KeyValuePair<Label, Label>, Widget>> {
+                    label => label.Key,
+                    label => label.Value
+            });
 
-			vBox.Add (hBox);
+            var pokedexNotebook = new Notebook();
+            var pokedexEntries = _pokedex.GetPokedexDescriptions(pokemon, _languageCode);
+
+            foreach (var pokedexEntry in pokedexEntries)
+            {
+                var textBuffer = new TextBuffer(new TextTagTable());
+
+                textBuffer.Text = pokedexEntry.flavor_text;
+
+                var text = new TextView(textBuffer)
+                {
+                    Editable = false,
+                    Expand = true,
+                    Hexpand = true,
+                    Vexpand = true,
+                    
+                };
+                var label = new Label(pokedexEntry.version?.name);
+
+                pokedexNotebook.AppendPage(text, label);
+            }
+
+            hBox.Add (image);
+			hBox.Add (hvGrid);
+
+            hBox.Add(pokedexNotebook);
+
+            vBox.Add (hBox);
 
 			var noteBook = new Notebook ();
 

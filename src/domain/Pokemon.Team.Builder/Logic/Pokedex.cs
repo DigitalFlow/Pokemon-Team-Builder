@@ -43,6 +43,12 @@ namespace Pokemon.Team.Builder
 			return Pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));
 		}
 
+        public List<FlavorTextEntry> GetPokedexDescriptions(Pokemon pokemon, string languageCode)
+        {
+            return pokemon.TextEntries.Where(text => text.language != null && text.language.name == languageCode)
+                .ToList();
+        }
+
 		public Pokemon GetById(int id) 
 		{
 			return Pokemon.SingleOrDefault (poke => poke.Id == id);

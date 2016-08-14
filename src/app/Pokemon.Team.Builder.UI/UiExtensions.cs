@@ -20,7 +20,7 @@ namespace Pokemon.Team.Builder.UI
 			return image;
 		}
 
-		public static void AddItems<T>(this Grid grid, List<T> enumerable, List<Func<T, Widget>> selectorFuncs) where T : IRankable
+		public static void AddItems<T>(this Grid grid, List<T> enumerable, List<Func<T, Widget>> selectorFuncs)
 		{
 			for (var i = 0; i < enumerable.Count(); i++) {
 				var item = enumerable [i];

@@ -254,7 +254,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        new PokemonDetailWindow(pokemonToShow.Single(), _pokedex);
+        new PokemonDetailWindow(pokemonToShow.Single(), _pokedex, ConfigManager.GetSetting(LanguageConfigKey));
     }
 
     protected void OnSelectTier(object sender, EventArgs e)
