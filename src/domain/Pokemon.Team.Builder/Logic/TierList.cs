@@ -47,7 +47,7 @@ namespace Pokemon.Team.Builder
 		{
 			var tierEntries = Pokemon.Where (poke => poke.num == id);
 
-			var mega = tierEntries.FirstOrDefault(tier => tier.forme.Contains("Mega"));
+			var mega = tierEntries.FirstOrDefault(tier => tier.forme != null && tier.forme.Contains("Mega"));
 
 			return mega ?? tierEntries.FirstOrDefault ();
 		}
