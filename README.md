@@ -45,13 +45,13 @@ Just click on "More information" for doing so.
 This is an example team created by the tool, where the preselection only included Blastoise. 
 The Battle Type was set to "Doubles". The tool is executed in Linux using Gnome, it might render differently at your side.
 
-Old version for team in doubles:
+Old version for team in doubles, Battle Type Double:
 ![proposedteamdoubles](https://cloud.githubusercontent.com/assets/4287938/17462557/5c64856e-5cb1-11e6-90af-4e98a88edc40.png)
 
-Newest version: English UI, Tier set to OU, Main Window
+Newest version: English UI, Tier set to OU, Battle Type Single, Main Window
 ![mainwindowenglish](https://cloud.githubusercontent.com/assets/4287938/17649759/ad5621a4-623c-11e6-96ee-9dd6523dd1bd.png)
 
-Newest version: English UI, Tier set to OU, Info Window
+Newest version: English UI, Tier set to OU, Battle Type Single, Info Window
 ![infoenglish](https://cloud.githubusercontent.com/assets/4287938/17649763/b17dc46c-623c-11e6-85e2-8ff6be978fbf.png)
 
 ## Build Status
