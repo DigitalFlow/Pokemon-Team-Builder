@@ -47,6 +47,11 @@ namespace Pokemon.Team.Builder
 		{
 			return Pokemon.SingleOrDefault (poke => poke.Id == id);
 		}
+
+		public List<string> GetAvailableLanguages() 
+		{
+			return Pokemon.FirstOrDefault ()?.Names?.Select (name => name.language?.name).ToList();
+		}
 	}
 }
 

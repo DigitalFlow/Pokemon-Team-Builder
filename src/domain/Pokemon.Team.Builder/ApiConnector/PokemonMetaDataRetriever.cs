@@ -127,6 +127,10 @@ namespace Pokemon.Team.Builder
                 }
 
                 await Task.WhenAll(requests.ToArray());
+
+				return pokemon
+					.OrderBy(poke => poke.Id)
+					.ToList();
 			}
 			while (!string.IsNullOrEmpty(response.Next));
 

@@ -146,8 +146,9 @@ public partial class MainWindow : Window
                 using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
                 {
                     pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
+					var pokedexManager = new PokedexManager(pokemonMetaDataRetriever);
 
-                    _pokedex = await new PokedexManager(pokemonMetaDataRetriever).GetPokemon().ConfigureAwait(false);
+					_pokedex = await pokedexManager.GetPokemon().ConfigureAwait(false);
                 }
             }
         }).ConfigureAwait(false);
@@ -171,6 +172,9 @@ public partial class MainWindow : Window
                     Model = new ListStore(typeof(string)),
                     TextColumn = 0
                 };
+
+				// Initialize explicitly for clearing on language selection
+				comboBox.Item4.Model = new ListStore(typeof(string));
 
                 comboBox.Item4.Entry.Completion = new EntryCompletion
                 {
@@ -283,6 +287,35 @@ public partial class MainWindow : Window
         _chooseDialog.Show();
     }
 
+	protected void OnSelectLanguage(object sender, EventArgs e)
+	{
+		var availableLanguages = _pokedex.GetAvailableLanguages ();
+		var activeLanguage = ConfigManager.GetSetting(LanguageConfigKey);
+
+		var listStore = new ListStore(typeof(string));
+
+		_chooseLabel.Text = "Select your Language";
+		_chooseBox.Model = listStore;
+
+		var renderer = new CellRendererText();
+		_chooseBox.PackStart(renderer, false);
+		_chooseBox.AddAttribute(renderer, "text", 0);
+
+		for (var i = 0; i < availableLanguages.Count; i++)
+		{
+			listStore.AppendValues(availableLanguages[i]);
+
+			if (availableLanguages[i].Equals(activeLanguage, StringComparison.InvariantCultureIgnoreCase))
+			{
+				_chooseBox.Active = i;
+			}
+		}
+
+		_dialogBoxOk.Clicked += OnChooseLanguageOk;
+
+		_chooseDialog.Show();
+	}
+
     protected void OnPokemonSelectionByName(object sender, EventArgs e)
     {
         var senderBox = _controlSets.Single(box => box.Item4 == sender);
@@ -351,6 +384,20 @@ public partial class MainWindow : Window
         ResetChooseDialog();
     }
 
+	protected void OnChooseLanguageOk(object sender, EventArgs e)
+	{
+		TreeIter tree;
+		_chooseBox.GetActiveIter(out tree);
+
+		var languageName = (string)_chooseBox.Model.GetValue(tree, 0);
+
+		ConfigManager.WriteSetting(LanguageConfigKey, languageName);
+
+		FillComboBoxes (_controlSets);
+
+		ResetChooseDialog();
+	}
+
     protected void OnChooseBattleTypeOk(object sender, EventArgs e)
     {
         var value = _chooseBox.Active;
@@ -363,6 +410,7 @@ public partial class MainWindow : Window
     private void ResetChooseDialog()
     {
         _dialogBoxOk.Clicked -= OnChooseTierOk;
+		_dialogBoxOk.Clicked -= OnChooseLanguageOk;
         _dialogBoxOk.Clicked -= OnChooseBattleTypeOk;
         _chooseBox.Clear();
         _chooseDialog.Hide();

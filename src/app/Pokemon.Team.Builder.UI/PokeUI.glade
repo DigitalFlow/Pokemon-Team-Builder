@@ -207,6 +207,31 @@
               </object>
             </child>
             <child>
+              <object class="GtkMenuItem" id="Language">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Language</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="LanguageMenu">
+                    <property name="name">LanguageMenu</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="LanguageChooser">
+                        <property name="name">LanguageChooser</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Select Language</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="OnSelectLanguage" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkMenuItem" id="Help">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
