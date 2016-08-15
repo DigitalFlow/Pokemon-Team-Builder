@@ -57,5 +57,9 @@ Newest version: English UI, Tier set to OU, Battle Type Single, Info Window
 ## Build Status
 [![Build status](https://ci.appveyor.com/api/projects/status/m0bvnx6ae3n2o06q/branch/master?svg=true)](https://ci.appveyor.com/project/DigitalFlow/pokemon-team-builder/branch/master)
 
+## Upcoming Features
+- Move Set Proposals
+- Export for Pokemon Showdown
+
 ## Legal notice
 Pokémon and Nintendo both are registered Trademarks and do not belong to me in any way.
