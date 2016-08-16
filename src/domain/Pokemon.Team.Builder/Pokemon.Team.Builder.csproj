@@ -46,6 +46,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiConnector\IMoveSetRetriever.cs" />
+    <Compile Include="ApiConnector\ISmogonStatRetriever.cs" />
+    <Compile Include="ApiConnector\MoveSetRetriever.cs" />
+    <Compile Include="ApiConnector\SmogonStatRetriever.cs" />
     <Compile Include="Model\Tiers\Abilities.cs" />
     <Compile Include="Model\Tiers\BaseStats.cs" />
     <Compile Include="Model\Tiers\GenderRatio.cs" />

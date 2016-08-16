@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using NLog;
 using System.Collections.Generic;
+using Pokemon.Team.Builder.ApiConnector;
 
 namespace Pokemon.Team.Builder.Console
 {
@@ -12,21 +13,16 @@ namespace Pokemon.Team.Builder.Console
 
         static void Main(string[] args)
         {
-			ProposeTeamMembers (args);
+			// ProposeTeamMembers (args);
+			 using (var httpClient = new HttpClientWrapper (new Uri ("http://www.smogon.com/stats/"))) {
+				using (var smogonRetriever = new SmogonStatRetriever (httpClient)) {
 
-			/*
-			 using (var httpClient = new HttpClientWrapper (new Uri ("https://play.pokemonshowdown.com/data/"))) {
-				using (var tierRetriever = new TierListRetriever (httpClient)) {
-
-					var tierManager = new TierListManager (tierRetriever);
-
-					tierManager.GetTierList ();
+                    smogonRetriever.RetrieveStats ("ou").Wait();
 				}
 			}
-			 */ 
         }
 
-		private static void ProposeTeamMembers(string[] args){
+        private static void ProposeTeamMembers(string[] args){
 			using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
 			{
 				using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
