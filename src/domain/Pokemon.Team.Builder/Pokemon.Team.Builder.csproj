@@ -50,6 +50,13 @@
     <Compile Include="ApiConnector\ISmogonStatRetriever.cs" />
     <Compile Include="ApiConnector\MoveSetRetriever.cs" />
     <Compile Include="ApiConnector\SmogonStatRetriever.cs" />
+    <Compile Include="Model\Smogon\SmogonAbility.cs" />
+    <Compile Include="Model\Smogon\SmogonCheck.cs" />
+    <Compile Include="Model\Smogon\SmogonHappiness.cs" />
+    <Compile Include="Model\Smogon\SmogonItem.cs" />
+    <Compile Include="Model\Smogon\SmogonMove.cs" />
+    <Compile Include="Model\Smogon\SmogonSpread.cs" />
+    <Compile Include="Model\Smogon\SmogonTeamMate.cs" />
     <Compile Include="Model\Tiers\Abilities.cs" />
     <Compile Include="Model\Tiers\BaseStats.cs" />
     <Compile Include="Model\Tiers\GenderRatio.cs" />
