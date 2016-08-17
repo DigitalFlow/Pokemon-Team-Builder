@@ -16,8 +16,7 @@ namespace Pokemon.Team.Builder.Console
 			// ProposeTeamMembers (args);
 			 using (var httpClient = new HttpClientWrapper (new Uri ("http://www.smogon.com/stats/"))) {
 				using (var smogonRetriever = new SmogonStatRetriever (httpClient)) {
-
-                    smogonRetriever.RetrieveStats ("ou").Wait();
+                    var stats = smogonRetriever.RetrieveStats ("ou").Result;
 				}
 			}
         }

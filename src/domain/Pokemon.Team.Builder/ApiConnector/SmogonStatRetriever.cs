@@ -32,7 +32,7 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .SingleOrDefault(p => p.Path.EndsWith(name));
         }
 
-        public async Task RetrieveStats(string tier)
+        public async Task<List<SmogonPokemonStats>> RetrieveStats(string tier)
         {
             var year = DateTime.UtcNow.Year;
 
@@ -47,32 +47,37 @@ namespace Pokemon.Team.Builder.ApiConnector
                 GetStringAsync(url)
                 .ConfigureAwait(false);
 
-            var json = (JObject) JsonConvert.DeserializeObject(response);
+            var json = (JObject)JsonConvert.DeserializeObject(response);
 
             var dataRoot = json.Children().SingleOrDefault(c => c.Path == "data")?
                 .Children()
                 .SingleOrDefault(c => c.Path == "data");
 
-            var pokemonNames = new List<string>();
+            var pokemon = new List<SmogonPokemonStats>();
 
-            foreach (JProperty pokemon in dataRoot.Children())
+            foreach (JProperty entry in dataRoot.Children())
             {
-                var name = pokemon.Name;
-                pokemonNames.Add(name);
+                var pokemonStat = new SmogonPokemonStats();
 
-                var data = pokemon.Value;
+                pokemonStat.Name = entry.Name;
 
-                var abilities = ParseAbilities(data);
-                var items = ParseItems(data);
-                var rawCount = ParseRawCount(data);
-                var spreads = ParseSpreads(data);
-                var checksAndCounters = ParseChecksAndCounters(data);
-                var teamMates = ParseTeamMates(data);
-                var usage = ParseUsage(data);
-                var moves = ParseMoves(data);
-                var happiness = ParseHappiness(data);
-                var viabilityCeiling = ParseViabilityCeiling(data);
+                var data = entry.Value;
+
+                pokemonStat.Abilities = ParseAbilities(data);
+                pokemonStat.Items = ParseItems(data);
+                pokemonStat.RawCount = ParseRawCount(data);
+                pokemonStat.Spreads = ParseSpreads(data);
+                pokemonStat.ChecksAndCounters = ParseChecksAndCounters(data);
+                pokemonStat.TeamMates = ParseTeamMates(data);
+                pokemonStat.Usage = ParseUsage(data);
+                pokemonStat.Moves = ParseMoves(data);
+                pokemonStat.Happiness = ParseHappiness(data);
+                pokemonStat.ViabilityCeiling = ParseViabilityCeiling(data);
+
+                pokemon.Add(pokemonStat);
             }
+
+            return pokemon;
         }
 
         private List<int> ParseViabilityCeiling(JToken data)
@@ -82,8 +87,7 @@ namespace Pokemon.Team.Builder.ApiConnector
             return node
                 .Children()
                 .SingleOrDefault()
-                .Value<Array>()
-                .OfType<int>()
+                .Values<int>()
                 .ToList();
         }
 
@@ -133,8 +137,12 @@ namespace Pokemon.Team.Builder.ApiConnector
             var checksNodes = checksRoot.Children().SingleOrDefault();
 
             var checks = checksNodes.Children()
-                .Select(node => new SmogonCheck { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
-                .ToList();
+            .Select(node => new SmogonCheck
+            {
+                Name = ((JProperty)node).Name,
+                Statistics = node.Children().SingleOrDefault().Values<float>().ToList()
+            })
+            .ToList();
 
             return checks;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Model.Smogon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Pokemon.Team.Builder.ApiConnector
 {
     public interface ISmogonStatRetriever : IDisposable
     {
-        Task RetrieveStats(string tier);
+        Task<List<SmogonPokemonStats>> RetrieveStats(string tier);
     }
 }

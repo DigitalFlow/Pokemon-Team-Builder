@@ -55,6 +55,7 @@
     <Compile Include="Model\Smogon\SmogonHappiness.cs" />
     <Compile Include="Model\Smogon\SmogonItem.cs" />
     <Compile Include="Model\Smogon\SmogonMove.cs" />
+    <Compile Include="Model\Smogon\SmogonPokemonStats.cs" />
     <Compile Include="Model\Smogon\SmogonSpread.cs" />
     <Compile Include="Model\Smogon\SmogonTeamMate.cs" />
     <Compile Include="Model\Tiers\Abilities.cs" />
