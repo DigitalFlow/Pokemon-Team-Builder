@@ -21,7 +21,7 @@ namespace Pokemon.Team.Builder.Console
 			}
         }
 
-        private static void ProposeTeamMembers(string[] args){
+        /*private static void ProposeTeamMembers(string[] args){
 			using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
 			{
 				using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
@@ -37,6 +37,6 @@ namespace Pokemon.Team.Builder.Console
 					}
 				}
 			}
-		}
+		}*/
 	}
 }

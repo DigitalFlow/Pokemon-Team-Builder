@@ -22,7 +22,21 @@ namespace Pokemon.Team.Builder.Model
         public string Name { get; set; }
         public int SequenceNumber { get; set; }
 
-		public bool Equals (RankingPokemonSufferer otherRanking) {
+        public PokemonIdentifier Identifier
+        {
+            get
+            {
+                return new PokemonIdentifier(MonsNo, FormNo);
+            }
+
+            set
+            {
+                MonsNo = value.MonsNo;
+                FormNo = value.FormNo;
+            }
+        }
+
+        public bool Equals (RankingPokemonSufferer otherRanking) {
 			if (otherRanking == null) {
 				return false;
 			}

@@ -4,6 +4,7 @@ using System.Linq;
 using Pokemon.Team.Builder.Model;
 using Pokemon.Team.Builder.Serialization;
 using System.Threading.Tasks;
+using Pokemon.Team.Builder.Interfaces;
 
 namespace Pokemon.Team.Builder
 {
@@ -34,26 +35,26 @@ namespace Pokemon.Team.Builder
 
 		private readonly Func<IPokemonIdentifiable, TierList, Tier, bool> IsInActiveTierOrBelow = (proposal, tierList, activeTier) => 
 		{
-			var proposalTierEntry = tierList.GetById (proposal.MonsNo, proposal.FormNo);
+			var proposalTierEntry = tierList.Get (proposal);
 
 			return proposalTierEntry.IsInTierOrBelow(activeTier);
 		};
 
-		public async Task<List<DetailedPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
+		public async Task<List<IPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<IPokemonInformation> pokemon = null) {
 
 			if (initialTeam == null || initialTeam.Count == 0) {
 				throw new ArgumentException ("Initial team must not be empty or null!", "initialTeam");
 			}
 
 			if (pokemon == null) {
-				pokemon = new List<DetailedPokemonInformation> ();
+				pokemon = new List<IPokemonInformation> ();
 			}
 
 			if (pokemon.Count == TEAM_SIZE) {
 				return pokemon;
 			}
 
-			var proposedMembers = new Dictionary<RankingPokemonIn, int> ();
+			var proposedMembers = new Dictionary<ITeamMate, int> ();
 
 			// Retrieve Information on each team member
 			foreach (var teamMember in initialTeam) 
@@ -70,7 +71,7 @@ namespace Pokemon.Team.Builder
 
 			var orderedMembers = proposedMembers
 				.Where (proposal => IsInActiveTierOrBelow(proposal.Key, _tierList, _activeTier))
-				.Where (proposal => pokemon.All(poke => (PokemonIdentifier) poke != (PokemonIdentifier) proposal.Key))
+				.Where (proposal => pokemon.All(poke => poke.Identifier != proposal.Key.Identifier))
 				.OrderByDescending (pair => pair.Value)
 				.ToList();
 
@@ -80,8 +81,8 @@ namespace Pokemon.Team.Builder
 				return pokemon;
 			}
 
-			initialTeam.Add (bestMember);
-			pokemon.Add (await GetPokemonDetails (bestMember).ConfigureAwait(false));
+			initialTeam.Add (bestMember.Identifier);
+			pokemon.Add (await GetPokemonDetails (bestMember.Identifier).ConfigureAwait(false));
 
 			return await GetProposedPokemonByUsage (initialTeam, pokemon).ConfigureAwait(false);
 		}
@@ -91,13 +92,13 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
-		private async Task<DetailedPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
+		private async Task<IPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
 			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
 				.ConfigureAwait(false);
 
-			if (information.RankingPokemonDown != null) 
+			if (information.Counters != null) 
 			{
-				information.RankingPokemonDown = information.RankingPokemonDown
+				information.Counters = information.Counters
 					.Where (poke => IsInActiveTierOrBelow (poke, _tierList, _activeTier))
 					.ToList ();
 			}
@@ -110,15 +111,15 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The ranked team members for pokemon.</returns>
 		/// <param name="pokemonInfo">Pokemon info.</param>
-		private Dictionary<RankingPokemonIn, int> GetRankedTeamMembersForPokemon(DetailedPokemonInformation pokemonInfo)
+		private Dictionary<ITeamMate, int> GetRankedTeamMembersForPokemon(IPokemonInformation pokemonInfo)
 		{
-			var rankedMembers = new Dictionary<RankingPokemonIn, int> ();
+			var rankedMembers = new Dictionary<ITeamMate, int> ();
 
-			if (pokemonInfo.RankingPokemonIn == null) {
+			if (pokemonInfo.TeamMates == null) {
 				return rankedMembers;
 			}
 
-			return RankingCreator.CreateRanking (pokemonInfo.RankingPokemonIn);
+			return RankingCreator.CreateRanking (pokemonInfo.TeamMates);
 		}
 	}
 }

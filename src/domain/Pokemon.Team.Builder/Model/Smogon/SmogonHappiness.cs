@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,6 @@ namespace Pokemon.Team.Builder.Model.Smogon
     public class SmogonHappiness
     {
         public string Name { get; set; }
-        public float UsageRate { get; set; }
+        public double UsageRate { get; set; }
     }
 }

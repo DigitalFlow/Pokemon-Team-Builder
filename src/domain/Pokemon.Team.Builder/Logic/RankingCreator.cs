@@ -6,7 +6,7 @@ namespace Pokemon.Team.Builder
 {
 	public static class RankingCreator
 	{
-		public static Dictionary<T, int> CreateRanking<T>(List<T> rankables) where T : IRankable, IEquatable<T>
+		public static Dictionary<T, int> CreateRanking<T>(IEnumerable<T> rankables) where T : IRankable, IEquatable<T>
 		{
 			if (rankables == null) {
 				return new Dictionary<T, int> ();
@@ -14,7 +14,7 @@ namespace Pokemon.Team.Builder
 
 			return rankables
 				.Where (rank => rank != null)
-				.ToDictionary (rank => rank, rank => rankables.Count - rank.Ranking);
+				.ToDictionary (rank => rank, rank => rankables.Count() - rank.Ranking);
 		}
 	}
 }

@@ -3,16 +3,17 @@ using System.Linq;
 using Gtk;
 using Pokemon.Team.Builder.Model;
 using System.Collections.Generic;
+using Pokemon.Team.Builder.Interfaces;
 
 namespace Pokemon.Team.Builder.UI
 {
 	public class PokemonDetailWindow : Window
 	{
 		private Pokedex _pokedex;
-		private DetailedPokemonInformation _pokeInfo;
+		private IPokemonInformation _pokeInfo;
         private string _languageCode;
 
-		public PokemonDetailWindow(DetailedPokemonInformation pokeInfo, Pokedex pokedex, string languageCode) : base(WindowType.Toplevel) {
+		public PokemonDetailWindow(IPokemonInformation pokeInfo, Pokedex pokedex, string languageCode) : base(WindowType.Toplevel) {
 			_pokeInfo = pokeInfo;
 			_pokedex = pokedex;
             _languageCode = languageCode;
@@ -36,17 +37,17 @@ namespace Pokemon.Team.Builder.UI
             };
 
 			var image = new Image ();
-			var pokemon = _pokedex.GetById (_pokeInfo.RankingPokemonInfo.MonsNo);
+			var pokemon = _pokedex.GetById (_pokeInfo.Identifier.MonsNo);
 			image.SetPicture (pokemon);
 
             var nameLabel = new Label("Name");
-			var pokeName = new Label(_pokeInfo.RankingPokemonInfo.Name);
+			var pokeName = new Label(_pokeInfo.Name);
 
             var type1Label = new Label("Type 1");
             var type2Label = new Label("Type 2");
 
-            var pokeType1 = new Label(_pokeInfo.RankingPokemonInfo.TypeName1);
-			var pokeType2 = new Label(_pokeInfo.RankingPokemonInfo.TypeName2);
+            var pokeType1 = new Label(_pokeInfo.Type1);
+			var pokeType2 = new Label(_pokeInfo.Type2);
 
             var gridLines = new Dictionary<Label, Label>
             {
@@ -106,89 +107,88 @@ namespace Pokemon.Team.Builder.UI
 			var counterPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			var effectiveOpponentMoves = new Grid { ColumnHomogeneous = true, Hexpand = true };
 
-			if (_pokeInfo.RankingPokemonTrend != null && _pokeInfo.RankingPokemonTrend.ItemInfo != null) {
+			if (_pokeInfo.Items != null) {
 				itemGrid
-					.AddItems (_pokeInfo.RankingPokemonTrend.ItemInfo.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<ItemInfo, Widget>> {
-							poke => new Label (((ItemInfo)poke).Name),
-							poke => new Label ($"{Math.Round(((ItemInfo) poke).UsageRate, 2)} %")
+					.AddItems (_pokeInfo.Items.OrderBy (poke => poke.Ranking).ToList (),
+						new List<Func<IItem, Widget>> {
+							item => new Label (item.Name),
+                            item => new Label ($"{Math.Round(item.UsageRate, 2)} %")
 						}
 				);
 			}
 
-			if (_pokeInfo.RankingPokemonTrend != null && _pokeInfo.RankingPokemonTrend.WazaInfo != null) {
+			if (_pokeInfo.Moves != null) {
 				moveGrid
-					.AddItems (_pokeInfo.RankingPokemonTrend.WazaInfo.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<WazaInfo, Widget>> {
-							poke => new Label (((WazaInfo)poke).Name),
-							poke => new Label ($"{Math.Round(((WazaInfo) poke).UsageRate, 2)} %")
+					.AddItems (_pokeInfo.Moves.OrderBy (poke => poke.Ranking).ToList (),
+						new List<Func<IMove, Widget>> {
+							move => new Label (move.Name),
+                            move => new Label ($"{Math.Round(move.UsageRate, 2)} %")
 					}
 				);
 			}
 
-			if (_pokeInfo.RankingPokemonTrend != null && _pokeInfo.RankingPokemonTrend.SeikakuInfo != null) {
+			if (_pokeInfo.Natures != null) {
 				natureGrid
-					.AddItems (_pokeInfo.RankingPokemonTrend.SeikakuInfo.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<SeikakuInfo, Widget>> {
-							poke => new Label (((SeikakuInfo)poke).Name),
-							poke => new Label ($"{Math.Round(((SeikakuInfo) poke).UsageRate, 2)} %")
+					.AddItems (_pokeInfo.Natures.OrderBy (poke => poke.Ranking).ToList (),
+						new List<Func<INature, Widget>> {
+							nature => new Label (nature.Name),
+                            nature => new Label ($"{Math.Round(nature.UsageRate, 2)} %")
 						}
 				);
 			}
 
-			if (_pokeInfo.RankingPokemonTrend != null && _pokeInfo.RankingPokemonTrend.TokuseiInfo != null) {
+			if (_pokeInfo.Abilities != null) {
 				abilityGrid
-					.AddItems (_pokeInfo.RankingPokemonTrend.TokuseiInfo.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<TokuseiInfo, Widget>> {
-							poke => new Label (((TokuseiInfo)poke).Name),
-							poke => new Label ($"{Math.Round(((TokuseiInfo) poke).UsageRate, 2)} %")
+					.AddItems (_pokeInfo.Abilities.OrderBy (poke => poke.Ranking).ToList (),
+						new List<Func<IAbility, Widget>> {
+							ability => new Label (ability.Name),
+                            ability => new Label ($"{Math.Round(ability.UsageRate, 2)} %")
 						}
 				);
 			}
 
-			if (_pokeInfo.RankingPokemonSuffererWaza != null) {
-				movesForFaintingGrid
-					.AddItems (_pokeInfo.RankingPokemonSuffererWaza.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<RankingPokemonSuffererWaza, Widget>> {
-							poke => new Label (((RankingPokemonSuffererWaza)poke).WazaName),
-							poke => new Label ($"{Math.Round(((RankingPokemonSuffererWaza) poke).UsageRate, 2)} %")
-						}
-				);
-			}
+			//if (_pokeInfo.RankingPokemonSuffererWaza != null) {
+			//	movesForFaintingGrid
+			//		.AddItems (_pokeInfo.RankingPokemonSuffererWaza.OrderBy (poke => poke.Ranking).ToList (),
+			//			new List<Func<RankingPokemonSuffererWaza, Widget>> {
+			//				poke => new Label (((RankingPokemonSuffererWaza)poke).WazaName),
+			//				poke => new Label ($"{Math.Round(((RankingPokemonSuffererWaza) poke).UsageRate, 2)} %")
+			//			}
+			//	);
+			//}
 
-			if (_pokeInfo.RankingPokemonSufferer != null) {
-				defeatedPokemonGrid
-					.AddItems (_pokeInfo.RankingPokemonSufferer.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<RankingPokemonSufferer, Widget>> {
-							poke => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonSufferer)poke).MonsNo), 48, 48),
-							poke => new Label (((RankingPokemonSufferer)poke).MonsNo.ToString ()),
-							poke => new Label (((RankingPokemonSufferer)poke).FormNo),
-							poke => new Label (((RankingPokemonSufferer)poke).Name)
-						}
-				);
-			}
+			//if (_pokeInfo.RankingPokemonSufferer != null) {
+			//	defeatedPokemonGrid
+			//		.AddItems (_pokeInfo.RankingPokemonSufferer.OrderBy (poke => poke.Ranking).ToList (),
+			//			new List<Func<RankingPokemonSufferer, Widget>> {
+			//				poke => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonSufferer)poke).MonsNo), 48, 48),
+			//				poke => new Label (((RankingPokemonSufferer)poke).MonsNo.ToString ()),
+			//				poke => new Label (((RankingPokemonSufferer)poke).FormNo),
+			//				poke => new Label (((RankingPokemonSufferer)poke).Name)
+			//			}
+			//	);
+			//}
 
-			if (_pokeInfo.RankingPokemonDown != null) {
+			if (_pokeInfo.Counters != null) {
 				counterPokemonGrid
-					.AddItems (_pokeInfo.RankingPokemonDown.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<RankingPokemonDown, Widget>> {
-							poke => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonDown)poke).MonsNo), 48, 48),
-							poke => new Label (((RankingPokemonDown)poke).MonsNo.ToString ()),
-							poke => new Label (((RankingPokemonDown)poke).FormNo),
-							poke => new Label (((RankingPokemonDown)poke).Name)
+					.AddItems (_pokeInfo.Counters.OrderBy (poke => poke.Ranking).ToList (),
+						new List<Func<ICounter, Widget>> {
+							poke => new Image ().SetPicture (_pokedex.GetById (poke.Identifier.MonsNo), 48, 48),
+							poke => new Label (poke.Identifier.MonsNo.ToString ()),
+							poke => new Label (_pokedex.GetById (poke.Identifier.MonsNo).GetName("en"))
 						}
 				);
 			}
 
-			if (_pokeInfo.RankingPokemonDownWaza != null) {
-				effectiveOpponentMoves
-					.AddItems (_pokeInfo.RankingPokemonDownWaza.OrderBy (poke => poke.Ranking).ToList (),
-						new List<Func<RankingPokemonDownWaza, Widget>> {
-							poke => new Label (((RankingPokemonDownWaza)poke).WazaName),
-							poke => new Label ($"{Math.Round(((RankingPokemonDownWaza) poke).UsageRate, 2)} %")
-						}
-				);
-			}
+			//if (_pokeInfo.RankingPokemonDownWaza != null) {
+			//	effectiveOpponentMoves
+			//		.AddItems (_pokeInfo.RankingPokemonDownWaza.OrderBy (poke => poke.Ranking).ToList (),
+			//			new List<Func<RankingPokemonDownWaza, Widget>> {
+			//				poke => new Label (((RankingPokemonDownWaza)poke).WazaName),
+			//				poke => new Label ($"{Math.Round(((RankingPokemonDownWaza) poke).UsageRate, 2)} %")
+			//			}
+			//	);
+			//}
 
 			noteBook.AppendPage (moveGrid, new Label { Text = "Move Ranking", TooltipText = "Most often used moves" });
 			noteBook.AppendPage (itemGrid, new Label { Text = "Item Ranking", TooltipText = "Most often used items" });

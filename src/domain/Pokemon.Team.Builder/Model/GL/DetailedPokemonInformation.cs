@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-	public class DetailedPokemonInformation : IEquatable<DetailedPokemonInformation>
+	public class DetailedPokemonInformation : IEquatable<DetailedPokemonInformation>, IPokemonInformation
     {
 		/// <summary>
 		/// 0000 => OK, 4000 Otherwise
@@ -80,7 +81,244 @@ namespace Pokemon.Team.Builder.Model
 		/// <value>The name of the timezone.</value>
         public string TimezoneName { get; set; }
 
-		public bool Equals (DetailedPokemonInformation otherDetail) {
+        public IEnumerable<IAbility> Abilities
+        {
+            get
+            {
+                return RankingPokemonTrend.TokuseiInfo;
+            }
+
+            set
+            {
+                if (RankingPokemonTrend == null)
+                {
+                    RankingPokemonTrend = new RankingPokemonTrend();
+                }
+
+                RankingPokemonTrend.TokuseiInfo =  value
+                    .Select(v => new TokuseiInfo
+                    {
+                        Name = v.Name,
+                        Ranking = v.Ranking,
+                        UsageRate = v.UsageRate
+                    })
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<ICounter> Counters
+        {
+            get
+            {
+                return RankingPokemonDown;
+            }
+
+            set
+            {
+                RankingPokemonDown = value.Select(v => new RankingPokemonDown
+                {
+                    Name = v.Name,
+                    Ranking = v.Ranking,
+                    Identifier = v.Identifier
+                })
+                .ToList();
+            }
+        }
+
+        public IEnumerable<IHappiness> Happiness
+        {
+            get
+            {
+                return new List<IHappiness>();
+            }
+
+            set
+            {
+                // Not present in here
+            }
+        }
+
+        public IEnumerable<IItem> Items
+        {
+            get
+            {
+                return RankingPokemonTrend.ItemInfo;
+            }
+
+            set
+            {
+                if (RankingPokemonTrend == null)
+                {
+                    RankingPokemonTrend = new RankingPokemonTrend();
+                }
+
+                RankingPokemonTrend.ItemInfo = value
+                    .Select(v => new ItemInfo
+                    {
+                        Name = v.Name,
+                        Ranking = v.Ranking,
+                        UsageRate = v.UsageRate
+                    })
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<IMove> Moves
+        {
+            get
+            {
+                return RankingPokemonTrend.WazaInfo;
+            }
+
+            set
+            {
+                if (RankingPokemonTrend == null)
+                {
+                    RankingPokemonTrend = new RankingPokemonTrend();
+                }
+
+                RankingPokemonTrend.WazaInfo = value
+                    .Select(v => new WazaInfo
+                    {
+                        Name = v.Name,
+                        Ranking = v.Ranking,
+                        UsageRate = v.UsageRate
+                    })
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<INature> Natures
+        {
+            get
+            {
+                return RankingPokemonTrend.SeikakuInfo;
+            }
+
+            set
+            {
+                if (RankingPokemonTrend == null)
+                {
+                    RankingPokemonTrend = new RankingPokemonTrend();
+                }
+
+                RankingPokemonTrend.SeikakuInfo = value
+                    .Select(v => new SeikakuInfo
+                    {
+                        Name = v.Name,
+                        Ranking = v.Ranking,
+                        UsageRate = v.UsageRate
+                    })
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<ISpread> Spreads
+        {
+            get
+            {
+                return new List<ISpread>();
+            }
+
+            set
+            {
+                // Is currently not existing
+            }
+        }
+
+        public IEnumerable<ITeamMate> TeamMates
+        {
+            get
+            {
+                return RankingPokemonIn;
+            }
+
+            set
+            {
+                RankingPokemonIn = value
+                    .Select(v => new RankingPokemonIn
+                    {
+                        Name = v.Name,
+                        Ranking = v.Ranking,
+                        Identifier = v.Identifier
+                    })
+                    .ToList();
+            }
+        }
+
+        public PokemonIdentifier Identifier
+        {
+            get
+            {
+                return new PokemonIdentifier(RankingPokemonInfo.MonsNo);
+            }
+
+            set
+            {
+                if(RankingPokemonInfo == null)
+                {
+                    RankingPokemonInfo = new RankingPokemonInfo();
+                }
+
+                RankingPokemonInfo.MonsNo = value.MonsNo;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return RankingPokemonInfo.Name;
+            }
+
+            set
+            {
+                if(RankingPokemonInfo == null)
+                {
+                    RankingPokemonInfo = new RankingPokemonInfo();
+                }
+
+                RankingPokemonInfo.Name = value;
+            }
+        }
+
+        public string Type1
+        {
+            get
+            {
+                return RankingPokemonInfo.TypeName1;
+            }
+
+            set
+            {
+                if (RankingPokemonInfo == null)
+                {
+                    RankingPokemonInfo = new RankingPokemonInfo();
+                }
+
+                RankingPokemonInfo.TypeName1 = value;
+            }
+        }
+
+        public string Type2
+        {
+            get
+            {
+                return RankingPokemonInfo.TypeName2;
+            }
+
+            set
+            {
+                if (RankingPokemonInfo == null)
+                {
+                    RankingPokemonInfo = new RankingPokemonInfo();
+                }
+
+                RankingPokemonInfo.TypeName2 = value;
+            }
+        }
+
+        public bool Equals (DetailedPokemonInformation otherDetail) {
 			if (otherDetail == null) {
 				return false;
 			}

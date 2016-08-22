@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,21 @@ namespace Pokemon.Team.Builder.Model.Smogon
 {
     public class SmogonCheck
     {
+        public PokemonIdentifier Identifier
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public string Name { get; set; }
+        public int Ranking { get; set; }
 
         /// <summary>
         /// 

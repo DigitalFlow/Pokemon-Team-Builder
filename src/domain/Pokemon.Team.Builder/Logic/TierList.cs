@@ -38,12 +38,17 @@ namespace Pokemon.Team.Builder
 			return Pokemon.GetEnumerator ();
 		}
 
-		public PokemonTierEntry GetByName(string name) 
+		public PokemonTierEntry Get(string name) 
 		{
 			return Pokemon.SingleOrDefault (poke => poke.species.Equals (name, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public PokemonTierEntry GetById(int id, string formNo) 
+        public PokemonTierEntry Get(IPokemonIdentifiable poke)
+        {
+            return Get(poke.Identifier.MonsNo, poke.Identifier.FormNo);
+        }
+
+		public PokemonTierEntry Get(int id, string formNo) 
 		{
 			var tierEntries = Pokemon.Where (poke => poke.num == id);
 

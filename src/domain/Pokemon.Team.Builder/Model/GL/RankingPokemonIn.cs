@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-	public class RankingPokemonIn : IEquatable<RankingPokemonIn>, IRankable, IPokemonIdentifiable
+	public class RankingPokemonIn : IEquatable<ITeamMate>, IRankable, ITeamMate
     {
         public int MonsNo { get; set; }
         public string FormNo { get; set; }
@@ -22,12 +23,26 @@ namespace Pokemon.Team.Builder.Model
         public string Name { get; set; }
         public int SequenceNumber { get; set; }
 
-		public bool Equals (RankingPokemonIn otherRankingIn) {
+        public PokemonIdentifier Identifier
+        {
+            get
+            {
+                return new PokemonIdentifier(MonsNo, FormNo);
+            }
+
+            set
+            {
+                MonsNo = value.MonsNo;
+                FormNo = value.FormNo;
+            }
+        }
+
+        public bool Equals (ITeamMate otherRankingIn) {
 			if (otherRankingIn == null) {
 				return false;
 			}
 
-			return MonsNo == otherRankingIn.MonsNo && FormNo == otherRankingIn.FormNo;
+			return Identifier == otherRankingIn.Identifier;
 		}
 
 		public static implicit operator PokemonIdentifier (RankingPokemonIn rankingPokemon) {

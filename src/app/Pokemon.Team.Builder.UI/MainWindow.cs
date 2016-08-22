@@ -9,6 +9,7 @@ using NLog;
 using Pokemon.Team.Builder.Model;
 using Pokemon.Team.Builder.UI;
 using Pokemon.Team.Builder.Serialization;
+using Pokemon.Team.Builder.Interfaces;
 
 public partial class MainWindow : Window
 {
@@ -43,7 +44,7 @@ public partial class MainWindow : Window
     private TierList _tierList;
     private TierHierarchy _tierHierarchy;
 
-    private List<DetailedPokemonInformation> _latestTeam = new List<DetailedPokemonInformation>();
+    private List<IPokemonInformation> _latestTeam = new List<IPokemonInformation>();
 
     public MainWindow() : base(WindowType.Toplevel)
     {
@@ -246,7 +247,7 @@ public partial class MainWindow : Window
         var selectedPokemonId = senderTuple.Item2.Active + 1;
 
         var pokemonToShow = _latestTeam
-            .Where(poke => poke.RankingPokemonInfo.MonsNo == selectedPokemonId)
+            .Where(poke => poke.Identifier.MonsNo == selectedPokemonId)
             .ToList();
 
         if (pokemonToShow.Count != 1)
@@ -483,56 +484,54 @@ public partial class MainWindow : Window
                 {
                     for (var i = 0; i < _latestTeam.Count; i++)
                     {
-                        _controlSets[i].Item2.Active = _latestTeam[i].RankingPokemonInfo.MonsNo - 1;
-                        _controlSets[i].Item3.Active = int.Parse(_latestTeam[i].RankingPokemonInfo.FormNo);
+                        _controlSets[i].Item2.Active = _latestTeam[i].Identifier.MonsNo - 1;
                     }
                 });
 
-                var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDown, 10);
+                var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.Counters, 10);
 
                 Application.Invoke(delegate
                 {
                     _counters
                     .AddItems(mostDangerousCounters,
-                        new List<Func<RankingPokemonDown, Widget>> {
-                            rank => new Image ().SetPicture (_pokedex.GetById (rank.MonsNo), 48, 48),
-                            rank => new Label (rank.MonsNo.ToString ()),
-                            rank => new Label (rank.FormNo),
+                        new List<Func<ICounter, Widget>> {
+                            rank => new Image ().SetPicture (_pokedex.GetById (rank.Identifier.MonsNo), 48, 48),
+                            rank => new Label (rank.Identifier.MonsNo.ToString ()),
                             rank => new Label (rank.Name)
                         });
 
                     _counters.ShowAll();
                 });
 
-                var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10,
-                    poke => mostDangerousCounters.All(counter => (PokemonIdentifier)poke != (PokemonIdentifier)counter));
+                //var saveSwitchIns = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonSufferer, 10,
+                //    poke => mostDangerousCounters.All(counter => (PokemonIdentifier)poke != (PokemonIdentifier)counter));
 
-                Application.Invoke(delegate
-                {
-                    _switchIns
-                    .AddItems(saveSwitchIns,
-                        new List<Func<RankingPokemonSufferer, Widget>> {
-                            rank => new Image ().SetPicture (_pokedex.GetById (rank.MonsNo), 48, 48),
-                            rank => new Label (rank.MonsNo.ToString ()),
-                            rank => new Label (rank.FormNo),
-                            rank => new Label (rank.Name)
-                        });
+                //Application.Invoke(delegate
+                //{
+                //    _switchIns
+                //    .AddItems(saveSwitchIns,
+                //        new List<Func<RankingPokemonSufferer, Widget>> {
+                //            rank => new Image ().SetPicture (_pokedex.GetById (rank.MonsNo), 48, 48),
+                //            rank => new Label (rank.MonsNo.ToString ()),
+                //            rank => new Label (rank.FormNo),
+                //            rank => new Label (rank.Name)
+                //        });
 
-                    _switchIns.ShowAll();
-                });
+                //    _switchIns.ShowAll();
+                //});
 
-                var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
+                //var dangerousMoves = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.RankingPokemonDownWaza, 10, rank => !string.IsNullOrEmpty(rank.WazaName));
 
-                Application.Invoke(delegate
-                {
-                    _moves
-                    .AddItems(dangerousMoves,
-                        new List<Func<RankingPokemonDownWaza, Widget>> {
-                            rank => new Label (rank.WazaName)
-                        });
+                //Application.Invoke(delegate
+                //{
+                //    _moves
+                //    .AddItems(dangerousMoves,
+                //        new List<Func<RankingPokemonDownWaza, Widget>> {
+                //            rank => new Label (rank.WazaName)
+                //        });
 
-                    _moves.ShowAll();
-                });
+                //    _moves.ShowAll();
+                //});
             }
         }
     }

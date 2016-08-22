@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model.Smogon
 {
-    public class SmogonMove
+    public class SmogonMove : IMove
     {
         public string Name { get; set; }
-        public float UsageRate { get; set; }
+        public int Ranking { get; set; }
+        public double UsageRate { get; set; }
     }
 }
