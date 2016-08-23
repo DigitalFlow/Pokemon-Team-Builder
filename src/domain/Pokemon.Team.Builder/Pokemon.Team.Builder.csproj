@@ -77,6 +77,7 @@
     <Compile Include="ApiConnector\IPokemonUsageRetriever.cs" />
     <Compile Include="ApiConnector\PokemonMetaDataRetriever.cs" />
     <Compile Include="ApiConnector\PokemonUsageRetriever.cs" />
+    <Compile Include="Serialization\SmogonStatSerializer.cs" />
     <Compile Include="Web\HttpClientWrapper.cs" />
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />

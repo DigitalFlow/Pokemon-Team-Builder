@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model.Smogon
 {
+    [Serializable]
     public class SmogonAbility : IAbility
     {
         public string Name { get; set; }

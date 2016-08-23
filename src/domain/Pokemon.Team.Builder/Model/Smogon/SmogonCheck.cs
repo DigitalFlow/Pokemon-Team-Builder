@@ -7,18 +7,19 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model.Smogon
 {
+    [Serializable]
     public class SmogonCheck
     {
         public PokemonIdentifier Identifier
         {
             get
             {
-                throw new NotImplementedException();
+                return new PokemonIdentifier(Name);
             }
 
             set
             {
-                throw new NotImplementedException();
+                Name = value.Name;
             }
         }
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model.Smogon
 {
+    [Serializable]
     public class SmogonMove : IMove
     {
         public string Name { get; set; }

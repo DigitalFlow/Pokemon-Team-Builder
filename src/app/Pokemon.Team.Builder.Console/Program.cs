@@ -4,6 +4,7 @@ using System.Linq;
 using NLog;
 using System.Collections.Generic;
 using Pokemon.Team.Builder.ApiConnector;
+using Pokemon.Team.Builder.Serialization;
 
 namespace Pokemon.Team.Builder.Console
 {
@@ -17,6 +18,7 @@ namespace Pokemon.Team.Builder.Console
 			 using (var httpClient = new HttpClientWrapper (new Uri ("http://www.smogon.com/stats/"))) {
 				using (var smogonRetriever = new SmogonStatRetriever (httpClient)) {
                     var stats = smogonRetriever.RetrieveStats ("ou").Result;
+                    SmogonStatSerializer.SaveStatsToFile(stats, "ou.xml");
 				}
 			}
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model.Smogon
 {
+    [Serializable]
     public class SmogonPokemonStats
     {
         public string Name { get; set; }
@@ -16,8 +17,8 @@ namespace Pokemon.Team.Builder.Model.Smogon
         public List<SmogonMove> Moves { get; set; }
         public List<SmogonSpread> Spreads { get; set; }
         public List<SmogonTeamMate> TeamMates { get; set; }
-        public int RawCount { get; internal set; }
-        public float Usage { get; internal set; }
-        public List<int> ViabilityCeiling { get; internal set; }
+        public int RawCount { get; set; }
+        public float Usage { get; set; }
+        public List<int> ViabilityCeiling { get; set; }
     }
 }

@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model.Smogon
-{
+{ 
+    [Serializable]
     public class SmogonItem : IItem
     {
         public string Name { get; set; }
