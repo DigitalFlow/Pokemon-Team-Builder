@@ -19,8 +19,9 @@ namespace Pokemon.Team.Builder
 		private int _rankingPokemonInCount;
 		private int _rankingPokemonDownCount;
         private int _languageId;
+        private string _tier;
 
-		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
+		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, string tier, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
 			int languageId, TierList tierList, Tier activeTier)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
@@ -31,13 +32,16 @@ namespace Pokemon.Team.Builder
 			_rankingPokemonInCount = rankingPokemonInCount;
 			_rankingPokemonDownCount = rankingPokemonDownCount;
             _languageId = languageId;
+            _tier = tier;
 		}
 
 		private readonly Func<IPokemonIdentifiable, TierList, Tier, bool> IsInActiveTierOrBelow = (proposal, tierList, activeTier) => 
 		{
 			var proposalTierEntry = tierList.Get (proposal);
 
-			return proposalTierEntry.IsInTierOrBelow(activeTier);
+			var isInTierOrBelow = proposalTierEntry.IsInTierOrBelow(activeTier);
+
+            return isInTierOrBelow;
 		};
 
 		public async Task<List<IPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<IPokemonInformation> pokemon = null) {
@@ -93,12 +97,14 @@ namespace Pokemon.Team.Builder
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
 		private async Task<IPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
-			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
+			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _tier, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
 				.ConfigureAwait(false);
 
-			if (information.Counters != null) 
+            var counters = information.GetCounters();
+
+            if (counters != null) 
 			{
-				information.Counters = information.Counters
+				counters = counters
 					.Where (poke => IsInActiveTierOrBelow (poke, _tierList, _activeTier))
 					.ToList ();
 			}
@@ -115,11 +121,13 @@ namespace Pokemon.Team.Builder
 		{
 			var rankedMembers = new Dictionary<ITeamMate, int> ();
 
-			if (pokemonInfo.TeamMates == null) {
+            var teamMates = pokemonInfo.GetTeamMates();
+
+            if (teamMates == null) {
 				return rankedMembers;
 			}
 
-			return RankingCreator.CreateRanking (pokemonInfo.TeamMates);
+			return RankingCreator.CreateRanking (teamMates);
 		}
 	}
 }

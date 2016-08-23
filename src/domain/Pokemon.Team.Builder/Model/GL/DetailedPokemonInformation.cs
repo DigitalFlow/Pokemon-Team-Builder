@@ -7,244 +7,80 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Model
 {
-	public class DetailedPokemonInformation : IEquatable<DetailedPokemonInformation>, IPokemonInformation
+    public class DetailedPokemonInformation : IEquatable<DetailedPokemonInformation>, IPokemonInformation
     {
-		/// <summary>
-		/// 0000 => OK, 4000 Otherwise
-		/// </summary>
-		/// <value>The status code.</value>
+        /// <summary>
+        /// 0000 => OK, 4000 Otherwise
+        /// </summary>
+        /// <value>The status code.</value>
         public string Status_Code { get; set; }
 
-		/// <summary>
-		/// Moves that the current pokemon most often uses for fainting opponent pokemon
-		/// </summary>
-		/// <value>The ranking pokemon sufferer waza.</value>
+        /// <summary>
+        /// Moves that the current pokemon most often uses for fainting opponent pokemon
+        /// </summary>
+        /// <value>The ranking pokemon sufferer waza.</value>
         public List<RankingPokemonSuffererWaza> RankingPokemonSuffererWaza { get; set; }
 
-		/// <summary>
-		/// Pokemon that the current pokemon most often defeats
-		/// </summary>
-		/// <value>The ranking pokemon sufferer.</value>
+        /// <summary>
+        /// Pokemon that the current pokemon most often defeats
+        /// </summary>
+        /// <value>The ranking pokemon sufferer.</value>
         public List<RankingPokemonSufferer> RankingPokemonSufferer { get; set; }
 
-		/// <summary>
-		/// Pokemon that are most often used as team mates for the current pokemon
-		/// </summary>
-		/// <value>The ranking pokemon in.</value>
+        /// <summary>
+        /// Pokemon that are most often used as team mates for the current pokemon
+        /// </summary>
+        /// <value>The ranking pokemon in.</value>
         public List<RankingPokemonIn> RankingPokemonIn { get; set; }
 
-		/// <summary>
-		/// Previous pokemon identifier in pokedex.
-		/// </summary>
-		/// <value>The before pokemon identifier.</value>
+        /// <summary>
+        /// Previous pokemon identifier in pokedex.
+        /// </summary>
+        /// <value>The before pokemon identifier.</value>
         public string BeforePokemonId { get; set; }
 
-		/// <summary>
-		/// Gets or sets the ranking pokemon trend.
-		/// </summary>
-		/// <value>The ranking pokemon trend.</value>
+        /// <summary>
+        /// Gets or sets the ranking pokemon trend.
+        /// </summary>
+        /// <value>The ranking pokemon trend.</value>
         public RankingPokemonTrend RankingPokemonTrend { get; set; }
 
-		/// <summary>
-		/// Information on the current pokemon
-		/// </summary>
-		/// <value>The ranking pokemon info.</value>
+        /// <summary>
+        /// Information on the current pokemon
+        /// </summary>
+        /// <value>The ranking pokemon info.</value>
         public RankingPokemonInfo RankingPokemonInfo { get; set; }
 
-		/// <summary>
-		/// Pokemon that most often faint the current pokemon
-		/// </summary>
-		/// <value>The ranking pokemon down.</value>
+        /// <summary>
+        /// Pokemon that most often faint the current pokemon
+        /// </summary>
+        /// <value>The ranking pokemon down.</value>
         public List<RankingPokemonDown> RankingPokemonDown { get; set; }
-        
-		/// <summary>
-		/// Ranking of opponent moves that do not faint current pokemon
-		/// </summary>
-		/// <value>The ranking pokemon down waza other.</value>
-		public RankingPokemonDownWazaOther RankingPokemonDownWazaOther { get; set; }
-        
-		/// <summary>
-		/// Next pokemon identifier in pokedex.
-		/// </summary>
-		/// <value>The next pokemon identifier.</value>
-		public string NextPokemonId { get; set; }
 
-		/// <summary>
-		/// Moves that most often faint the current pokemon
-		/// </summary>
-		/// <value>The ranking pokemon down waza.</value>
+        /// <summary>
+        /// Ranking of opponent moves that do not faint current pokemon
+        /// </summary>
+        /// <value>The ranking pokemon down waza other.</value>
+        public RankingPokemonDownWazaOther RankingPokemonDownWazaOther { get; set; }
+
+        /// <summary>
+        /// Next pokemon identifier in pokedex.
+        /// </summary>
+        /// <value>The next pokemon identifier.</value>
+        public string NextPokemonId { get; set; }
+
+        /// <summary>
+        /// Moves that most often faint the current pokemon
+        /// </summary>
+        /// <value>The ranking pokemon down waza.</value>
         public List<RankingPokemonDownWaza> RankingPokemonDownWaza { get; set; }
 
-		/// <summary>
-		/// Name of the timezone.
-		/// </summary>
-		/// <value>The name of the timezone.</value>
+        /// <summary>
+        /// Name of the timezone.
+        /// </summary>
+        /// <value>The name of the timezone.</value>
         public string TimezoneName { get; set; }
 
-        public IEnumerable<IAbility> Abilities
-        {
-            get
-            {
-                return RankingPokemonTrend.TokuseiInfo;
-            }
-
-            set
-            {
-                if (RankingPokemonTrend == null)
-                {
-                    RankingPokemonTrend = new RankingPokemonTrend();
-                }
-
-                RankingPokemonTrend.TokuseiInfo =  value
-                    .Select(v => new TokuseiInfo
-                    {
-                        Name = v.Name,
-                        Ranking = v.Ranking,
-                        UsageRate = v.UsageRate
-                    })
-                    .ToList();
-            }
-        }
-
-        public IEnumerable<ICounter> Counters
-        {
-            get
-            {
-                return RankingPokemonDown;
-            }
-
-            set
-            {
-                RankingPokemonDown = value.Select(v => new RankingPokemonDown
-                {
-                    Name = v.Name,
-                    Ranking = v.Ranking,
-                    Identifier = v.Identifier
-                })
-                .ToList();
-            }
-        }
-
-        public IEnumerable<IHappiness> Happiness
-        {
-            get
-            {
-                return new List<IHappiness>();
-            }
-
-            set
-            {
-                // Not present in here
-            }
-        }
-
-        public IEnumerable<IItem> Items
-        {
-            get
-            {
-                return RankingPokemonTrend.ItemInfo;
-            }
-
-            set
-            {
-                if (RankingPokemonTrend == null)
-                {
-                    RankingPokemonTrend = new RankingPokemonTrend();
-                }
-
-                RankingPokemonTrend.ItemInfo = value
-                    .Select(v => new ItemInfo
-                    {
-                        Name = v.Name,
-                        Ranking = v.Ranking,
-                        UsageRate = v.UsageRate
-                    })
-                    .ToList();
-            }
-        }
-
-        public IEnumerable<IMove> Moves
-        {
-            get
-            {
-                return RankingPokemonTrend.WazaInfo;
-            }
-
-            set
-            {
-                if (RankingPokemonTrend == null)
-                {
-                    RankingPokemonTrend = new RankingPokemonTrend();
-                }
-
-                RankingPokemonTrend.WazaInfo = value
-                    .Select(v => new WazaInfo
-                    {
-                        Name = v.Name,
-                        Ranking = v.Ranking,
-                        UsageRate = v.UsageRate
-                    })
-                    .ToList();
-            }
-        }
-
-        public IEnumerable<INature> Natures
-        {
-            get
-            {
-                return RankingPokemonTrend.SeikakuInfo;
-            }
-
-            set
-            {
-                if (RankingPokemonTrend == null)
-                {
-                    RankingPokemonTrend = new RankingPokemonTrend();
-                }
-
-                RankingPokemonTrend.SeikakuInfo = value
-                    .Select(v => new SeikakuInfo
-                    {
-                        Name = v.Name,
-                        Ranking = v.Ranking,
-                        UsageRate = v.UsageRate
-                    })
-                    .ToList();
-            }
-        }
-
-        public IEnumerable<ISpread> Spreads
-        {
-            get
-            {
-                return new List<ISpread>();
-            }
-
-            set
-            {
-                // Is currently not existing
-            }
-        }
-
-        public IEnumerable<ITeamMate> TeamMates
-        {
-            get
-            {
-                return RankingPokemonIn;
-            }
-
-            set
-            {
-                RankingPokemonIn = value
-                    .Select(v => new RankingPokemonIn
-                    {
-                        Name = v.Name,
-                        Ranking = v.Ranking,
-                        Identifier = v.Identifier
-                    })
-                    .ToList();
-            }
-        }
 
         public PokemonIdentifier Identifier
         {
@@ -255,7 +91,7 @@ namespace Pokemon.Team.Builder.Model
 
             set
             {
-                if(RankingPokemonInfo == null)
+                if (RankingPokemonInfo == null)
                 {
                     RankingPokemonInfo = new RankingPokemonInfo();
                 }
@@ -264,87 +100,92 @@ namespace Pokemon.Team.Builder.Model
             }
         }
 
-        public string Name
+        public string GetName()
         {
-            get
-            {
-                return RankingPokemonInfo.Name;
-            }
-
-            set
-            {
-                if(RankingPokemonInfo == null)
-                {
-                    RankingPokemonInfo = new RankingPokemonInfo();
-                }
-
-                RankingPokemonInfo.Name = value;
-            }
+            return RankingPokemonInfo.Name;
         }
 
-        public string Type1
+        public bool Equals(DetailedPokemonInformation otherDetail)
         {
-            get
+            if (otherDetail == null)
             {
-                return RankingPokemonInfo.TypeName1;
+                return false;
             }
 
-            set
-            {
-                if (RankingPokemonInfo == null)
-                {
-                    RankingPokemonInfo = new RankingPokemonInfo();
-                }
-
-                RankingPokemonInfo.TypeName1 = value;
-            }
+            return RankingPokemonInfo.MonsNo == otherDetail.RankingPokemonInfo.MonsNo
+                && RankingPokemonInfo.FormNo == otherDetail.RankingPokemonInfo.FormNo;
         }
 
-        public string Type2
+        public override bool Equals(object obj)
         {
-            get
+            var otherDetail = obj as DetailedPokemonInformation;
+
+            if (otherDetail == null)
             {
-                return RankingPokemonInfo.TypeName2;
+                return false;
             }
 
-            set
-            {
-                if (RankingPokemonInfo == null)
-                {
-                    RankingPokemonInfo = new RankingPokemonInfo();
-                }
-
-                RankingPokemonInfo.TypeName2 = value;
-            }
+            return Equals(otherDetail);
         }
 
-        public bool Equals (DetailedPokemonInformation otherDetail) {
-			if (otherDetail == null) {
-				return false;
-			}
+        public override int GetHashCode()
+        {
+            return $"{RankingPokemonInfo.MonsNo}-{RankingPokemonInfo.FormNo}".GetHashCode();
+        }
 
-			return RankingPokemonInfo.MonsNo == otherDetail.RankingPokemonInfo.MonsNo
-				&& RankingPokemonInfo.FormNo == otherDetail.RankingPokemonInfo.FormNo;
-		}
+        public IEnumerable<IAbility> GetAbilities()
+        {
+            return RankingPokemonTrend.TokuseiInfo;
+        }
 
-		public override bool Equals (object obj)
-		{
-			var otherDetail = obj as DetailedPokemonInformation;
+        public IEnumerable<ICounter> GetCounters()
+        {
+            return RankingPokemonDown;
+        }
 
-			if (otherDetail == null) {
-				return false;
-			}
+        public IEnumerable<IHappiness> GetHappiness()
+        {
+            return null;
+        }
 
-			return Equals (otherDetail);
-		}
+        public IEnumerable<IItem> GetItems()
+        {
+            return RankingPokemonTrend.ItemInfo;
+        }
 
-		public override int GetHashCode ()
-		{
-			return $"{RankingPokemonInfo.MonsNo}-{RankingPokemonInfo.FormNo}".GetHashCode();
-		}
+        public IEnumerable<IMove> GetMoves()
+        {
+            return RankingPokemonTrend.WazaInfo;
+        }
 
-		public static implicit operator PokemonIdentifier (DetailedPokemonInformation detailedInfo) {
-			return new PokemonIdentifier (detailedInfo.RankingPokemonInfo.MonsNo, detailedInfo.RankingPokemonInfo.FormNo);
-		}
+        public IEnumerable<INature> GetNatures()
+        {
+            return RankingPokemonTrend.SeikakuInfo;
+        }
+
+        public IEnumerable<ISpread> GetSpreads()
+        {
+            return null;
+        }
+
+        public IEnumerable<ITeamMate> GetTeamMates()
+        {
+            return RankingPokemonIn;
+        }
+
+        public string GetType1()
+        {
+            return RankingPokemonInfo.TypeName1;
+        }
+
+        public string GetType2()
+        {
+            return RankingPokemonInfo.TypeName2;
+        }
+
+        public static implicit operator PokemonIdentifier(DetailedPokemonInformation detailedInfo)
+        {
+            return new PokemonIdentifier(detailedInfo.RankingPokemonInfo.MonsNo, detailedInfo.RankingPokemonInfo.FormNo);
+        }
     }
 }

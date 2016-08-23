@@ -8,17 +8,18 @@ namespace Pokemon.Team.Builder.Interfaces
 {
     public interface IPokemonInformation : IPokemonIdentifiable
     {
-        string Name { get; set; }
-        string Type1 { get; set; }
-        string Type2 { get; set; }
+        string GetName();
 
-        IEnumerable<IAbility> Abilities { get; set; }
-        IEnumerable<ICounter> Counters { get; set; }
-        IEnumerable<IHappiness> Happiness { get; set; }
-        IEnumerable<IItem> Items { get; set; }
-        IEnumerable<IMove> Moves { get; set; }
-        IEnumerable<INature> Natures { get; set; }
-        IEnumerable<ISpread> Spreads { get; set; }
-        IEnumerable<ITeamMate> TeamMates { get; set; }
+        string GetType1();
+        string GetType2();
+
+        IEnumerable<IAbility> GetAbilities();
+        IEnumerable<ICounter> GetCounters();
+        IEnumerable<IHappiness> GetHappiness();
+        IEnumerable<IItem> GetItems();
+        IEnumerable<IMove> GetMoves();
+        IEnumerable<INature> GetNatures();
+        IEnumerable<ISpread> GetSpreads();
+        IEnumerable<ITeamMate> GetTeamMates();
     }
 }

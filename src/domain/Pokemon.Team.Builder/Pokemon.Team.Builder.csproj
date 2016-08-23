@@ -59,6 +59,7 @@
     <Compile Include="Interfaces\IPokemonInformation.cs" />
     <Compile Include="Interfaces\ISpread.cs" />
     <Compile Include="Interfaces\ITeamMate.cs" />
+    <Compile Include="Logic\SmogonStatManager.cs" />
     <Compile Include="Model\Smogon\SmogonAbility.cs" />
     <Compile Include="Model\Smogon\SmogonCheck.cs" />
     <Compile Include="Model\Smogon\SmogonHappiness.cs" />

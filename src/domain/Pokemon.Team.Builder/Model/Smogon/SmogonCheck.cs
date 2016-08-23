@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Pokemon.Team.Builder.Model.Smogon
 {
     [Serializable]
-    public class SmogonCheck
+    public class SmogonCheck : ICounter
     {
         public PokemonIdentifier Identifier
         {
@@ -35,5 +35,10 @@ namespace Pokemon.Team.Builder.Model.Smogon
         /// Index 2: Standard deviation: sqrt(Index1*(1.0-Index1)/Index0)
         /// </summary>
         public List<float> Statistics { get; set; }
+
+        public bool Equals(ICounter other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

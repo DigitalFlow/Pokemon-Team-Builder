@@ -38,6 +38,11 @@ namespace Pokemon.Team.Builder
 			return Pokemon.GetEnumerator ();
 		}
 
+        /// <summary>
+        /// Gets a pokemon by its name, all languages are searched for the name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
 		public Pokemon GetByName(string name) 
 		{
 			return Pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));

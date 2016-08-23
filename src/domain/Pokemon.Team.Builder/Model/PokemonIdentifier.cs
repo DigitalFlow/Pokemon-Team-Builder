@@ -63,7 +63,7 @@ namespace Pokemon.Team.Builder
 				return false;
 			}
 
-			return MonsNo == otherId.MonsNo && FormNo == otherId.FormNo;
+			return MonsNo == otherId.MonsNo && FormNo == otherId.FormNo && Name == otherId.Name;
 		}
 
 		public override bool Equals (object obj)

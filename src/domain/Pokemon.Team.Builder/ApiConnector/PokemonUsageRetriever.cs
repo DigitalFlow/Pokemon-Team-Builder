@@ -22,10 +22,10 @@ namespace Pokemon.Team.Builder
             _client = client;
         }
 
-		public async Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier pokemonId, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
+		public async Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier pokemonId, string tier = "", int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
 			int rankingPokemonDownCount = 10, int languageId = 2)
         {
-			var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
+			var unixTimeStamp = (DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
 
             var request = new HttpRequestMessage
             {

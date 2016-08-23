@@ -5,7 +5,6 @@ using Pokemon.Team.Builder.Model.Smogon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.ApiConnector
@@ -14,6 +13,7 @@ namespace Pokemon.Team.Builder.ApiConnector
     {
         private IHttpClient _client;
         private Logger _logger = LogManager.GetCurrentClassLogger();
+        private const double UsageRateMinimum = 1;
 
         public SmogonStatRetriever(IHttpClient client)
         {
@@ -32,16 +32,21 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .SingleOrDefault(p => p.Path.EndsWith(name));
         }
 
-        public async Task<List<SmogonPokemonStats>> RetrieveStats(string tier)
+        public static string GetFileName(string tierDescriptor)
         {
             var year = DateTime.UtcNow.Year;
 
             // Newest stats are always for the previous month
             var month = DateTime.UtcNow.Month - 1;
 
-            var weightingBaseLine = GetWeightingBaseLine(tier);
+            var url = $"{year}-{month.ToString("00")}/chaos/{tierDescriptor}.json";
 
-            var url = $"{year}-{month.ToString("00")}/chaos/{tier}-{weightingBaseLine}.json";
+            return url;
+        }
+
+        public async Task<List<SmogonPokemonStats>> RetrieveStats(string tierDescriptor)
+        {
+            var url = GetFileName(tierDescriptor);
 
             var response = await _client.
                 GetStringAsync(url)
@@ -101,6 +106,8 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .Select(node => new SmogonHappiness { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
                 .ToList();
 
+            happiness = happiness.Where(happy => happy.UsageRate > UsageRateMinimum).ToList();
+
             return happiness;
         }
 
@@ -126,6 +133,8 @@ namespace Pokemon.Team.Builder.ApiConnector
             var team = teamNodes.Children()
                 .Select(node => new SmogonTeamMate { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
                 .ToList();
+
+            team = team.Where(t => t.UsageRate > UsageRateMinimum).ToList();
 
             return team;
         }
@@ -157,6 +166,8 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .Select(node => new SmogonSpread { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
                 .ToList();
 
+            spreads = spreads.Where(spread => spread.UsageRate > UsageRateMinimum).ToList();
+
             return spreads;
         }
 
@@ -169,6 +180,8 @@ namespace Pokemon.Team.Builder.ApiConnector
             var moves = moveNodes.Children()
                 .Select(node => new SmogonMove { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
                 .ToList();
+
+            moves = moves.Where(move => move.UsageRate > UsageRateMinimum).ToList();
 
             return moves;
         }
@@ -183,6 +196,8 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .Select(node => new SmogonItem { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
                 .ToList();
 
+            items = items.Where(item => item.UsageRate > UsageRateMinimum).ToList();
+
             return items;
         }
 
@@ -196,18 +211,9 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .Select(node => new SmogonAbility { Name = ((JProperty)node).Name, UsageRate = node.Children().SingleOrDefault().Value<float>() })
                 .ToList();
 
-            return abilities;
-        }
+            abilities = abilities.Where(ability => ability.UsageRate > UsageRateMinimum).ToList();
 
-        private int GetWeightingBaseLine(string tier)
-        {
-            switch (tier.ToLowerInvariant())
-            {
-                case "ou":
-                    return 1825;
-                default:
-                    return 1760;
-            }
+            return abilities;
         }
     }
 }

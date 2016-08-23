@@ -10,6 +10,7 @@ using Pokemon.Team.Builder.Model;
 using Pokemon.Team.Builder.UI;
 using Pokemon.Team.Builder.Serialization;
 using Pokemon.Team.Builder.Interfaces;
+using Pokemon.Team.Builder.Logic;
 
 public partial class MainWindow : Window
 {
@@ -453,10 +454,15 @@ public partial class MainWindow : Window
 
     protected async Task ProposeTeam(List<PokemonIdentifier> initialTeam)
     {
-        using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeGLUrl"))))
+        //using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeGLUrl"))))
+        //{
+        //    using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
+        //    {
+
+        using (var httpClient = new HttpClientWrapper(new Uri("http://www.smogon.com/stats/")))
         {
-            using (var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
-            {
+            using (var pokemonUsageRetriever = new SmogonStatManager(httpClient))
+            { 
                 var activeTierName = ConfigManager.GetSetting(TierConfigKey);
 
                 var activeTier = _tierHierarchy.GetByShortName(activeTierName);
@@ -475,7 +481,7 @@ public partial class MainWindow : Window
 
                 var languageId = languageCode.ToLanguageId();
 
-                var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
+                var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, activeTierName, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
                     languageId, _tierList, activeTier);
 
                 _latestTeam = await pokemonProposer.GetProposedPokemonByUsage(initialTeam).ConfigureAwait(false);
@@ -488,7 +494,7 @@ public partial class MainWindow : Window
                     }
                 });
 
-                var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.Counters, 10);
+                var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.GetCounters(), 10);
 
                 Application.Invoke(delegate
                 {
@@ -552,6 +558,13 @@ public partial class MainWindow : Window
                     if (!string.IsNullOrEmpty(ctrl.Item3.ActiveText))
                     {
                         pokemonId.FormNo = ctrl.Item3.ActiveText;
+                    }
+
+                    if (!string.IsNullOrEmpty(ctrl.Item4.ActiveText))
+                    {
+                        var name = ctrl.Item4.ActiveText;
+
+                        pokemonId.Name = _pokedex.GetByName(name)?.GetName("en");
                     }
 
                     return pokemonId;

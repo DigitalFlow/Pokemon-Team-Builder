@@ -41,13 +41,13 @@ namespace Pokemon.Team.Builder.UI
 			image.SetPicture (pokemon);
 
             var nameLabel = new Label("Name");
-			var pokeName = new Label(_pokeInfo.Name);
+			var pokeName = new Label(pokemon.GetName("en"));
 
             var type1Label = new Label("Type 1");
             var type2Label = new Label("Type 2");
 
-            var pokeType1 = new Label(_pokeInfo.Type1);
-			var pokeType2 = new Label(_pokeInfo.Type2);
+            var pokeType1 = new Label(_pokeInfo.GetType1());
+			var pokeType2 = new Label(_pokeInfo.GetType2());
 
             var gridLines = new Dictionary<Label, Label>
             {
@@ -107,9 +107,11 @@ namespace Pokemon.Team.Builder.UI
 			var counterPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			var effectiveOpponentMoves = new Grid { ColumnHomogeneous = true, Hexpand = true };
 
-			if (_pokeInfo.Items != null) {
+            var items = _pokeInfo.GetItems();
+
+            if (items != null) {
 				itemGrid
-					.AddItems (_pokeInfo.Items.OrderBy (poke => poke.Ranking).ToList (),
+					.AddItems (items.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IItem, Widget>> {
 							item => new Label (item.Name),
                             item => new Label ($"{Math.Round(item.UsageRate, 2)} %")
@@ -117,9 +119,11 @@ namespace Pokemon.Team.Builder.UI
 				);
 			}
 
-			if (_pokeInfo.Moves != null) {
+            var moves = _pokeInfo.GetMoves();
+
+			if (moves != null) {
 				moveGrid
-					.AddItems (_pokeInfo.Moves.OrderBy (poke => poke.Ranking).ToList (),
+					.AddItems (moves.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IMove, Widget>> {
 							move => new Label (move.Name),
                             move => new Label ($"{Math.Round(move.UsageRate, 2)} %")
@@ -127,9 +131,11 @@ namespace Pokemon.Team.Builder.UI
 				);
 			}
 
-			if (_pokeInfo.Natures != null) {
+            var natures = _pokeInfo.GetNatures();
+
+			if (natures != null) {
 				natureGrid
-					.AddItems (_pokeInfo.Natures.OrderBy (poke => poke.Ranking).ToList (),
+					.AddItems (natures.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<INature, Widget>> {
 							nature => new Label (nature.Name),
                             nature => new Label ($"{Math.Round(nature.UsageRate, 2)} %")
@@ -137,9 +143,11 @@ namespace Pokemon.Team.Builder.UI
 				);
 			}
 
-			if (_pokeInfo.Abilities != null) {
+            var abilities = _pokeInfo.GetAbilities();
+
+			if (abilities != null) {
 				abilityGrid
-					.AddItems (_pokeInfo.Abilities.OrderBy (poke => poke.Ranking).ToList (),
+					.AddItems (abilities.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IAbility, Widget>> {
 							ability => new Label (ability.Name),
                             ability => new Label ($"{Math.Round(ability.UsageRate, 2)} %")
@@ -147,31 +155,33 @@ namespace Pokemon.Team.Builder.UI
 				);
 			}
 
-			//if (_pokeInfo.RankingPokemonSuffererWaza != null) {
-			//	movesForFaintingGrid
-			//		.AddItems (_pokeInfo.RankingPokemonSuffererWaza.OrderBy (poke => poke.Ranking).ToList (),
-			//			new List<Func<RankingPokemonSuffererWaza, Widget>> {
-			//				poke => new Label (((RankingPokemonSuffererWaza)poke).WazaName),
-			//				poke => new Label ($"{Math.Round(((RankingPokemonSuffererWaza) poke).UsageRate, 2)} %")
-			//			}
-			//	);
-			//}
+            //if (_pokeInfo.RankingPokemonSuffererWaza != null) {
+            //	movesForFaintingGrid
+            //		.AddItems (_pokeInfo.RankingPokemonSuffererWaza.OrderBy (poke => poke.Ranking).ToList (),
+            //			new List<Func<RankingPokemonSuffererWaza, Widget>> {
+            //				poke => new Label (((RankingPokemonSuffererWaza)poke).WazaName),
+            //				poke => new Label ($"{Math.Round(((RankingPokemonSuffererWaza) poke).UsageRate, 2)} %")
+            //			}
+            //	);
+            //}
 
-			//if (_pokeInfo.RankingPokemonSufferer != null) {
-			//	defeatedPokemonGrid
-			//		.AddItems (_pokeInfo.RankingPokemonSufferer.OrderBy (poke => poke.Ranking).ToList (),
-			//			new List<Func<RankingPokemonSufferer, Widget>> {
-			//				poke => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonSufferer)poke).MonsNo), 48, 48),
-			//				poke => new Label (((RankingPokemonSufferer)poke).MonsNo.ToString ()),
-			//				poke => new Label (((RankingPokemonSufferer)poke).FormNo),
-			//				poke => new Label (((RankingPokemonSufferer)poke).Name)
-			//			}
-			//	);
-			//}
+            //if (_pokeInfo.RankingPokemonSufferer != null) {
+            //	defeatedPokemonGrid
+            //		.AddItems (_pokeInfo.RankingPokemonSufferer.OrderBy (poke => poke.Ranking).ToList (),
+            //			new List<Func<RankingPokemonSufferer, Widget>> {
+            //				poke => new Image ().SetPicture (_pokedex.GetById (((RankingPokemonSufferer)poke).MonsNo), 48, 48),
+            //				poke => new Label (((RankingPokemonSufferer)poke).MonsNo.ToString ()),
+            //				poke => new Label (((RankingPokemonSufferer)poke).FormNo),
+            //				poke => new Label (((RankingPokemonSufferer)poke).Name)
+            //			}
+            //	);
+            //}
 
-			if (_pokeInfo.Counters != null) {
+            var counters = _pokeInfo.GetCounters();
+
+			if (counters != null) {
 				counterPokemonGrid
-					.AddItems (_pokeInfo.Counters.OrderBy (poke => poke.Ranking).ToList (),
+					.AddItems (counters.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<ICounter, Widget>> {
 							poke => new Image ().SetPicture (_pokedex.GetById (poke.Identifier.MonsNo), 48, 48),
 							poke => new Label (poke.Identifier.MonsNo.ToString ()),

@@ -45,7 +45,7 @@ namespace Pokemon.Team.Builder
 
         public PokemonTierEntry Get(IPokemonIdentifiable poke)
         {
-            return Get(poke.Identifier.MonsNo, poke.Identifier.FormNo);
+            return Get(poke.Identifier.Name) ?? Get(poke.Identifier.MonsNo, poke.Identifier.FormNo);
         }
 
 		public PokemonTierEntry Get(int id, string formNo) 
