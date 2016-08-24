@@ -49,9 +49,31 @@ namespace Pokemon.Team.Builder.Model.Smogon
         /// </summary>
         public List<float> Statistics { get; set; }
 
-        public bool Equals(ICounter other)
+        public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return Name.GetHashCode();
+        }
+
+        public bool Equals(ICounter otherCounter)
+        {
+            if (otherCounter == null)
+            {
+                return false;
+            }
+
+            return Identifier == otherCounter.Identifier;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherCheck = obj as SmogonCheck;
+
+            if (otherCheck == null)
+            {
+                return false;
+            }
+
+            return Equals(otherCheck);
         }
     }
 }

@@ -12,11 +12,13 @@ namespace Pokemon.Team.Builder.UI
 		private Pokedex _pokedex;
 		private IPokemonInformation _pokeInfo;
         private string _languageCode;
+        private TierList _tierList;
 
-		public PokemonDetailWindow(IPokemonInformation pokeInfo, Pokedex pokedex, string languageCode) : base(WindowType.Toplevel) {
+		public PokemonDetailWindow(IPokemonInformation pokeInfo, Pokedex pokedex, TierList tierList, string languageCode) : base(WindowType.Toplevel) {
 			_pokeInfo = pokeInfo;
 			_pokedex = pokedex;
             _languageCode = languageCode;
+            _tierList = tierList;
 
             Initialize ();
 
@@ -37,24 +39,33 @@ namespace Pokemon.Team.Builder.UI
             };
 
 			var image = new Image ();
-			var pokemon = _pokedex.GetById (_pokeInfo.Identifier.MonsNo);
+			var pokemon = _pokedex.GetByIdentifier (_pokeInfo.Identifier);
 			image.SetPicture (pokemon);
+
+            var tierInfo = _tierList.Get(pokemon);
 
             var nameLabel = new Label("Name");
 			var pokeName = new Label(pokemon.GetName("en"));
 
-            var type1Label = new Label("Type 1");
-            var type2Label = new Label("Type 2");
-
-            var pokeType1 = new Label(_pokeInfo.GetType1());
-			var pokeType2 = new Label(_pokeInfo.GetType2());
-
             var gridLines = new Dictionary<Label, Label>
             {
-                { nameLabel, pokeName },
-                { type1Label, pokeType1 },
-                { type2Label, pokeType2 }
+                { nameLabel, pokeName }
             };
+
+            var types = tierInfo.types;
+
+            for (var i = 0; i < types.Count; i++)
+            {
+                var typeLabel = new Label($"Type {i+1}");
+                var pokeType = new Label(types[i]);
+
+                gridLines.Add(typeLabel, pokeType);
+            }
+
+            var tierLabel = new Label("Tier");
+            var tier = new Label(tierInfo.tier);
+
+            gridLines.Add(tierLabel, tier);
 
             hvGrid.AddItems(gridLines.ToList(),
                 new List<Func<KeyValuePair<Label, Label>, Widget>> {

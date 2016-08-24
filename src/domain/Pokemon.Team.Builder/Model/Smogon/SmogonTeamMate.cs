@@ -40,9 +40,31 @@ namespace Pokemon.Team.Builder.Model.Smogon
         public int Ranking { get; set; }
         public float UsageRate { get; set; }
 
-        public bool Equals(ITeamMate other)
+        public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return Name.GetHashCode();
+        }
+
+        public bool Equals(ITeamMate otherMate)
+        {
+            if (otherMate == null)
+            {
+                return false;
+            }
+
+            return Identifier == otherMate.Identifier;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherMate = obj as SmogonTeamMate;
+
+            if (otherMate == null)
+            {
+                return false;
+            }
+
+            return Equals(otherMate);
         }
     }
 }

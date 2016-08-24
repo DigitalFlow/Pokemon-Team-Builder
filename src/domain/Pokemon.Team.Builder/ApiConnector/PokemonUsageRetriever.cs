@@ -12,12 +12,12 @@ using Pokemon.Team.Builder.Interfaces;
 
 namespace Pokemon.Team.Builder
 {
-	public class PokemonUsageRetriever : IPokemonUsageRetriever, IDisposable
+	public class PokemonGlUsageRetriever : IPokemonUsageRetriever, IDisposable
     {
         private IHttpClient _client;
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public PokemonUsageRetriever(IHttpClient client)
+        public PokemonGlUsageRetriever(IHttpClient client)
         {
             _client = client;
         }

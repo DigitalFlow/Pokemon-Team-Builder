@@ -115,7 +115,8 @@ namespace Pokemon.Team.Builder.Logic
 
             if (information == null)
             {
-
+                _logger.Error($"Failed to retrieve pokemon information for pokemon with ID {pokemon?.Id} and name {pokemonName}");
+                return new SmogonPokemonStats();
             }
 
             SetMonsNoOnPokemon(new List<SmogonPokemonStats> { information });
