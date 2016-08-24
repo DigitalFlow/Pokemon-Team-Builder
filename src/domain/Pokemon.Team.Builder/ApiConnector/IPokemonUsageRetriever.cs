@@ -7,7 +7,7 @@ namespace Pokemon.Team.Builder
 {
 	public interface IPokemonUsageRetriever : IDisposable
 	{
-		Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier identifier, string tier = "", int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
+		Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier identifier, Tier tier = null, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
 			int rankingPokemonDownCount = 10, int languageId = 2);
 	}
 }

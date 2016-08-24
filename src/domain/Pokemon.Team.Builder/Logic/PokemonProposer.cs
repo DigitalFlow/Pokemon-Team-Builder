@@ -20,9 +20,8 @@ namespace Pokemon.Team.Builder
 		private int _rankingPokemonInCount;
 		private int _rankingPokemonDownCount;
         private int _languageId;
-        private string _tier;
 
-		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, string tier, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
+		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
 			int languageId, TierList tierList, Tier activeTier, Pokedex pokedex)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
@@ -33,7 +32,6 @@ namespace Pokemon.Team.Builder
 			_rankingPokemonInCount = rankingPokemonInCount;
 			_rankingPokemonDownCount = rankingPokemonDownCount;
             _languageId = languageId;
-            _tier = tier;
             _pokedex = pokedex;
 		}
 
@@ -99,7 +97,7 @@ namespace Pokemon.Team.Builder
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
 		private async Task<IPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
-			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _tier, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
+			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _activeTier, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
 				.ConfigureAwait(false);
 
             var counters = information.GetCounters();

@@ -501,7 +501,7 @@ public partial class MainWindow : Window
 
                 var languageId = languageCode.ToLanguageId();
 
-                var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, activeTierName, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
+                var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
                     languageId, _tierList, activeTier, _pokedex);
 
                 _latestTeam = await pokemonProposer.GetProposedPokemonByUsage(initialTeam).ConfigureAwait(false);

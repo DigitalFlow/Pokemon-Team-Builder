@@ -8,6 +8,7 @@ using Pokemon.Team.Builder.ApiConnector;
 using System.IO;
 using Pokemon.Team.Builder.Serialization;
 using Pokemon.Team.Builder.Model.Smogon;
+using NLog;
 
 namespace Pokemon.Team.Builder.Logic
 {
@@ -15,6 +16,7 @@ namespace Pokemon.Team.Builder.Logic
     {
         private IHttpClient _client;
         private Pokedex _pokedex;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SmogonStatManager(Pokedex pokedex, IHttpClient client)
         {
@@ -27,9 +29,9 @@ namespace Pokemon.Team.Builder.Logic
             _client.Dispose();
         }
 
-        private int GetWeightingBaseLine(string tier)
+        private int GetWeightingBaseLine(Tier tier)
         {
-            switch (tier.ToLowerInvariant())
+            switch (tier.ShortName.ToLowerInvariant())
             {
                 case "ou":
                     return 1825;
@@ -42,7 +44,8 @@ namespace Pokemon.Team.Builder.Logic
         {
             foreach (var poke in pokemon)
             {
-                try {
+                try
+                {
                     if (poke.Identifier.MonsNo == 0)
                     {
                         var identifier = _pokedex.GetByName(poke.Identifier.Name).Identifier;
@@ -50,17 +53,31 @@ namespace Pokemon.Team.Builder.Logic
                         identifier.Name = poke.Identifier.Name;
 
                         poke.Identifier = identifier;
-                    } }
-                catch(Exception ex)
+                    }
+                }
+                catch (Exception ex)
                 {
-                    
+                    _logger.Error($"Failed to find pokemon with ID {poke?.Identifier?.MonsNo} and name {poke?.Identifier?.Name} in pokedex");
                 }
             }
         }
 
-        public async Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier identifier, string tier = "", int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, int rankingPokemonDownCount = 10, int languageId = 2)
+        private string GetTierName(Tier tier)
         {
-            var tierDescriptor = $"{tier}-{GetWeightingBaseLine(tier)}".ToLowerInvariant();
+            switch (tier.ShortName.ToUpperInvariant())
+            {
+                case "AG":
+                    return "anythinggoes";
+                default:
+                    return tier.ShortName.ToLowerInvariant();
+            }
+        }
+
+        public async Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier identifier, Tier tier = null, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, int rankingPokemonDownCount = 10, int languageId = 2)
+        {
+            var tierName = GetTierName(tier);
+
+            var tierDescriptor = $"{tierName}-{GetWeightingBaseLine(tier)}".ToLowerInvariant();
             var fileName = $"{tierDescriptor}.xml";
 
             var tierInformation = SmogonStatSerializer.LoadStatsFromFile(fileName);
@@ -77,9 +94,20 @@ namespace Pokemon.Team.Builder.Logic
 
             var pokemon = _pokedex.GetByIdentifier(identifier);
 
-            // For some pokemon (i.E. Keldo) there is a trailing "ordinary" in opposite to its resolute form
+            // For some pokemon (i.E. Keldo) there is a trailing description (i.E. "ordinary") in opposite to its special form
             // Remove this part as the Smogon Stats ommit it
-            var pokemonName = pokemon.GetName().Replace("-ordinary", string.Empty);
+            var namePartBlackList = new List<string>
+            {
+                "-ordinary",
+                "-shield"
+            };
+
+            var pokemonName = pokemon.GetName();
+
+            foreach (var namePart in namePartBlackList)
+            {
+                pokemonName = pokemonName.Replace(namePart, string.Empty);
+            }
 
             var information = tierInformation
                 .FirstOrDefault(poke =>
@@ -87,7 +115,7 @@ namespace Pokemon.Team.Builder.Logic
 
             if (information == null)
             {
-                
+
             }
 
             SetMonsNoOnPokemon(new List<SmogonPokemonStats> { information });
