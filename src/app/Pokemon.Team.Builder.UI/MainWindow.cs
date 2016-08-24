@@ -228,8 +228,28 @@ public partial class MainWindow : Window
             senderBox.Item4.Entry.Text = name;
         }
 
-        senderBox.Item1.SetPicture(pokemon);
+        senderBox.Item3.Model = new ListStore(typeof(string));
 
+        senderBox.Item3.Entry.Completion = new EntryCompletion
+        {
+            Model = new ListStore(typeof(string)),
+            TextColumn = 0
+        };
+
+        foreach (var variety in pokemon.Varieties)
+        {
+            var varietyName = variety.pokemon.name;
+
+            ((ListStore)senderBox.Item3.Entry.Completion.Model).AppendValues(varietyName);
+            senderBox.Item3.AppendText(varietyName);
+        }
+
+        if (pokemon.Varieties.Count > 0)
+        {
+            senderBox.Item3.Active = 0;
+        }
+
+        senderBox.Item1.SetPicture(pokemon);
     }
 
     protected void ClearControlTuple(Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button> controlTuple)
@@ -491,6 +511,12 @@ public partial class MainWindow : Window
                     for (var i = 0; i < _latestTeam.Count; i++)
                     {
                         _controlSets[i].Item2.Active = _latestTeam[i].Identifier.MonsNo - 1;
+
+                        var formNo = 0;
+
+                        int.TryParse(_latestTeam[i].Identifier.FormNo, out formNo);
+
+                        _controlSets[i].Item3.Active = formNo;
                     }
                 });
 
@@ -557,7 +583,7 @@ public partial class MainWindow : Window
 
                     if (!string.IsNullOrEmpty(ctrl.Item3.ActiveText))
                     {
-                        pokemonId.FormNo = ctrl.Item3.ActiveText;
+                        pokemonId.FormNo = _pokedex.GetByName(ctrl.Item3.ActiveText).FormNo;
                     }
 
                     if (!string.IsNullOrEmpty(ctrl.Item4.ActiveText))

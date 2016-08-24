@@ -77,7 +77,7 @@ namespace Pokemon.Team.Builder
 
 			var orderedMembers = proposedMembers
 				.Where (proposal => IsInActiveTierOrBelow(proposal.Key, _tierList, _activeTier))
-				.Where (proposal => pokemon.All(poke => poke.Identifier != proposal.Key.Identifier))
+				.Where (proposal => pokemon.All(poke => poke.Identifier.MonsNo != proposal.Key.Identifier.MonsNo))
 				.OrderByDescending (pair => pair.Value)
 				.ToList();
 
@@ -85,7 +85,7 @@ namespace Pokemon.Team.Builder
 
 			if (bestMember == null) {
 				return pokemon;
-			}
+			}           
 
 			initialTeam.Add (bestMember.Identifier);
 			pokemon.Add (await GetPokemonDetails (bestMember.Identifier).ConfigureAwait(false));

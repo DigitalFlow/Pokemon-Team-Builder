@@ -17,7 +17,8 @@ namespace Pokemon.Team.Builder.Model.Smogon
                 return new PokemonIdentifier
                 {
                     Name = Name,
-                    MonsNo = Id
+                    MonsNo = Id,
+                    FormNo = FormNo
                 };
             }
 
@@ -28,10 +29,12 @@ namespace Pokemon.Team.Builder.Model.Smogon
                     Id = value.MonsNo; 
                 }
 
+                FormNo = value?.FormNo;
                 Name = value?.Name;
             }
         }
 
+        public string FormNo { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public int Ranking { get; set; }

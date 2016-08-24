@@ -12,6 +12,7 @@ namespace Pokemon.Team.Builder.Model.Smogon
     {
         public string Name { get; set; }
         public int Id { get; set; }
+        public string FormNo { get; set; }
         public List<SmogonAbility> Abilities { get; set; }
         public List<SmogonCheck> ChecksAndCounters { get; set; }
         public List<SmogonHappiness> Happiness { get; set; }
@@ -30,7 +31,8 @@ namespace Pokemon.Team.Builder.Model.Smogon
                 return new PokemonIdentifier
                 {
                     Name = Name,
-                    MonsNo = Id
+                    MonsNo = Id,
+                    FormNo = FormNo
                 };
             }
 
@@ -38,6 +40,7 @@ namespace Pokemon.Team.Builder.Model.Smogon
             {
                 Id = value.MonsNo;
                 Name = value.Name;
+                FormNo = value.FormNo;
             }
         }
 
@@ -46,43 +49,71 @@ namespace Pokemon.Team.Builder.Model.Smogon
             return Name;
         }
 
+        public List<T> SetRankings<T>(IEnumerable<T> rankables, Func<T, double> selector) where T : IRankable
+        {
+            var list = rankables
+                .OrderByDescending(selector)
+                .ToList();
+
+            list
+                .ForEach(ability => ability.Ranking = list.IndexOf(ability));
+
+            return list;
+        }
+
         public IEnumerable<IAbility> GetAbilities()
         {
+            Abilities = SetRankings(Abilities, ability => ability.UsageRate);
+
             return Abilities;
         }
 
         public IEnumerable<ICounter> GetCounters()
         {
+            ChecksAndCounters = SetRankings(ChecksAndCounters, check => (double) check.Statistics?.FirstOrDefault());
+
             return ChecksAndCounters;
         }
 
         public IEnumerable<IHappiness> GetHappiness()
         {
+            Happiness = SetRankings(Happiness, happy => happy.UsageRate);
+
             return Happiness;
         }
 
         public IEnumerable<IItem> GetItems()
         {
+            Items = SetRankings(Items, item => item.UsageRate);
+
             return Items;
         }
 
         public IEnumerable<IMove> GetMoves()
         {
-            return Moves;
-        }
+            Moves = SetRankings(Moves, move => move.UsageRate);
 
-        public IEnumerable<INature> GetNatures()
-        {
-            return Spreads;
+            return Moves;
         }
 
         public IEnumerable<ISpread> GetSpreads()
         {
+            Spreads = SetRankings(Spreads, spread => spread.UsageRate);
+
+            return Spreads;
+        }
+
+        public IEnumerable<INature> GetNatures()
+        {
+            Spreads = SetRankings(Spreads, nature => nature.UsageRate);
+
             return Spreads;
         }
 
         public IEnumerable<ITeamMate> GetTeamMates()
         {
+            TeamMates = SetRankings(TeamMates, mate => mate.UsageRate);
+
             return TeamMates;
         }
 
@@ -94,6 +125,11 @@ namespace Pokemon.Team.Builder.Model.Smogon
         public string GetType2()
         {
             return null;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
         }
 
         public bool Equals(SmogonPokemonStats otherStat)

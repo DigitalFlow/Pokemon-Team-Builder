@@ -42,9 +42,18 @@ namespace Pokemon.Team.Builder.Logic
         {
             foreach (var poke in pokemon)
             {
-                if (poke.Identifier.MonsNo == 0)
+                try {
+                    if (poke.Identifier.MonsNo == 0)
+                    {
+                        var identifier = _pokedex.GetByName(poke.Identifier.Name).Identifier;
+
+                        identifier.Name = poke.Identifier.Name;
+
+                        poke.Identifier = identifier;
+                    } }
+                catch(Exception ex)
                 {
-                    poke.Identifier = _pokedex.GetByName(poke.Identifier.Name)?.Identifier;
+                    
                 }
             }
         }
@@ -66,11 +75,25 @@ namespace Pokemon.Team.Builder.Logic
                 }
             }
 
-            var pokemonName = identifier.Name;
+            if(identifier.MonsNo == 647)
+            {
+                var foo = 0;
+            }
+
+            var pokemon = _pokedex.GetByIdentifier(identifier);
+
+            // For some pokemon (i.E. Keldo) there is a trailing "ordinary" in opposite to its resolute form
+            // Remove this part as the Smogon Stats ommit it
+            var pokemonName = pokemon.GetName().Replace("-ordinary", string.Empty);
 
             var information = tierInformation
-                .FirstOrDefault(pokemon =>
-                    pokemon.Name.Equals(pokemonName, StringComparison.InvariantCultureIgnoreCase));
+                .FirstOrDefault(poke =>
+                    poke.Name.Equals(pokemonName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (information == null)
+            {
+                
+            }
 
             SetMonsNoOnPokemon(new List<SmogonPokemonStats> { information });
             SetMonsNoOnPokemon(information.TeamMates);
