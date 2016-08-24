@@ -73,6 +73,10 @@ namespace Pokemon.Team.Builder.Tests
                                       </Variety>
                                     </Varieties>
                                     <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
+                                    <Identifier>
+                                        <MonsNo>1</MonsNo>
+                                        <Name>Bulbasaur</Name>
+                                    </Identifier>
                                   </Pokemon>
                                 </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "");
 

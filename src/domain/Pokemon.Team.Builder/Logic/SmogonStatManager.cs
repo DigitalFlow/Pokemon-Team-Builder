@@ -75,11 +75,6 @@ namespace Pokemon.Team.Builder.Logic
                 }
             }
 
-            if(identifier.MonsNo == 647)
-            {
-                var foo = 0;
-            }
-
             var pokemon = _pokedex.GetByIdentifier(identifier);
 
             // For some pokemon (i.E. Keldo) there is a trailing "ordinary" in opposite to its resolute form
