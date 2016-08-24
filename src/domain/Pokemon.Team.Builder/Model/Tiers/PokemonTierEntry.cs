@@ -29,7 +29,17 @@ namespace Pokemon.Team.Builder
 		public string requiredItem { get; set; }
 
 		public bool IsInTierOrBelow (Tier tier) {
-			return this.tier.Equals (tier.ShortName, StringComparison.InvariantCultureIgnoreCase)
+            if (this.tier == null && tier == null)
+            {
+                return true;
+            }
+
+            if (tier == null || this.tier == null)
+            {
+                return false;
+            }
+
+			return this.tier.Equals (tier?.ShortName, StringComparison.InvariantCultureIgnoreCase)
 				|| (tier.SubTiers != null && tier.SubTiers.Any (t => IsInTierOrBelow(t)));
 		}
 	}

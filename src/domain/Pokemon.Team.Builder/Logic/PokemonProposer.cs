@@ -14,6 +14,7 @@ namespace Pokemon.Team.Builder
 		private const int TEAM_SIZE = 6;
 		private TierList _tierList;
 		private Tier _activeTier;
+        private Pokedex _pokedex;
 		private int _battleType;
 		private int _season;
 		private int _rankingPokemonInCount;
@@ -22,7 +23,7 @@ namespace Pokemon.Team.Builder
         private string _tier;
 
 		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, string tier, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
-			int languageId, TierList tierList, Tier activeTier)
+			int languageId, TierList tierList, Tier activeTier, Pokedex pokedex)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 			_tierList = tierList;
@@ -33,6 +34,7 @@ namespace Pokemon.Team.Builder
 			_rankingPokemonDownCount = rankingPokemonDownCount;
             _languageId = languageId;
             _tier = tier;
+            _pokedex = pokedex;
 		}
 
 		private readonly Func<IPokemonIdentifiable, TierList, Tier, bool> IsInActiveTierOrBelow = (proposal, tierList, activeTier) => 
@@ -54,7 +56,7 @@ namespace Pokemon.Team.Builder
 				pokemon = new List<IPokemonInformation> ();
 			}
 
-			if (pokemon.Count == TEAM_SIZE) {
+			if (pokemon.Count >= TEAM_SIZE) {
 				return pokemon;
 			}
 

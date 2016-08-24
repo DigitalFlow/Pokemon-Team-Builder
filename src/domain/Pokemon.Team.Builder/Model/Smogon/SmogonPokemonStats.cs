@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 namespace Pokemon.Team.Builder.Model.Smogon
 {
     [Serializable]
-    public class SmogonPokemonStats : IPokemonInformation
+    public class SmogonPokemonStats : IPokemonInformation, IEquatable<SmogonPokemonStats>
     {
         public string Name { get; set; }
+        public int Id { get; set; }
         public List<SmogonAbility> Abilities { get; set; }
         public List<SmogonCheck> ChecksAndCounters { get; set; }
         public List<SmogonHappiness> Happiness { get; set; }
@@ -26,11 +27,16 @@ namespace Pokemon.Team.Builder.Model.Smogon
         {
             get
             {
-                return new PokemonIdentifier(Name);
+                return new PokemonIdentifier
+                {
+                    Name = Name,
+                    MonsNo = Id
+                };
             }
 
             set
             {
+                Id = value.MonsNo;
                 Name = value.Name;
             }
         }
@@ -88,6 +94,28 @@ namespace Pokemon.Team.Builder.Model.Smogon
         public string GetType2()
         {
             return null;
+        }
+
+        public bool Equals(SmogonPokemonStats otherStat)
+        {
+            if (otherStat == null)
+            {
+                return false;
+            }
+
+            return Name.Equals(otherStat.Name, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherStats = obj as SmogonPokemonStats;
+
+            if (otherStats == null)
+            {
+                return false;
+            }
+
+            return Equals(otherStats);
         }
     }
 }

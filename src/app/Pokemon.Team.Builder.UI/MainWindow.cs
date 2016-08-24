@@ -461,7 +461,7 @@ public partial class MainWindow : Window
 
         using (var httpClient = new HttpClientWrapper(new Uri("http://www.smogon.com/stats/")))
         {
-            using (var pokemonUsageRetriever = new SmogonStatManager(httpClient))
+            using (var pokemonUsageRetriever = new SmogonStatManager(_pokedex, httpClient))
             { 
                 var activeTierName = ConfigManager.GetSetting(TierConfigKey);
 
@@ -482,7 +482,7 @@ public partial class MainWindow : Window
                 var languageId = languageCode.ToLanguageId();
 
                 var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, activeTierName, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
-                    languageId, _tierList, activeTier);
+                    languageId, _tierList, activeTier, _pokedex);
 
                 _latestTeam = await pokemonProposer.GetProposedPokemonByUsage(initialTeam).ConfigureAwait(false);
 

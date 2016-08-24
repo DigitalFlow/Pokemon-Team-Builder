@@ -14,15 +14,25 @@ namespace Pokemon.Team.Builder.Model.Smogon
         {
             get
             {
-                return new PokemonIdentifier(Name);
+                return new PokemonIdentifier
+                {
+                    Name = Name,
+                    MonsNo = Id
+                };
             }
 
             set
             {
-                Name = value.Name;
+                if (value != null)
+                {
+                    Id = value.MonsNo; 
+                }
+
+                Name = value?.Name;
             }
         }
 
+        public int Id { get; set; }
         public string Name { get; set; }
         public int Ranking { get; set; }
         public float UsageRate { get; set; }

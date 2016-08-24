@@ -7,16 +7,19 @@ using Pokemon.Team.Builder.Interfaces;
 using Pokemon.Team.Builder.ApiConnector;
 using System.IO;
 using Pokemon.Team.Builder.Serialization;
+using Pokemon.Team.Builder.Model.Smogon;
 
 namespace Pokemon.Team.Builder.Logic
 {
     public class SmogonStatManager : IPokemonUsageRetriever
     {
         private IHttpClient _client;
+        private Pokedex _pokedex;
 
-        public SmogonStatManager(IHttpClient client)
+        public SmogonStatManager(Pokedex pokedex, IHttpClient client)
         {
             _client = client;
+            _pokedex = pokedex;
         }
 
         public void Dispose()
@@ -32,6 +35,17 @@ namespace Pokemon.Team.Builder.Logic
                     return 1825;
                 default:
                     return 1760;
+            }
+        }
+
+        private void SetMonsNoOnPokemon<T>(IEnumerable<T> pokemon) where T : IPokemonIdentifiable
+        {
+            foreach (var poke in pokemon)
+            {
+                if (poke.Identifier.MonsNo == 0)
+                {
+                    poke.Identifier = _pokedex.GetByName(poke.Identifier.Name)?.Identifier;
+                }
             }
         }
 
@@ -54,9 +68,15 @@ namespace Pokemon.Team.Builder.Logic
 
             var pokemonName = identifier.Name;
 
-            return tierInformation
+            var information = tierInformation
                 .FirstOrDefault(pokemon =>
                     pokemon.Name.Equals(pokemonName, StringComparison.InvariantCultureIgnoreCase));
+
+            SetMonsNoOnPokemon(new List<SmogonPokemonStats> { information });
+            SetMonsNoOnPokemon(information.TeamMates);
+            SetMonsNoOnPokemon(information.ChecksAndCounters);
+
+            return information;
         }
     }
 }
