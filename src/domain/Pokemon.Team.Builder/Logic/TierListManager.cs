@@ -12,12 +12,12 @@ namespace Pokemon.Team.Builder
 		}
 
 		public TierList GetTierList (string fileName){
-			var tierList = TierListSerializer.LoadTierListFromFile (fileName);
+			var tierList = GenericSerializer<TierList>.LoadFromFile (fileName);
 
 			if (tierList == null) {
 				tierList = new TierList(_tierListRetriever.RetrieveTierLists ());
 
-				TierListSerializer.SaveTierListToFile (tierList, fileName);
+				GenericSerializer<TierList>.SaveToFile (tierList, fileName);
 			}
 
 			return tierList;

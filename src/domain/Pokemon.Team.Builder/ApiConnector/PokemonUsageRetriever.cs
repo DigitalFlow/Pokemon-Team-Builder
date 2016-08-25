@@ -37,7 +37,7 @@ namespace Pokemon.Team.Builder
 						new KeyValuePair<string, string>("seasonId", $"{seasonId}"),
 						new KeyValuePair<string, string>("battleType", $"{battleType}"),
 	                    new KeyValuePair<string, string>("timezone", "CEST"),
-						new KeyValuePair<string, string>("pokemonId", pokemonId.ToString()),
+						new KeyValuePair<string, string>("pokemonId", $"{pokemonId.MonsNo.ToString()}-0"),
 	                    new KeyValuePair<string, string>("displayNumberWaza", "10"),
 	                    new KeyValuePair<string, string>("displayNumberTokusei", "3"),
 	                    new KeyValuePair<string, string>("displayNumberSeikaku", "10"),

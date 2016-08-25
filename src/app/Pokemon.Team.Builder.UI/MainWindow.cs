@@ -27,7 +27,12 @@ public partial class MainWindow : Window, IDisposable
     private const string LanguageConfigKey = "Language";
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
+
     private Pokedex _pokedex;
+    private Itemdex _itemdex;
+    private Movedex _movedex;
+    private AbilityDex _abilitydex;
+
     private Builder _builder;
     private bool _pokedexLoadExecuted;
 
@@ -147,10 +152,95 @@ public partial class MainWindow : Window, IDisposable
         return TierSerializer.ParseFromFile(ConfigManager.GetSetting(AvailableTiersConfigKey));
     }
 
+    protected async Task InitializeItemdex()
+    {
+        Application.Invoke(delegate
+        {
+            _loadWindow.Title = "Loading Itemdex";
+            _loadWindow.Show();
+        });
+
+        await Task.Run(async () =>
+        {
+            using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeApiUrl"))))
+            {
+                using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
+                {
+                    pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
+                    var itemdexManager = new ItemdexManager(pokemonMetaDataRetriever);
+
+                    _itemdex = await itemdexManager.GetItems().ConfigureAwait(false);
+                }
+            }
+        }).ConfigureAwait(false);
+
+        Application.Invoke(delegate
+        {
+            _loadWindow.Hide();
+        });
+    }
+
+    protected async Task InitializeMovedex()
+    {
+        Application.Invoke(delegate
+        {
+            _loadWindow.Title = "Loading Movedex";
+            _loadWindow.Show();
+        });
+
+        await Task.Run(async () =>
+        {
+            using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeApiUrl"))))
+            {
+                using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
+                {
+                    pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
+                    var movedexManager = new MovedexManager(pokemonMetaDataRetriever);
+
+                    _movedex = await movedexManager.GetMoves().ConfigureAwait(false);
+                }
+            }
+        }).ConfigureAwait(false);
+
+        Application.Invoke(delegate
+        {
+            _loadWindow.Hide();
+        });
+    }
+
+    protected async Task InitializeAbilitydex()
+    {
+        Application.Invoke(delegate
+        {
+            _loadWindow.Title = "Loading Abilitydex";
+            _loadWindow.Show();
+        });
+
+        await Task.Run(async () =>
+        {
+            using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeApiUrl"))))
+            {
+                using (var pokemonMetaDataRetriever = new PokemonMetaDataRetriever(httpClient))
+                {
+                    pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
+                    var abilitydexManager = new AbilitydexManager(pokemonMetaDataRetriever);
+
+                    _abilitydex = await abilitydexManager.GetAbilities().ConfigureAwait(false);
+                }
+            }
+        }).ConfigureAwait(false);
+
+        Application.Invoke(delegate
+        {
+            _loadWindow.Hide();
+        });
+    }
+
     protected async void InitializePokemonComboBoxes(IEnumerable<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> comboBoxes)
     {
         Application.Invoke(delegate
         {
+            _loadWindow.Title = "Loading Pokedex";
             _loadWindow.Show();
         });
 
@@ -457,13 +547,17 @@ public partial class MainWindow : Window, IDisposable
         ResetChooseDialog();
     }
 
-    protected void OnStateEvent(object sender, WindowStateEventArgs e)
+    protected async void OnStateEvent(object sender, WindowStateEventArgs e)
     {
         if (!_pokedexLoadExecuted)
         {
             _pokedexLoadExecuted = true;
             _tierList = GetTierList();
             _tierHierarchy = new TierHierarchy(GetTiers());
+
+            await InitializeItemdex().ConfigureAwait(false);
+            await InitializeMovedex().ConfigureAwait(false);
+            await InitializeAbilitydex().ConfigureAwait(false);
 
             InitializePokemonComboBoxes(_controlSets);
         }
@@ -627,9 +721,19 @@ public partial class MainWindow : Window, IDisposable
             var spread = member.GetNatures().First().Name;
 
             // Truncate EV Split Part
-            var nature = spread.Substring(0, spread.IndexOf(':'));
+            var nature = spread;
 
-            var split = spread.Substring(spread.IndexOf(':') + 1);
+            if (spread.Contains(":"))
+            {
+                nature = spread.Substring(0, spread.IndexOf(':'));
+            }
+
+            var split = spread;
+
+            if (split.Contains(":"))
+            {
+                spread.Substring(spread.IndexOf(':') + 1);
+            }
 
             team.AppendLine($"{name} @ {item}");
             team.AppendLine($"Ability: {ability}");

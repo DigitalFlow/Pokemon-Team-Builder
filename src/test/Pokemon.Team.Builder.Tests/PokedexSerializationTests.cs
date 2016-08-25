@@ -81,7 +81,7 @@ namespace Pokemon.Team.Builder.Tests
                                 </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "");
 
             // Act
-            var xml = PokedexSerializer.SerializePokedex(pokedex)
+            var xml = GenericSerializer<Pokedex>.Serialize(pokedex)
                         .Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
             // Assert

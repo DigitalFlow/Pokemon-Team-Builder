@@ -42,7 +42,7 @@ namespace Pokemon.Team.Builder.Model
 				return false;
 			}
 
-			return MonsNo == otherRankingDown.Identifier.MonsNo && FormNo == otherRankingDown.Identifier.FormNo;
+			return Identifier == otherRankingDown.Identifier;
 		}
 
 		public static implicit operator PokemonIdentifier (RankingPokemonDown rankingPokemon) {

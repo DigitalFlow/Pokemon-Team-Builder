@@ -80,7 +80,7 @@ namespace Pokemon.Team.Builder.Logic
             var tierDescriptor = $"{tierName}-{GetWeightingBaseLine(tier)}".ToLowerInvariant();
             var fileName = $"{tierDescriptor}.xml";
 
-            var tierInformation = SmogonStatSerializer.LoadStatsFromFile(fileName);
+            var tierInformation = GenericSerializer<List<SmogonPokemonStats>>.LoadFromFile(fileName);
 
             if (tierInformation == null)
             {
@@ -88,7 +88,7 @@ namespace Pokemon.Team.Builder.Logic
                 {
                     tierInformation = await smogonRetriever.RetrieveStats(tierDescriptor);
 
-                    SmogonStatSerializer.SaveStatsToFile(tierInformation, fileName);
+                    GenericSerializer<List<SmogonPokemonStats>>.SaveToFile (tierInformation, fileName);
                 }
             }
 

@@ -9,11 +9,11 @@ using System.Xml;
 
 namespace Pokemon.Team.Builder
 {
-    public static class PokedexSerializer
+    public static class GenericSerializer<T>
     {
-        public static string SerializePokedex(Pokedex pokedex)
+        public static string Serialize(T values)
         {
-            var serializer = new XmlSerializer(typeof(Pokedex));
+            var serializer = new XmlSerializer(typeof(T));
             
             using (var stringWriter = new StringWriter())
             {
@@ -26,39 +26,39 @@ namespace Pokemon.Team.Builder
 				};
 
 				using (var writer = XmlWriter.Create(stringWriter, settings))  {
-					serializer.Serialize (writer, pokedex);
+					serializer.Serialize (writer, values);
 
 					return stringWriter.ToString ();
 				}
             }
         }
 
-		public static void SavePokedexToFile(Pokedex pokedex, string filePath){
-			File.WriteAllText(filePath, SerializePokedex(pokedex), Encoding.Unicode);
+		public static void SaveToFile(T values, string filePath){
+			File.WriteAllText(filePath, Serialize(values), Encoding.Unicode);
 		}
 
-		public static Pokedex LoadPokedexFromFile(string filePath){
-			return DeserializePokedex (filePath);
+		public static T LoadFromFile(string filePath){
+			return Deserialize (filePath);
 		}
 
-		public static Pokedex DeserializePokedex(string filePath)
+		public static T Deserialize(string filePath)
 		{
 			var file = new FileInfo(filePath);
 
 			if (!file.Exists) {
-				return null;
+				return default(T);
 			}
 
 			using (var fileStream = file.OpenRead())
             {
-                var serializer = new XmlSerializer(typeof(Pokedex));
+                var serializer = new XmlSerializer(typeof(T));
 
 				// Use this to not fail on invalid characters
 				var xmlReader = new XmlTextReader (fileStream) {
 					Normalization = true
 				};
 
-				return (Pokedex) serializer.Deserialize(xmlReader);
+				return (T) serializer.Deserialize(xmlReader);
             }		
 		}
     }
