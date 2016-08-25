@@ -86,7 +86,7 @@ namespace Pokemon.Team.Builder.Logic
             {
                 using (var smogonRetriever = new SmogonStatRetriever(_client))
                 {
-                    tierInformation = await smogonRetriever.RetrieveStats(tierDescriptor);
+                    tierInformation = await smogonRetriever.RetrieveStats(tierDescriptor).ConfigureAwait(false);
 
                     GenericSerializer<List<SmogonPokemonStats>>.SaveToFile (tierInformation, fileName);
                 }
