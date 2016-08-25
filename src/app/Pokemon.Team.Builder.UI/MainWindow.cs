@@ -624,10 +624,24 @@ public partial class MainWindow : Window, IDisposable
             var item = member.GetItems().First().Name;
 
             var ability = member.GetAbilities().First().Name;
-            var nature = member.GetNatures().First().Name;
+            var spread = member.GetNatures().First().Name;
+
+            // Truncate EV Split Part
+            var nature = spread.Substring(0, spread.IndexOf(':'));
+
+            var split = spread.Substring(spread.IndexOf(':') + 1);
 
             team.AppendLine($"{name} @ {item}");
             team.AppendLine($"Ability: {ability}");
+
+            var splitted = split.Split('/').Select(s => s.Trim());
+            var labels = new List<string> { "HP", "Atk", "Def", "SpA", "SpD", "Spe" };
+
+            var withLabels = splitted.Zip(labels, (s, label) => Tuple.Create(s, label))
+                .Where(tuple => tuple.Item1 != "0");
+
+            team.AppendLine($"EVs: {string.Join(" / ", withLabels.Select(tuple => $"{tuple.Item1} {tuple.Item2}"))}");
+
             team.AppendLine($"{nature} Nature");
 
             var moves = member.GetMoves().Take(4);
