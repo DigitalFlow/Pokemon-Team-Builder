@@ -17,7 +17,7 @@ namespace Pokemon.Team.Builder.Logic
 
         public async Task<Movedex> GetMoves()
         {
-            var movedex = GenericSerializer<Movedex>.LoadFromFile ("movedex.xml");
+            var movedex = await GenericSerializer<Movedex>.LoadFromFile ("movedex.xml").ConfigureAwait(false);
 
             if (movedex == null)
             {
@@ -25,7 +25,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 movedex = new Movedex(items);
 
-                GenericSerializer<Movedex>.SaveToFile(movedex, "movedex.xml");
+                await GenericSerializer<Movedex>.SaveToFile(movedex, "movedex.xml").ConfigureAwait(false);
             }
 
             return movedex;

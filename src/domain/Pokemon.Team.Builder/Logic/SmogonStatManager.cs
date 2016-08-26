@@ -57,7 +57,7 @@ namespace Pokemon.Team.Builder.Logic
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Failed to find pokemon with ID {poke?.Identifier?.MonsNo} and name {poke?.Identifier?.Name} in pokedex");
+                    _logger.Error($"Failed to find pokemon with ID {poke?.Identifier?.MonsNo} and name {poke?.Identifier?.Name} in pokedex, exception: {ex.Message}");
                 }
             }
         }
@@ -80,7 +80,7 @@ namespace Pokemon.Team.Builder.Logic
             var tierDescriptor = $"{tierName}-{GetWeightingBaseLine(tier)}".ToLowerInvariant();
             var fileName = $"{tierDescriptor}.xml";
 
-            var tierInformation = GenericSerializer<List<SmogonPokemonStats>>.LoadFromFile(fileName);
+            var tierInformation = await GenericSerializer<List<SmogonPokemonStats>>.LoadFromFile(fileName).ConfigureAwait(false);
 
             if (tierInformation == null)
             {
@@ -88,7 +88,7 @@ namespace Pokemon.Team.Builder.Logic
                 {
                     tierInformation = await smogonRetriever.RetrieveStats(tierDescriptor).ConfigureAwait(false);
 
-                    GenericSerializer<List<SmogonPokemonStats>>.SaveToFile (tierInformation, fileName);
+                    await GenericSerializer<List<SmogonPokemonStats>>.SaveToFile (tierInformation, fileName).ConfigureAwait(false);
                 }
             }
 

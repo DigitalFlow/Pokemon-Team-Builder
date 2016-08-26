@@ -6,60 +6,74 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder
 {
     public static class GenericSerializer<T>
     {
-        public static string Serialize(T values)
+        public async static Task<string> Serialize(T values)
         {
-            var serializer = new XmlSerializer(typeof(T));
-            
-            using (var stringWriter = new StringWriter())
-            {
-				var settings = new XmlWriterSettings 
-				{
-					CheckCharacters = true,
-					Encoding = Encoding.Unicode,
-					NewLineHandling = NewLineHandling.Entitize,
-					Indent = true
-				};
-
-				using (var writer = XmlWriter.Create(stringWriter, settings))  {
-					serializer.Serialize (writer, values);
-
-					return stringWriter.ToString ();
-				}
-            }
-        }
-
-		public static void SaveToFile(T values, string filePath){
-			File.WriteAllText(filePath, Serialize(values), Encoding.Unicode);
-		}
-
-		public static T LoadFromFile(string filePath){
-			return Deserialize (filePath);
-		}
-
-		public static T Deserialize(string filePath)
-		{
-			var file = new FileInfo(filePath);
-
-			if (!file.Exists) {
-				return default(T);
-			}
-
-			using (var fileStream = file.OpenRead())
+            return await Task.Run(() =>
             {
                 var serializer = new XmlSerializer(typeof(T));
 
-				// Use this to not fail on invalid characters
-				var xmlReader = new XmlTextReader (fileStream) {
-					Normalization = true
-				};
+                using (var stringWriter = new StringWriter())
+                {
+                    var settings = new XmlWriterSettings
+                    {
+                        CheckCharacters = true,
+                        Encoding = Encoding.Unicode,
+                        NewLineHandling = NewLineHandling.Entitize,
+                        Indent = true
+                    };
 
-				return (T) serializer.Deserialize(xmlReader);
-            }		
-		}
+                    using (var writer = XmlWriter.Create(stringWriter, settings))
+                    {
+                        serializer.Serialize(writer, values);
+
+                        return stringWriter.ToString();
+                    }
+                }
+            });
+        }
+
+        public async static Task SaveToFile(T values, string filePath)
+        {
+            var xml = await Serialize(values).ConfigureAwait(false);
+
+            File.WriteAllText(filePath, xml, Encoding.Unicode);
+        }
+
+        public async static Task<T> LoadFromFile(string filePath)
+        {
+            return await Deserialize(filePath).ConfigureAwait(false);
+        }
+
+        public async static Task<T> Deserialize(string filePath)
+        {
+            return await Task.Run(() =>
+            {
+                var file = new FileInfo(filePath);
+
+                if (!file.Exists)
+                {
+                    return default(T);
+                }
+
+                using (var fileStream = file.OpenRead())
+                {
+                    var serializer = new XmlSerializer(typeof(T));
+
+                    // Use this to not fail on invalid characters
+                    var xmlReader = new XmlTextReader(fileStream)
+                    {
+                        Normalization = true
+                    };
+
+                    return (T)serializer.Deserialize(xmlReader);
+                }
+            }).ConfigureAwait(false);
+        }
     }
 }

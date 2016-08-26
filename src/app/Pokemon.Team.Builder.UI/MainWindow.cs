@@ -51,7 +51,7 @@ public partial class MainWindow : Window, IDisposable
     private TierList _tierList;
     private TierHierarchy _tierHierarchy;
 
-    private List<IPokemonInformation> _latestTeam = new List<IPokemonInformation>();
+    private Team _latestTeam = new Team();
     private List<IPokemonUsageRetriever> _usageRetrievers = new List<IPokemonUsageRetriever>();
 
     public MainWindow() : base(WindowType.Toplevel)
@@ -134,7 +134,7 @@ public partial class MainWindow : Window, IDisposable
         });
     }
 
-    protected TierList GetTierList()
+    protected async Task<TierList> GetTierList()
     {
         using (var httpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeShowdownUrl"))))
         {
@@ -142,7 +142,7 @@ public partial class MainWindow : Window, IDisposable
             {
                 var tierManager = new TierListManager(tierRetriever);
 
-                return tierManager.GetTierList(ConfigManager.GetSetting(TierListConfigKey));
+                return await tierManager.GetTierList(ConfigManager.GetSetting(TierListConfigKey)).ConfigureAwait(false);
             }
         }
     }
@@ -372,6 +372,7 @@ public partial class MainWindow : Window, IDisposable
         var selectedPokemonId = senderTuple.Item2.Active + 1;
 
         var pokemonToShow = _latestTeam
+            .TeamMembers
             .Where(poke => poke.Identifier.MonsNo == selectedPokemonId)
             .ToList();
 
@@ -552,7 +553,7 @@ public partial class MainWindow : Window, IDisposable
         if (!_pokedexLoadExecuted)
         {
             _pokedexLoadExecuted = true;
-            _tierList = GetTierList();
+            _tierList = await GetTierList().ConfigureAwait(false);
             _tierHierarchy = new TierHierarchy(GetTiers());
 
             await InitializeItemdex().ConfigureAwait(false);
@@ -605,23 +606,23 @@ public partial class MainWindow : Window, IDisposable
         var pokemonProposer = new PokemonProposer(pokemonUsageRetriever, battleType, season, rankingPokemonInCount, rankingPokemonDownCount,
             languageId, _tierList, activeTier, _pokedex);
 
-        _latestTeam = await pokemonProposer.GetProposedPokemonByUsage(initialTeam).ConfigureAwait(false);
+        _latestTeam = new Team(await pokemonProposer.GetProposedPokemonByUsage(initialTeam).ConfigureAwait(false));
 
         Application.Invoke(delegate
         {
-            for (var i = 0; i < _latestTeam.Count; i++)
+            for (var i = 0; i < _latestTeam.TeamMembers.Count; i++)
             {
-                _controlSets[i].Item2.Active = _latestTeam[i].Identifier.MonsNo - 1;
+                _controlSets[i].Item2.Active = _latestTeam.TeamMembers[i].Identifier.MonsNo - 1;
 
                 var formNo = 0;
 
-                int.TryParse(_latestTeam[i].Identifier.FormNo, out formNo);
+                int.TryParse(_latestTeam.TeamMembers[i].Identifier.FormNo, out formNo);
 
                 _controlSets[i].Item3.Active = formNo;
             }
         });
 
-        var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam, poke => poke.GetCounters(), 10);
+        var mostDangerousCounters = PokemonAnalyzer.GetRanking(_latestTeam.TeamMembers, poke => poke.GetCounters(), 10);
 
         Application.Invoke(delegate
         {
@@ -708,64 +709,14 @@ public partial class MainWindow : Window, IDisposable
 
     public void OnExportForShowDown()
     {
-        var team = new StringBuilder();
+        var showdownExporter = new ShowdownExporter(_pokedex, _itemdex, _movedex, _abilitydex);
 
-        foreach (var member in _latestTeam)
+        var export = showdownExporter.ExportTeam(_latestTeam);
+
+        Application.Invoke(delegate
         {
-            var pokemon = _pokedex.GetByIdentifier(member.Identifier);
-
-            var name = pokemon.GetName("en");
-            var rawItem = member.GetItems().First().Name;
-            var item = _itemdex.GetByName(rawItem)?.name;
-
-            var abilityRaw = member.GetAbilities().First().Name;
-            var ability = _abilitydex.GetByName(abilityRaw)?.name;
-
-            var spread = member.GetNatures().First().Name;
-
-            // Truncate EV Split Part
-            var nature = spread;
-
-            if (spread.Contains(":"))
-            {
-                nature = spread.Substring(0, spread.IndexOf(':'));
-            }
-
-            var split = spread;
-
-            if (split.Contains(":"))
-            {
-                split = spread.Substring(spread.IndexOf(':') + 1);
-            }
-
-            team.AppendLine($"{name} @ {item}");
-            team.AppendLine($"Ability: {ability}");
-
-            var splitted = split.Split('/').Select(s => s.Trim());
-            var labels = new List<string> { "HP", "Atk", "Def", "SpA", "SpD", "Spe" };
-
-            var withLabels = splitted.Zip(labels, (s, label) => Tuple.Create(s, label))
-                .Where(tuple => tuple.Item1 != "0");
-
-            team.AppendLine($"EVs: {string.Join(" / ", withLabels.Select(tuple => $"{tuple.Item1} {tuple.Item2}"))}");
-
-            team.AppendLine($"{nature} Nature");
-
-            var moves = member.GetMoves().Take(4);
-
-            foreach (var move in moves)
-            {
-                var moveRaw = move.Name;
-
-                var moveFromDex = _movedex.GetByName(moveRaw)?.name;
-
-                team.AppendLine($"- {moveFromDex}");
-            }
-
-            team.AppendLine();
-        }
-
-        var export = team.ToString();
+            new ShowdownWindow(export);
+        });
     }
 
     public new void Dispose()

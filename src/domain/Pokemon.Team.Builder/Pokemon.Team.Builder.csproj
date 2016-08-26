@@ -68,7 +68,9 @@
     <Compile Include="Logic\Move.cs" />
     <Compile Include="Logic\Movedex.cs" />
     <Compile Include="Logic\MovedexManager.cs" />
+    <Compile Include="Logic\ShowdownExporter.cs" />
     <Compile Include="Logic\SmogonStatManager.cs" />
+    <Compile Include="Logic\Team.cs" />
     <Compile Include="Model\PokeAPI\AbilityOverviewResponse.cs" />
     <Compile Include="Model\PokeAPI\ItemOverviewResponse.cs" />
     <Compile Include="Model\PokeAPI\MoveOverviewResponse.cs" />

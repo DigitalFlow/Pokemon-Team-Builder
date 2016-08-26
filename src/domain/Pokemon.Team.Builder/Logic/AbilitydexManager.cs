@@ -17,7 +17,7 @@ namespace Pokemon.Team.Builder.Logic
 
         public async Task<AbilityDex> GetAbilities()
         {
-            var abilitydex = GenericSerializer<AbilityDex>.LoadFromFile("abilitydex.xml");
+            var abilitydex = await GenericSerializer<AbilityDex>.LoadFromFile("abilitydex.xml").ConfigureAwait(false);
 
             if (abilitydex == null)
             {
@@ -25,7 +25,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 abilitydex = new AbilityDex(abilities);
 
-                GenericSerializer<AbilityDex>.SaveToFile(abilitydex, "abilitydex.xml");
+                await GenericSerializer<AbilityDex>.SaveToFile(abilitydex, "abilitydex.xml").ConfigureAwait(false);
             }
 
             return abilitydex;

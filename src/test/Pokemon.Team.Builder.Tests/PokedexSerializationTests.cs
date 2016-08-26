@@ -12,7 +12,7 @@ namespace Pokemon.Team.Builder.Tests
     public class PokedexSerializationTests
     {
         [Test]
-        public void Should_Serialize_Pokemon_Properly()
+        public async void Should_Serialize_Pokemon_Properly()
         {
             // Arrange
             var pokemon = new List<Pokemon>
@@ -81,8 +81,10 @@ namespace Pokemon.Team.Builder.Tests
                                 </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "");
 
             // Act
-            var xml = GenericSerializer<Pokedex>.Serialize(pokedex)
-                        .Replace("\n", "").Replace("\r", "").Replace(" ", "");
+            var xml = await GenericSerializer<Pokedex>.Serialize(pokedex).ConfigureAwait(false);
+
+            xml = xml
+                .Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
             // Assert
             xml.Should().Be(expectedXml);

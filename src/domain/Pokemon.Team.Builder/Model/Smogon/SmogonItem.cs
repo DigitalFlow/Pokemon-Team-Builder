@@ -13,5 +13,32 @@ namespace Pokemon.Team.Builder.Model.Smogon
         public string Name { get; set; }
         public int Ranking { get; set; }
         public double UsageRate { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public bool Equals(IItem otherItem)
+        {
+            if (otherItem == null)
+            {
+                return false;
+            }
+
+            return Name.Equals(otherItem.Name, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherItem = obj as SmogonItem;
+
+            if (otherItem == null)
+            {
+                return false;
+            }
+
+            return Equals(otherItem);
+        }
     }
 }

@@ -16,5 +16,32 @@ namespace Pokemon.Team.Builder.Model
         public double UsageRate { get; set; }
         public string Name { get; set; }
         public int SequenceNumber { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public bool Equals(IItem otherItem)
+        {
+            if (otherItem == null)
+            {
+                return false;
+            }
+
+            return Name.Equals(otherItem.Name, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherItem = obj as ItemInfo;
+
+            if (otherItem == null)
+            {
+                return false;
+            }
+
+            return Equals(otherItem);
+        }
     }
 }

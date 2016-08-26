@@ -19,7 +19,7 @@ namespace Pokemon.Team.Builder.Console
 			 using (var httpClient = new HttpClientWrapper (new Uri ("http://www.smogon.com/stats/"))) {
 				using (var smogonRetriever = new SmogonStatRetriever (httpClient)) {
                     var stats = smogonRetriever.RetrieveStats ("ou").Result;
-                    GenericSerializer<List<SmogonPokemonStats>>.SaveToFile(stats, "ou.xml");
+                    GenericSerializer<List<SmogonPokemonStats>>.SaveToFile(stats, "ou.xml").Wait();
 				}
 			}
         }

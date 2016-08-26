@@ -18,7 +18,7 @@ namespace Pokemon.Team.Builder.Logic
 
         public async Task<Itemdex> GetItems()
         {
-            var itemdex = GenericSerializer<Itemdex>.LoadFromFile("itemdex.xml");
+            var itemdex = await GenericSerializer<Itemdex>.LoadFromFile("itemdex.xml").ConfigureAwait(false);
 
             if (itemdex == null)
             {
@@ -26,7 +26,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 itemdex = new Itemdex(items);
 
-                GenericSerializer<Itemdex>.SaveToFile(itemdex, "itemdex.xml");
+                await GenericSerializer<Itemdex>.SaveToFile(itemdex, "itemdex.xml").ConfigureAwait(false);
             }
 
             return itemdex;

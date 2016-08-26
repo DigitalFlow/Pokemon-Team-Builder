@@ -14,14 +14,14 @@ namespace Pokemon.Team.Builder
 		}
 
 		public async Task<Pokedex> GetPokemon(){
-			var pokedex = GenericSerializer<Pokedex>.LoadFromFile ("pokedex.xml");
+			var pokedex = await GenericSerializer<Pokedex>.LoadFromFile ("pokedex.xml").ConfigureAwait(false);
 
 			if (pokedex == null) {
                 var pokemon = await _pokemonRetriever.RetrieveAllPokemon().ConfigureAwait(false);
 
                 pokedex = new Pokedex(pokemon);
 
-				GenericSerializer<Pokedex>.SaveToFile (pokedex, "pokedex.xml");
+				await GenericSerializer<Pokedex>.SaveToFile (pokedex, "pokedex.xml").ConfigureAwait(false);
 			}
 
 			return pokedex;

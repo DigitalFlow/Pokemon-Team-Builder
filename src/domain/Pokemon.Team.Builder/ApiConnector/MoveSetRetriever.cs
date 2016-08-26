@@ -32,8 +32,6 @@ namespace Pokemon.Team.Builder.ApiConnector
             response = response.Substring(beginning.Length);
 
             var json = JsonConvert.DeserializeObject(response);
-
-            var test = "foo";
         }
     }
 }
