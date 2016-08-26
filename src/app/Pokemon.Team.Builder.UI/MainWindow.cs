@@ -715,9 +715,12 @@ public partial class MainWindow : Window, IDisposable
             var pokemon = _pokedex.GetByIdentifier(member.Identifier);
 
             var name = pokemon.GetName("en");
-            var item = member.GetItems().First().Name;
+            var rawItem = member.GetItems().First().Name;
+            var item = _itemdex.GetByName(rawItem)?.name;
 
-            var ability = member.GetAbilities().First().Name;
+            var abilityRaw = member.GetAbilities().First().Name;
+            var ability = _abilitydex.GetByName(abilityRaw)?.name;
+
             var spread = member.GetNatures().First().Name;
 
             // Truncate EV Split Part
@@ -752,7 +755,11 @@ public partial class MainWindow : Window, IDisposable
 
             foreach (var move in moves)
             {
-                team.AppendLine($"- {move.Name}");
+                var moveRaw = move.Name;
+
+                var moveFromDex = _movedex.GetByName(moveRaw)?.name;
+
+                team.AppendLine($"- {moveFromDex}");
             }
 
             team.AppendLine();
