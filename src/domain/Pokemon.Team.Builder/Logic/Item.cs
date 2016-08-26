@@ -84,5 +84,15 @@ namespace Pokemon.Team.Builder.Logic
         public int Id { get; set; }
         // public List<object> Machines { get; set; }
         // public object Fling_Power { get; set; }
+
+        public string GetName(string language)
+        {
+            if (Names == null)
+            {
+                return string.Empty;
+            }
+
+            return Names.SingleOrDefault(n => n.language != null && n.language.name == language)?.name ?? name;
+        }
     }
 }

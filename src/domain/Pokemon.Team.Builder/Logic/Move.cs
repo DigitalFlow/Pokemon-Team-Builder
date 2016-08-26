@@ -161,5 +161,15 @@ namespace Pokemon.Team.Builder.Logic
         public List<FlavorTextEntry> Flavor_Text_Entries { get; set; }
         public DamageClass Damage_Class { get; set; }
         public Meta meta { get; set; }
+
+        public string GetName(string language)
+        {
+            if (Names == null)
+            {
+                return string.Empty;
+            }
+
+            return Names.SingleOrDefault(n => n.language != null && n.language.name == language)?.name ?? name;
+        }
     }
 }

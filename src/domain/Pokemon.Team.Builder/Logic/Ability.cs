@@ -68,5 +68,15 @@ namespace Pokemon.Team.Builder.Logic
         public List<Name> Names { get; set; }
         public List<FlavorTextEntry> Flavor_Text_Entries { get; set; }
         public int Id { get; set; }
+
+        public string GetName(string language)
+        {
+            if (Names == null)
+            {
+                return string.Empty;
+            }
+
+            return Names.SingleOrDefault(n => n.language != null && n.language.name == language)?.name ?? name;
+        }
     }
 }

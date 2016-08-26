@@ -316,17 +316,24 @@ public partial class MainWindow : Window, IDisposable
         var parseResult = int.TryParse(value, out pokemonId);
 
         // Exit on no or invalid input
-        if (!parseResult || _pokedex.All(poke => poke.Id != pokemonId))
+        if (!parseResult)
         {
             ClearControlTuple(senderBox);
             return;
         }
 
         var pokemon = _pokedex.GetById(pokemonId);
+
+        if (pokemon == null)
+        {
+            return;
+        }
+
         var language = ConfigManager.GetSetting(LanguageConfigKey);
         var name = pokemon.GetName(language);
+        var englishName = pokemon.GetName("en");
 
-        // Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
+        // Set name box to pokemon name, subtract one since box entry is zero-based whereas pokemon IDs are not
         if (senderBox.Item4.Active != pokemonId - 1)
         {
             senderBox.Item4.Active = pokemonId - 1;
@@ -343,6 +350,8 @@ public partial class MainWindow : Window, IDisposable
         foreach (var variety in pokemon.Varieties)
         {
             var varietyName = variety.pokemon.name;
+
+            varietyName = varietyName.Replace(englishName.ToLowerInvariant(), name);
 
             ((ListStore)senderBox.Item3.Entry.Completion.Model).AppendValues(varietyName);
             senderBox.Item3.AppendText(varietyName);
@@ -381,7 +390,7 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        new PokemonDetailWindow(pokemonToShow.Single(), _pokedex, _tierList, ConfigManager.GetSetting(LanguageConfigKey));
+        new PokemonDetailWindow(pokemonToShow.Single(), _pokedex, _itemdex, _movedex, _abilitydex, _tierList, ConfigManager.GetSetting(LanguageConfigKey));
     }
 
     protected void OnSelectTier(object sender, EventArgs e)
@@ -452,18 +461,17 @@ public partial class MainWindow : Window, IDisposable
         var language = ConfigManager.GetSetting(LanguageConfigKey);
 
         // Exit on no or invalid input
-        if (string.IsNullOrEmpty(value) || _pokedex.All(poke =>
-            !poke.GetName(language).Equals(value, StringComparison.InvariantCultureIgnoreCase)))
+        if (string.IsNullOrEmpty(value))
         {
-            if (_pokedex.All(poke => !poke.GetName(language).StartsWith(value, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                ClearControlTuple(senderBox);
-            }
-
             return;
         }
 
         var pokemon = _pokedex.GetByName(value);
+
+        if (pokemon == null)
+        {
+            return;
+        }
 
         // Set ID box to pokemon ID, subtract one since box entry is zero-based whereas pokemon IDs are not
         senderBox.Item2.Active = pokemon.Id - 1;
@@ -631,7 +639,7 @@ public partial class MainWindow : Window, IDisposable
                 new List<Func<ICounter, Widget>> {
                             rank => new Image ().SetPicture (_pokedex.GetById (rank.Identifier.MonsNo), 48, 48),
                             rank => new Label (rank.Identifier.MonsNo.ToString ()),
-                            rank => new Label (rank.Name)
+                            rank => new Label (_pokedex.GetByIdentifier(rank.Identifier).GetName(ConfigManager.GetSetting(LanguageConfigKey)))
                 });
 
             _counters.ShowAll();
@@ -681,9 +689,9 @@ public partial class MainWindow : Window, IDisposable
                 {
                     var pokemonId = new PokemonIdentifier(int.Parse(ctrl.Item2.ActiveText));
 
-                    if (!string.IsNullOrEmpty(ctrl.Item3.ActiveText))
+                    if (ctrl.Item3.Active != -1)
                     {
-                        pokemonId.FormNo = _pokedex.GetByName(ctrl.Item3.ActiveText).FormNo;
+                        pokemonId.FormNo = ctrl.Item3.Active.ToString();
                     }
 
                     if (!string.IsNullOrEmpty(ctrl.Item4.ActiveText))

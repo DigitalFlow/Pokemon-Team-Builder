@@ -55,7 +55,7 @@ namespace Pokemon.Team.Builder
                 varietyPokemon.FormNo = varietyPokemon.Varieties.IndexOf(variety).ToString();
             }
 
-            if (pokemon == null && varietyPokemon == null)
+            if (pokemon == null && varietyPokemon == null && name.Contains('-'))
             {
                 var firstPart = name.Substring(0, name.IndexOf('-'));
 

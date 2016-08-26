@@ -4,19 +4,29 @@ using Gtk;
 using Pokemon.Team.Builder.Model;
 using System.Collections.Generic;
 using Pokemon.Team.Builder.Interfaces;
+using Pokemon.Team.Builder.Logic;
 
 namespace Pokemon.Team.Builder.UI
 {
 	public class PokemonDetailWindow : Window
 	{
 		private Pokedex _pokedex;
+        private Itemdex _itemdex;
+        private Movedex _movedex;
+        private AbilityDex _abilitydex;
 		private IPokemonInformation _pokeInfo;
         private string _languageCode;
         private TierList _tierList;
 
-		public PokemonDetailWindow(IPokemonInformation pokeInfo, Pokedex pokedex, TierList tierList, string languageCode) : base(WindowType.Toplevel) {
+        private const int InitialHeight = 600;
+        private const int InitialWidth = 800;
+
+		public PokemonDetailWindow(IPokemonInformation pokeInfo, Pokedex pokedex, Itemdex itemdex, Movedex movedex, AbilityDex abilitydex, TierList tierList, string languageCode) : base(WindowType.Toplevel) {
 			_pokeInfo = pokeInfo;
 			_pokedex = pokedex;
+            _itemdex = itemdex;
+            _movedex = movedex;
+            _abilitydex = abilitydex;
             _languageCode = languageCode;
             _tierList = tierList;
 
@@ -113,55 +123,63 @@ namespace Pokemon.Team.Builder.UI
 			var natureGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			var abilityGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 
-			var movesForFaintingGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
-			var defeatedPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
+			// var movesForFaintingGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
+			// var defeatedPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			var counterPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
-			var effectiveOpponentMoves = new Grid { ColumnHomogeneous = true, Hexpand = true };
+			// var effectiveOpponentMoves = new Grid { ColumnHomogeneous = true, Hexpand = true };
 
             var items = _pokeInfo.GetItems();
+
+            var itemRatingSum = items.Sum(item => item.UsageRate);
 
             if (items != null) {
 				itemGrid
 					.AddItems (items.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IItem, Widget>> {
-							item => new Label (item.Name),
-                            item => new Label ($"{Math.Round(item.UsageRate, 2)} %")
+							item => new Label (_itemdex.GetByName(item.Name)?.GetName(_languageCode)),
+                            item => new Label ($"{Math.Round(item.UsageRate.PercentageOf(itemRatingSum), 2)} %")
 						}
 				);
 			}
 
             var moves = _pokeInfo.GetMoves();
 
+            var moveRatingSum = moves.Sum(move => move.UsageRate);
+
 			if (moves != null) {
 				moveGrid
 					.AddItems (moves.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IMove, Widget>> {
-							move => new Label (move.Name),
-                            move => new Label ($"{Math.Round(move.UsageRate, 2)} %")
+							move => new Label (_movedex.GetByName(move.Name)?.GetName(_languageCode)),
+                            move => new Label ($"{Math.Round(move.UsageRate.PercentageOf(moveRatingSum), 2)} %")
 					}
 				);
 			}
 
             var natures = _pokeInfo.GetNatures();
 
+            var natureRatingSum = natures.Sum(nature => nature.UsageRate);
+
 			if (natures != null) {
 				natureGrid
 					.AddItems (natures.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<INature, Widget>> {
 							nature => new Label (nature.Name),
-                            nature => new Label ($"{Math.Round(nature.UsageRate, 2)} %")
+                            nature => new Label ($"{Math.Round(nature.UsageRate.PercentageOf(natureRatingSum), 2)} %")
 						}
 				);
 			}
 
             var abilities = _pokeInfo.GetAbilities();
 
+            var abilityRatingSum = abilities.Sum(ability => ability.UsageRate);
+
 			if (abilities != null) {
 				abilityGrid
 					.AddItems (abilities.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IAbility, Widget>> {
-							ability => new Label (ability.Name),
-                            ability => new Label ($"{Math.Round(ability.UsageRate, 2)} %")
+							ability => new Label (_abilitydex.GetByName(ability.Name)?.GetName(_languageCode)),
+                            ability => new Label ($"{Math.Round(ability.UsageRate.PercentageOf(abilityRatingSum), 2)} %")
 						}
 				);
 			}
@@ -196,33 +214,36 @@ namespace Pokemon.Team.Builder.UI
 						new List<Func<ICounter, Widget>> {
 							poke => new Image ().SetPicture (_pokedex.GetById (poke.Identifier.MonsNo), 48, 48),
 							poke => new Label (poke.Identifier.MonsNo.ToString ()),
-							poke => new Label (_pokedex.GetById (poke.Identifier.MonsNo).GetName("en"))
+							poke => new Label (_pokedex.GetById (poke.Identifier.MonsNo).GetName(_languageCode))
 						}
 				);
 			}
 
-			//if (_pokeInfo.RankingPokemonDownWaza != null) {
-			//	effectiveOpponentMoves
-			//		.AddItems (_pokeInfo.RankingPokemonDownWaza.OrderBy (poke => poke.Ranking).ToList (),
-			//			new List<Func<RankingPokemonDownWaza, Widget>> {
-			//				poke => new Label (((RankingPokemonDownWaza)poke).WazaName),
-			//				poke => new Label ($"{Math.Round(((RankingPokemonDownWaza) poke).UsageRate, 2)} %")
-			//			}
-			//	);
-			//}
+            //if (_pokeInfo.RankingPokemonDownWaza != null) {
+            //	effectiveOpponentMoves
+            //		.AddItems (_pokeInfo.RankingPokemonDownWaza.OrderBy (poke => poke.Ranking).ToList (),
+            //			new List<Func<RankingPokemonDownWaza, Widget>> {
+            //				poke => new Label (((RankingPokemonDownWaza)poke).WazaName),
+            //				poke => new Label ($"{Math.Round(((RankingPokemonDownWaza) poke).UsageRate, 2)} %")
+            //			}
+            //	);
+            //}
 
-			noteBook.AppendPage (moveGrid, new Label { Text = "Move Ranking", TooltipText = "Most often used moves" });
-			noteBook.AppendPage (itemGrid, new Label { Text = "Item Ranking", TooltipText = "Most often used items" });
-			noteBook.AppendPage (natureGrid, new Label { Text = "Nature Ranking", TooltipText = "Most often used natures" });
-			noteBook.AppendPage (abilityGrid, new Label { Text = "Ability Ranking", TooltipText = "Most often used abilities" });
-			noteBook.AppendPage (movesForFaintingGrid, new Label { Text = "Own Move Faint Ranking", TooltipText = "Moves that this pokemon most often uses for fainting opponents"});
-			noteBook.AppendPage (defeatedPokemonGrid, new Label { Text = "Defeated Pokemon Ranking", TooltipText = "Pokemon that this pokemon most often faints" });
-			noteBook.AppendPage (counterPokemonGrid, new Label { Text = "Counter Ranking", TooltipText = "Pokemon that most often counter this pokemon" });
-			noteBook.AppendPage (effectiveOpponentMoves, new Label { Text = "Effective Opponent Moves", TooltipText = "Moves that most often kill this pokemon" });
+			noteBook.AppendPage (moveGrid.AsScrollable(), new Label { Text = "Move Ranking", TooltipText = "Most often used moves" });
+			noteBook.AppendPage (itemGrid.AsScrollable(), new Label { Text = "Item Ranking", TooltipText = "Most often used items" });
+			noteBook.AppendPage (natureGrid.AsScrollable(), new Label { Text = "Nature Ranking", TooltipText = "Most often used natures" });
+			noteBook.AppendPage (abilityGrid.AsScrollable(), new Label { Text = "Ability Ranking", TooltipText = "Most often used abilities" });
+			// noteBook.AppendPage (movesForFaintingGrid, new Label { Text = "Own Move Faint Ranking", TooltipText = "Moves that this pokemon most often uses for fainting opponents"});
+			// noteBook.AppendPage (defeatedPokemonGrid, new Label { Text = "Defeated Pokemon Ranking", TooltipText = "Pokemon that this pokemon most often faints" });
+			noteBook.AppendPage (counterPokemonGrid.AsScrollable(), new Label { Text = "Counter Ranking", TooltipText = "Pokemon that most often counter this pokemon" });
+            // noteBook.AppendPage (effectiveOpponentMoves, new Label { Text = "Effective Opponent Moves", TooltipText = "Moves that most often kill this pokemon" });
+
+            SetSizeRequest(InitialWidth, InitialHeight);
+
+            noteBook.SetSizeRequest(InitialWidth, InitialHeight - hBox.HeightRequest);
 
 			vBox.Add (noteBook);
-
-			this.Add (vBox);
+            Add (vBox);
 		}
 	}
 }

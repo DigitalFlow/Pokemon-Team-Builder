@@ -50,6 +50,7 @@
     <Compile Include="ApiConnector\ISmogonStatRetriever.cs" />
     <Compile Include="ApiConnector\MoveSetRetriever.cs" />
     <Compile Include="ApiConnector\SmogonStatRetriever.cs" />
+    <Compile Include="MathExtensions.cs" />
     <Compile Include="Interfaces\IAbility.cs" />
     <Compile Include="Interfaces\ICounter.cs" />
     <Compile Include="Interfaces\IHappiness.cs" />
