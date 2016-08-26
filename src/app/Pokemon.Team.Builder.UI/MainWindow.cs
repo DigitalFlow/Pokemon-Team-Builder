@@ -735,7 +735,7 @@ public partial class MainWindow : Window, IDisposable
 
             if (split.Contains(":"))
             {
-                spread.Substring(spread.IndexOf(':') + 1);
+                split = spread.Substring(spread.IndexOf(':') + 1);
             }
 
             team.AppendLine($"{name} @ {item}");

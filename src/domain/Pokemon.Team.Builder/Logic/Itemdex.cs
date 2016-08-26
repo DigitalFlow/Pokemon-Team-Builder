@@ -10,27 +10,27 @@ namespace Pokemon.Team.Builder.Logic
 {
     [Serializable]
     [XmlRoot("Itemdex")]
-    [XmlInclude(typeof(Move))]
-    public class Itemdex : IEnumerable<Move>
+    [XmlInclude(typeof(Item))]
+    public class Itemdex : IEnumerable<Item>
     {
-        public List<Move> Items;
+        public List<Item> Items;
 
         public Itemdex()
         {
-            Items = new List<Move>();
+            Items = new List<Item>();
         }
 
-        public Itemdex(List<Move> items)
+        public Itemdex(List<Item> items)
         {
             Items = items;
         }
 
         public void Add(object o)
         {
-            Items.Add(o as Move);
+            Items.Add(o as Item);
         }
 
-        IEnumerator<Move> IEnumerable<Move>.GetEnumerator()
+        IEnumerator<Item> IEnumerable<Item>.GetEnumerator()
         {
             return Items.GetEnumerator();
         }
@@ -45,7 +45,7 @@ namespace Pokemon.Team.Builder.Logic
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Move GetByName(string name)
+        public Item GetByName(string name)
         {
             name = name
                 .Replace("-", string.Empty)
@@ -59,7 +59,7 @@ namespace Pokemon.Team.Builder.Logic
                     .Equals(name, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public List<Move.FlavorTextEntry> GetPokedexDescriptions(Move item, string languageCode)
+        public List<Item.FlavorTextEntry> GetPokedexDescriptions(Item item, string languageCode)
         {
             return item.Flavor_Text_Entries.Where(text => text.language != null && text.language.name == languageCode)
                 .ToList();

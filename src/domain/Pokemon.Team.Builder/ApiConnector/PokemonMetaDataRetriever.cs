@@ -26,7 +26,7 @@ namespace Pokemon.Team.Builder
             _client.TimeOut = new TimeSpan(0, 30, 0);
         }
 
-        public async Task<List<Move>> RetrieveAllItems()
+        public async Task<List<Item>> RetrieveAllItems()
         {
             var itemData = RetrieveItemData ();
 
@@ -146,9 +146,9 @@ namespace Pokemon.Team.Builder
 			}
 		}
 
-        public async Task<List<Move>> RetrieveItemData()
+        public async Task<List<Item>> RetrieveItemData()
         {
-            var items = new List<Move>();
+            var items = new List<Item>();
 
             var url = "api/v2/item/";
             ItemOverviewResponse response;
@@ -187,7 +187,7 @@ namespace Pokemon.Team.Builder
                             return;
                         }
 
-                        var item = new Move
+                        var item = new Item
                         {
                             Id = id
                         };

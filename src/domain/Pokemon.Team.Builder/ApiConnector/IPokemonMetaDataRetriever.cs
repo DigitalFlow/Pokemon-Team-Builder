@@ -8,7 +8,7 @@ namespace Pokemon.Team.Builder
 	public interface IPokemonMetaDataRetriever : IDisposable
 	{
 		Task<List<Pokemon>> RetrieveAllPokemon();
-        Task<List<Move>> RetrieveAllItems();
+        Task<List<Item>> RetrieveAllItems();
         Task<List<Move>> RetrieveAllMoves();
         Task<List<Ability>> RetrieveAllAbilities();
     }
