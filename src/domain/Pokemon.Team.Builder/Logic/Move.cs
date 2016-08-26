@@ -28,8 +28,8 @@ namespace Pokemon.Team.Builder.Logic
 
         public class Super
         {
-            public object use_after { get; set; }
-            public object use_before { get; set; }
+            public List<UseAfter> use_after { get; set; }
+            public List<UseBefore> use_before { get; set; }
         }
 
         public class UseBefore
