@@ -6,20 +6,24 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Logic
 {
+	[Serializable]
     public class Item
     {
+		[Serializable]
         public class Category
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Language
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class EffectEntry
         {
             public string short_effect { get; set; }
@@ -27,41 +31,48 @@ namespace Pokemon.Team.Builder.Logic
             public Language language { get; set; }
         }
 
+		[Serializable]
         public class Sprites
         {
             public string @default { get; set; }
         }
 
+		[Serializable]
         public class Generation
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class GameIndice
         {
             public Generation generation { get; set; }
             public int game_index { get; set; }
         }
 
+		[Serializable]
         public class Name
         {
             public string name { get; set; }
             public Language language { get; set; }
         }
 
+		[Serializable]
         public class Attribute
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class VersionGroup
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class FlavorTextEntry
         {
             public string text { get; set; }

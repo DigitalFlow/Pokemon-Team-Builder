@@ -25,6 +25,7 @@ public partial class MainWindow : Window, IDisposable
     private const string RankingPokemonInCountConfigKey = "RankingPokemonInCount";
     private const string RankingPokemonDownCountConfigKey = "RankingPokemonDownCount";
     private const string LanguageConfigKey = "Language";
+	private const string ProviderConfigKey = "UsageProvider";
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
 
@@ -423,6 +424,39 @@ public partial class MainWindow : Window, IDisposable
         _chooseDialog.Show();
     }
 
+	protected void OnChooseProvider(object sender, EventArgs e)
+	{
+		var providers = _usageRetrievers
+			.Select(retriever => retriever.GetType().Name)
+			.ToList();
+
+		var activeProvider = ConfigManager.GetSetting(ProviderConfigKey);
+
+		var listStore = new ListStore(typeof(string));
+
+		_chooseLabel.Text = "Select Usage Provider";
+		_chooseBox.Model = listStore;
+
+		var renderer = new CellRendererText();
+		_chooseBox.PackStart(renderer, false);
+		_chooseBox.AddAttribute(renderer, "text", 0);
+
+		for (var i = 0; i < providers.Count; i++)
+		{
+			listStore.AppendValues(providers[i]);
+
+			if (providers[i].Equals(activeProvider, StringComparison.InvariantCultureIgnoreCase))
+			{
+				_chooseBox.Active = i;
+			}
+		}
+
+		_dialogBoxOk.Clicked += OnChooseProviderOk;
+
+		_chooseDialog.Show();
+	}
+
+
     protected void OnSelectLanguage(object sender, EventArgs e)
     {
         var availableLanguages = _pokedex.GetAvailableLanguages();
@@ -519,6 +553,17 @@ public partial class MainWindow : Window, IDisposable
         ResetChooseDialog();
     }
 
+	protected void OnChooseProviderOk(object sender, EventArgs e)
+	{
+		TreeIter tree;
+		_chooseBox.GetActiveIter(out tree);
+
+		var providername = (string)_chooseBox.Model.GetValue(tree, 0);
+
+		ConfigManager.WriteSetting(ProviderConfigKey, providername);
+		ResetChooseDialog();
+	}
+
     protected void OnChooseLanguageOk(object sender, EventArgs e)
     {
         TreeIter tree;
@@ -547,6 +592,7 @@ public partial class MainWindow : Window, IDisposable
         _dialogBoxOk.Clicked -= OnChooseTierOk;
         _dialogBoxOk.Clicked -= OnChooseLanguageOk;
         _dialogBoxOk.Clicked -= OnChooseBattleTypeOk;
+		_dialogBoxOk.Clicked -= OnChooseProviderOk;
         _chooseBox.Clear();
         _chooseDialog.Hide();
     }
@@ -591,7 +637,8 @@ public partial class MainWindow : Window, IDisposable
 
     protected async Task ProposeTeam(List<PokemonIdentifier> initialTeam)
     {
-        var pokemonUsageRetriever = _usageRetrievers[1];
+		var pokemonUsageRetriever = _usageRetrievers
+			.SingleOrDefault(retriever => retriever.GetType().Name.Equals(ConfigManager.GetSetting(ProviderConfigKey), StringComparison.InvariantCultureIgnoreCase));
 
         var activeTierName = ConfigManager.GetSetting(TierConfigKey);
 
@@ -707,15 +754,13 @@ public partial class MainWindow : Window, IDisposable
 
         await ProposeTeam(initialTeam).ConfigureAwait(false);
 
-        OnExportForShowDown();
-
         Application.Invoke(delegate
         {
             _waitWindow.Hide();
         });
     }
 
-    public void OnExportForShowDown()
+	public void OnExportToShowdown(object sender, EventArgs e)
     {
         var showdownExporter = new ShowdownExporter(_pokedex, _itemdex, _movedex, _abilitydex);
 

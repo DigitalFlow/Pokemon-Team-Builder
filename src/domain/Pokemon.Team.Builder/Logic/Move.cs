@@ -6,56 +6,66 @@ using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder.Logic
 {
+	[Serializable]
     public class Move
     {
+		[Serializable]
         public class Generation
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Language
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Name
         {
             public string name { get; set; }
             public Language language { get; set; }
         }
 
+		[Serializable]
         public class Super
         {
             public List<UseAfter> use_after { get; set; }
             public List<UseBefore> use_before { get; set; }
         }
 
+		[Serializable]
         public class UseBefore
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class UseAfter
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Normal
         {
             public List<UseAfter> use_after { get; set; }
             public List<UseBefore> use_before { get; set; }
         }
 
+		[Serializable]
         public class ContestCombos
         {
             public Super super { get; set; }
             public Normal normal { get; set; }
         }
 
+		[Serializable]
         public class EffectEntry
         {
             public string short_effect { get; set; }
@@ -63,40 +73,47 @@ namespace Pokemon.Team.Builder.Logic
             public Language language { get; set; }
         }
 
+		[Serializable]
         public class ContestType
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class ContestEffect
         {
             public string url { get; set; }
         }
 
+		[Serializable]
         public class Type
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Target
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class SuperContestEffect
         {
             public string url { get; set; }
         }
 
+		[Serializable]
         public class VersionGroup
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class FlavorTextEntry
         {
             public string flavor_text { get; set; }
@@ -104,24 +121,28 @@ namespace Pokemon.Team.Builder.Logic
             public VersionGroup version_group { get; set; }
         }
 
+		[Serializable]
         public class DamageClass
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Category
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Ailment
         {
             public string url { get; set; }
             public string name { get; set; }
         }
 
+		[Serializable]
         public class Meta
         {
             public Category category { get; set; }

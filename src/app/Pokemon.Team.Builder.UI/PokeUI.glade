@@ -182,6 +182,30 @@
               </object>
             </child>
             <child>
+              <object class="GtkMenuItem" id="ProviderChooser">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Choose Provider</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="ProviderMenu">
+                    <property name="name">ProviderMenu</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="ProviderSelector">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Select Provider</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="OnChooseProvider" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkMenuItem" id="TierChooser">
                 <property name="name">TierSelector</property>
                 <property name="visible">True</property>
@@ -225,6 +249,31 @@
                         <property name="label" translatable="yes">Select Language</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="OnSelectLanguage" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="Export">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Export</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="ExportMenu">
+                    <property name="name">ExportMenu</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="ShowdownExport">
+                        <property name="name">ShowdownExport</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Export to Showdown</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="OnExportToShowdown" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1036,6 +1085,22 @@
             <property name="position">4</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkToolbar" id="StatusBar">
+            <property name="name">StatusBar</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="toolbar_style">both-horiz</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
       </object>
     </child>
     <child type="titlebar">
@@ -1183,7 +1248,7 @@
             <property name="can_focus">False</property>
             <property name="can_default">True</property>
             <property name="has_default">True</property>
-            <property name="label" translatable="yes">Loading your local Pokedex</property>
+            <property name="label" translatable="yes">Loading data ...</property>
           </object>
           <packing>
             <property name="expand">False</property>

@@ -97,7 +97,6 @@
     <Compile Include="Web\IHttpClient.cs" />
     <Compile Include="Logic\PokemonProposer.cs" />
     <Compile Include="DictionaryExtensions.cs" />
-    <Compile Include="Model\PokemonIdentifier.cs" />
     <Compile Include="Logic\PokedexManager.cs" />
     <Compile Include="Model\GL\DetailedPokemonInformation.cs" />
     <Compile Include="Model\GL\ItemInfo.cs" />
@@ -116,8 +115,6 @@
     <Compile Include="Model\PokeAPI\RetrievePokemonResponse.cs" />
     <Compile Include="Logic\Pokedex.cs" />
     <Compile Include="Logic\PokemonAnalyzer.cs" />
-    <Compile Include="Model\IRankable.cs" />
-    <Compile Include="Model\Pokemon.cs" />
     <Compile Include="Logic\RankingCreator.cs" />
     <Compile Include="ApiConnector\ITierListRetriever.cs" />
     <Compile Include="ApiConnector\TierListRetriever.cs" />
@@ -127,7 +124,6 @@
     <Compile Include="Serialization\TierSerializer.cs" />
     <Compile Include="Logic\Tier.cs" />
     <Compile Include="Logic\TierHierarchy.cs" />
-    <Compile Include="Model\IPokemonIdentifiable.cs" />
     <Compile Include="Model\PokeAPI\AdvancedMetaDataResponse.cs" />
     <Compile Include="Model\PokeAPI\Habitat.cs" />
     <Compile Include="Model\PokeAPI\Color.cs" />
@@ -148,6 +144,10 @@
     <Compile Include="Model\PokeAPI\PalParkEncounter.cs" />
     <Compile Include="Model\PokeAPI\PokedexRef.cs" />
     <Compile Include="Model\PokeAPI\PokedexNumber.cs" />
+    <Compile Include="Logic\Pokemon.cs" />
+    <Compile Include="Logic\PokemonIdentifier.cs" />
+    <Compile Include="Interfaces\IPokemonIdentifiable.cs" />
+    <Compile Include="Interfaces\IRankable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
