@@ -27,6 +27,8 @@ public partial class MainWindow : Window, IDisposable
     private const string LanguageConfigKey = "Language";
 	private const string ProviderConfigKey = "UsageProvider";
 
+	private readonly List<string> _battleTypes = new List<string> { "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
+
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
 
     private Pokedex _pokedex;
@@ -101,40 +103,59 @@ public partial class MainWindow : Window, IDisposable
         {
             _toolbar.Children.ToList().ForEach(child => child.Destroy());
 
-            var hbox = new Box(Orientation.Horizontal, 0);
+          	var activeTierLabel = new ToolItem();
+			activeTierLabel.Add(new Label { Text = "Active Tier", MarginLeft = 10, MarginRight = 10 });
+			
+			var activeTier = new ToolItem();
+			var activeTierButton = new Button { Label = ConfigManager.GetSetting(TierConfigKey), MarginLeft = 10, MarginRight = 10 };
 
-            var activeTierLabel = new Label { Text = "Active Tier" };
-            var activeTier = new Label { Text = ConfigManager.GetSetting(TierConfigKey) };
+			activeTierButton.Clicked += OnSelectTier;
 
-            var activeProposerLabel = new Label { Text = "Active Provider" };
-            var activeProposer = new Label { Text = ConfigManager.GetSetting(ProviderConfigKey) };
+			activeTier.Add(activeTierButton);
 
-            var activeLanguageLabel = new Label { Text = "Active Language" };
-            var activeLanguage = new Label { Text = ConfigManager.GetSetting(LanguageConfigKey) };
+			var activeProposerLabel = new ToolItem();
+			activeProposerLabel.Add(new Label { Text = "Active Provider", MarginLeft = 10, MarginRight = 10 });
+            
+			var activeProposer = new ToolItem();
+			var activeProposerButton = new Button { Label = ConfigManager.GetSetting(ProviderConfigKey), MarginLeft = 10, MarginRight = 10 };
 
-            var activeBattleTypeLabel = new Label { Text = "Active Battle Type" };
-            var activeBattleType = new Label { Text = ConfigManager.GetSetting(BattleTypeConfigKey) };
+			activeProposerButton.Clicked += OnChooseProvider;
 
-            hbox.Add(activeTierLabel);
-            hbox.Add(activeTier);
+			activeProposer.Add(activeProposerButton);
 
-            hbox.Add(activeProposerLabel);
-            hbox.Add(activeProposer);
+			var activeLanguageLabel = new ToolItem();
+			activeLanguageLabel.Add(new Label { Text = "Active Language", MarginLeft = 10, MarginRight = 10 });
+            
+			var activeLanguage = new ToolItem();
+			var activeLanguageButton = new Button { Label = ConfigManager.GetSetting(LanguageConfigKey), MarginLeft = 10, MarginRight = 10 };
 
-            hbox.Add(activeLanguageLabel);
-            hbox.Add(activeLanguage);
+			activeLanguageButton.Clicked += OnSelectLanguage;
 
-            hbox.Add(activeBattleTypeLabel);
-            hbox.Add(activeBattleType);
+			activeLanguage.Add(activeLanguageButton);
 
-            _toolbar.Add(hbox);
+			var activeBattleTypeLabel = new ToolItem();
+				activeBattleTypeLabel.Add(new Label { Text = "Active Battle Type", MarginLeft = 10, MarginRight = 10 });
+            
+			var activeBattleType = new ToolItem();
+			var battleType = 0;
+			int.TryParse(ConfigManager.GetSetting(BattleTypeConfigKey), out battleType);
+			var activeBattleTypeButton = new Button { Label = _battleTypes[battleType], MarginLeft = 10, MarginRight = 10 };
 
-            _toolbar.SetSizeRequest(600, 100);
+			activeBattleTypeButton.Clicked += OnChooseBattleType;
 
-            _toolbar.Visible = true;
-            _toolbar.CanDefault = true;
-            _toolbar.Expand = true;
-            _toolbar.Hexpand = true;
+			activeBattleType.Add(activeBattleTypeButton);
+
+            _toolbar.Add(activeTierLabel);
+            _toolbar.Add(activeTier);
+
+            _toolbar.Add(activeProposerLabel);
+            _toolbar.Add(activeProposer);
+
+            _toolbar.Add(activeLanguageLabel);
+            _toolbar.Add(activeLanguage);
+
+            _toolbar.Add(activeBattleTypeLabel);
+			_toolbar.Add(activeBattleType);
 
             _toolbar.ShowAll();
         });
@@ -541,8 +562,6 @@ public partial class MainWindow : Window, IDisposable
 
         var value = senderBox.Item4.Entry.Text.Trim();
 
-        var language = ConfigManager.GetSetting(LanguageConfigKey);
-
         // Exit on no or invalid input
         if (string.IsNullOrEmpty(value))
         {
@@ -568,8 +587,6 @@ public partial class MainWindow : Window, IDisposable
 
     protected void OnChooseBattleType(object sender, EventArgs e)
     {
-        var battleTypes = new List<string> { "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
-
         var listStore = new ListStore(typeof(string));
 
         _chooseLabel.Text = "Select your Battle Type";
@@ -579,7 +596,7 @@ public partial class MainWindow : Window, IDisposable
         _chooseBox.PackStart(renderer, false);
         _chooseBox.AddAttribute(renderer, "text", 0);
 
-        foreach (var battleType in battleTypes)
+        foreach (var battleType in _battleTypes)
         {
             listStore.AppendValues(battleType);
         }
@@ -663,9 +680,9 @@ public partial class MainWindow : Window, IDisposable
             _tierList = await GetTierList().ConfigureAwait(false);
             _tierHierarchy = new TierHierarchy(GetTiers());
 
-            await InitializeItemdex().ConfigureAwait(false);
-            await InitializeMovedex().ConfigureAwait(false);
-            await InitializeAbilitydex().ConfigureAwait(false);
+            //await InitializeItemdex().ConfigureAwait(false);
+            //await InitializeMovedex().ConfigureAwait(false);
+            //await InitializeAbilitydex().ConfigureAwait(false);
 
             InitializePokemonComboBoxes(_controlSets);
         }
