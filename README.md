@@ -62,6 +62,10 @@ English UI, Tier set to OU, Battle Type Single, Showdown Export
 
 ![scizorshowdownexport](https://cloud.githubusercontent.com/assets/4287938/18030552/46fc8114-6cb9-11e6-8f67-a902054907a0.png)
 
+## Current limitations
+- PokemonGL stat provider is not yet able to also export spreads for showdown.
+- SmogonStatManager does not yet pay respect to Battle Types.
+
 ## Build Status
 [![Build status](https://ci.appveyor.com/api/projects/status/m0bvnx6ae3n2o06q/branch/master?svg=true)](https://ci.appveyor.com/project/DigitalFlow/pokemon-team-builder/branch/master)
 
