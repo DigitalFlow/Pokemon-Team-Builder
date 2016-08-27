@@ -168,8 +168,6 @@ namespace Pokemon.Team.Builder
                 {
                     requests.Add(Task.Run((Func<Task>)(async () =>
                     {
-                        RaiseDataRetrievedEvent(response.Count, ++progress);
-
                         var idMatch = Regex.Match(result.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
                         var id = 0;
 
@@ -193,6 +191,8 @@ namespace Pokemon.Team.Builder
                         };
 
                         items.Add(await AppendAdvancedData(item).ConfigureAwait(false));
+
+						RaiseDataRetrievedEvent(response.Count, ++progress);
                     })));
                 }
 
@@ -227,8 +227,6 @@ namespace Pokemon.Team.Builder
                 {
                     requests.Add(Task.Run((Func<Task>)(async () =>
                     {
-                        RaiseDataRetrievedEvent(response.Count, ++progress);
-
                         var idMatch = Regex.Match(result.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
                         var id = 0;
 
@@ -252,6 +250,8 @@ namespace Pokemon.Team.Builder
                         };
 
                         moves.Add(await AppendAdvancedData(move).ConfigureAwait(false));
+
+						RaiseDataRetrievedEvent(response.Count, ++progress);
                     })));
                 }
 
@@ -286,8 +286,6 @@ namespace Pokemon.Team.Builder
                 {
                     requests.Add(Task.Run(async () =>
                     {
-                        RaiseDataRetrievedEvent(response.Count, ++progress);
-
                         var idMatch = Regex.Match(result.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
                         var id = 0;
 
@@ -311,6 +309,8 @@ namespace Pokemon.Team.Builder
                         };
 
                         abilities.Add(await AppendAdvancedData(item).ConfigureAwait(false));
+
+						RaiseDataRetrievedEvent(response.Count, ++progress);
                     }));
                 }
 
@@ -344,8 +344,6 @@ namespace Pokemon.Team.Builder
                 {
                     requests.Add(Task.Run(async () =>
                     {
-                        RaiseDataRetrievedEvent(response.Count, ++progress);
-
                         var idMatch = Regex.Match(item.Url, "[0-9]*/$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
                         var id = 0;
 
@@ -377,6 +375,8 @@ namespace Pokemon.Team.Builder
                         await Task.WhenAll(tasks.ToArray());
 
                         pokemon.Add(poke);
+
+						RaiseDataRetrievedEvent(response.Count, ++progress);
                     }));
                 }
 
