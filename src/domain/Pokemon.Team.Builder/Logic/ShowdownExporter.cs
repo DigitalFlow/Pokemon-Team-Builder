@@ -47,10 +47,10 @@ namespace Pokemon.Team.Builder.Logic
 
                 var name = pokemon.GetName("en");
 
-                var item = _itemdex.GetByName(memberItem.Name)?.name ?? memberItem.Name;
+				var item = _itemdex.GetByName(memberItem.Name)?.GetName("en") ?? memberItem.Name;
 
                 var abilityRaw = member.GetAbilities().First().Name;
-                var ability = _abilitydex.GetByName(abilityRaw)?.name;
+				var ability = _abilitydex.GetByName(abilityRaw)?.GetName("en") ?? abilityRaw;
 
                 var spread = member.GetNatures().First().Name;
 
@@ -88,7 +88,7 @@ namespace Pokemon.Team.Builder.Logic
                 {
                     var moveRaw = move.Name;
 
-                    var moveFromDex = _movedex.GetByName(moveRaw)?.name;
+					var moveFromDex = _movedex.GetByName(moveRaw)?.GetName("en") ?? moveRaw;
 
                     teamBuilder.Append($"- {moveFromDex}\n");
                 }

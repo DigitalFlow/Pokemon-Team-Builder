@@ -44,6 +44,44 @@ namespace Pokemon.Team.Builder
             return isInTierOrBelow;
 		};
 
+		private static bool IsMega(PokemonTierEntry proposalTierEntry)
+		{
+			if (proposalTierEntry == null) 
+			{
+				return false;
+			}
+
+			if (string.IsNullOrEmpty(proposalTierEntry.forme))
+			{
+				return false;
+			}
+
+			if (proposalTierEntry.forme.Equals ("Mega", StringComparison.InvariantCultureIgnoreCase)) 
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		private readonly Func<IPokemonIdentifiable, TierList, Tier, List<IPokemonInformation>, bool> NoMoreThanOneMega = (proposal, tierList, activeTier, team) => 
+		{
+			var proposalTierEntry = tierList.Get (proposal);
+
+			if(!IsMega(proposalTierEntry)) 
+			{
+				return true;
+			}
+
+			var otherMega = team.Any(poke => {
+				var tierEntry = tierList.Get(poke);
+
+				return IsMega(tierEntry);
+			});
+
+			return !otherMega;
+		};
+
 		public async Task<List<IPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<IPokemonInformation> pokemon = null) {
 
 			if (initialTeam == null || initialTeam.Count == 0) {
@@ -76,6 +114,7 @@ namespace Pokemon.Team.Builder
 			var orderedMembers = proposedMembers
 				.Where (proposal => IsInActiveTierOrBelow(proposal.Key, _tierList, _activeTier))
 				.Where (proposal => pokemon.All(poke => poke.Identifier.MonsNo != proposal.Key.Identifier.MonsNo))
+				.Where (proposal => NoMoreThanOneMega(proposal.Key, _tierList, _activeTier, pokemon))
 				.OrderByDescending (pair => pair.Value)
 				.ToList();
 
