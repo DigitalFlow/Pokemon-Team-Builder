@@ -47,7 +47,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 var name = pokemon.GetName("en");
 
-                var item = _itemdex.GetByName(memberItem.Name)?.name;
+                var item = _itemdex.GetByName(memberItem.Name)?.name ?? memberItem.Name;
 
                 var abilityRaw = member.GetAbilities().First().Name;
                 var ability = _abilitydex.GetByName(abilityRaw)?.name;
@@ -69,8 +69,8 @@ namespace Pokemon.Team.Builder.Logic
                     split = spread.Substring(spread.IndexOf(':') + 1);
                 }
 
-                teamBuilder.AppendLine($"{name} @ {item}");
-                teamBuilder.AppendLine($"Ability: {ability}");
+                teamBuilder.Append($"{name} @ {item}\n");
+                teamBuilder.Append($"Ability: {ability}\n");
 
                 var splitted = split.Split('/').Select(s => s.Trim());
                 var labels = new List<string> { "HP", "Atk", "Def", "SpA", "SpD", "Spe" };
@@ -78,9 +78,9 @@ namespace Pokemon.Team.Builder.Logic
                 var withLabels = splitted.Zip(labels, (s, label) => Tuple.Create(s, label))
                     .Where(tuple => tuple.Item1 != "0");
 
-                teamBuilder.AppendLine($"EVs: {string.Join(" / ", withLabels.Select(tuple => $"{tuple.Item1} {tuple.Item2}"))}");
+                teamBuilder.Append($"EVs: {string.Join(" / ", withLabels.Select(tuple => $"{tuple.Item1} {tuple.Item2}"))}\n");
 
-                teamBuilder.AppendLine($"{nature} Nature");
+                teamBuilder.Append($"{nature} Nature\n");
 
                 var moves = member.GetMoves().Take(4);
 
@@ -90,10 +90,10 @@ namespace Pokemon.Team.Builder.Logic
 
                     var moveFromDex = _movedex.GetByName(moveRaw)?.name;
 
-                    teamBuilder.AppendLine($"- {moveFromDex}");
+                    teamBuilder.Append($"- {moveFromDex}\n");
                 }
 
-                teamBuilder.AppendLine();
+                teamBuilder.Append("\n");
             }
 
             var export = teamBuilder.ToString();

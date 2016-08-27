@@ -9,6 +9,9 @@ namespace Pokemon.Team.Builder.UI
 {
     public class ShowdownWindow : Window
     {
+        private TextBuffer _buffer;
+        private TextView _view;
+
         public ShowdownWindow(string team) : base(WindowType.Toplevel)
         {
             Initialize (team);
@@ -22,11 +25,11 @@ namespace Pokemon.Team.Builder.UI
 
             var boxLayout = new Box(Orientation.Vertical, 0);
 
-            var textBuffer = new TextBuffer(new TextTagTable());
+            _buffer = new TextBuffer(new TextTagTable());
 
-            textBuffer.Text = team;
+            _buffer.Text = team;
 
-            var text = new TextView(textBuffer)
+            _view = new TextView(_buffer)
             {
                 Editable = false,
                 Expand = true,
@@ -35,12 +38,27 @@ namespace Pokemon.Team.Builder.UI
                 VscrollPolicy = ScrollablePolicy.Natural
             };
 
-            boxLayout.Add(text);
-            scrolledWindow.Add(boxLayout);
+            scrolledWindow.Add(_view);
+            boxLayout.Add(scrolledWindow);
 
-            Add(scrolledWindow);
+            var copyButton = new Button("Copy");
+
+            copyButton.Clicked += CopyButton_Activated;
+
+            boxLayout.Add(copyButton);
+
+            Add(boxLayout);
 
             ShowAll();
+        }
+
+        private void CopyButton_Activated(object sender, EventArgs e)
+        {
+            var clipBoard = _view.GetClipboard(Gdk.Selection.Clipboard);
+
+            var text = _buffer.Text;
+            
+            clipBoard.Text = text;
         }
     }
 }

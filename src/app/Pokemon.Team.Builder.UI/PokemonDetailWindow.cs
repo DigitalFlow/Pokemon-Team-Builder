@@ -136,7 +136,7 @@ namespace Pokemon.Team.Builder.UI
 				itemGrid
 					.AddItems (items.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IItem, Widget>> {
-							item => new Label (_itemdex.GetByName(item.Name)?.GetName(_languageCode)),
+							item => new Label (_itemdex.GetByName(item.Name)?.GetName(_languageCode) ?? item.Name),
                             item => new Label ($"{Math.Round(item.UsageRate.PercentageOf(itemRatingSum), 2)} %")
 						}
 				);
