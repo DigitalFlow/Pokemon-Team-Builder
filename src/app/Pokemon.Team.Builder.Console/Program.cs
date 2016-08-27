@@ -3,6 +3,9 @@ using System.IO;
 using System.Linq;
 using NLog;
 using System.Collections.Generic;
+using Pokemon.Team.Builder.ApiConnector;
+using Pokemon.Team.Builder.Serialization;
+using Pokemon.Team.Builder.Model.Smogon;
 
 namespace Pokemon.Team.Builder.Console
 {
@@ -12,21 +15,16 @@ namespace Pokemon.Team.Builder.Console
 
         static void Main(string[] args)
         {
-			ProposeTeamMembers (args);
-
-			/*
-			 using (var httpClient = new HttpClientWrapper (new Uri ("https://play.pokemonshowdown.com/data/"))) {
-				using (var tierRetriever = new TierListRetriever (httpClient)) {
-
-					var tierManager = new TierListManager (tierRetriever);
-
-					tierManager.GetTierList ();
+			// ProposeTeamMembers (args);
+			 using (var httpClient = new HttpClientWrapper (new Uri ("http://www.smogon.com/stats/"))) {
+				using (var smogonRetriever = new SmogonStatRetriever (httpClient)) {
+                    var stats = smogonRetriever.RetrieveStats ("ou").Result;
+                    GenericSerializer<List<SmogonPokemonStats>>.SaveToFile(stats, "ou.xml").Wait();
 				}
 			}
-			 */ 
         }
 
-		private static void ProposeTeamMembers(string[] args){
+        /*private static void ProposeTeamMembers(string[] args){
 			using (var httpClient = new HttpClientWrapper(new Uri("http://3ds.pokemon-gl.com")))
 			{
 				using(var pokemonUsageRetriever = new PokemonUsageRetriever(httpClient))
@@ -42,6 +40,6 @@ namespace Pokemon.Team.Builder.Console
 					}
 				}
 			}
-		}
+		}*/
 	}
 }

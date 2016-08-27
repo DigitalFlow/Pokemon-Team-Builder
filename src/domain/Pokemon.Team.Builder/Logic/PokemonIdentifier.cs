@@ -6,12 +6,18 @@ namespace Pokemon.Team.Builder
 	{
 		public int MonsNo{ get; set; }
 		public string FormNo { get; set; }
+        public string Name { get; set; }
 
 		public PokemonIdentifier()
 		{
 			MonsNo = 0;
 			FormNo = "0";
 		}
+
+        public PokemonIdentifier(string name)
+        {
+            Name = name;
+        }
 
 		public PokemonIdentifier(int monsNo)
 		{
@@ -57,7 +63,7 @@ namespace Pokemon.Team.Builder
 				return false;
 			}
 
-			return MonsNo == otherId.MonsNo && FormNo == otherId.FormNo;
+			return MonsNo == otherId.MonsNo && FormNo == otherId.FormNo && Name == otherId.Name;
 		}
 
 		public override bool Equals (object obj)

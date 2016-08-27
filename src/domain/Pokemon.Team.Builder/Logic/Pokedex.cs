@@ -38,9 +38,31 @@ namespace Pokemon.Team.Builder
 			return Pokemon.GetEnumerator ();
 		}
 
+        /// <summary>
+        /// Gets a pokemon by its name, all languages are searched for the name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
 		public Pokemon GetByName(string name) 
 		{
-			return Pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));
+			var pokemon = Pokemon.SingleOrDefault (poke => poke.Names.Any(p => p.name.Equals (name, StringComparison.InvariantCultureIgnoreCase)));
+            var varietyPokemon = Pokemon.SingleOrDefault(poke => poke.Varieties.Any(p => p.pokemon.name.Equals(name, StringComparison.InvariantCultureIgnoreCase)));
+            
+            if (varietyPokemon != null && varietyPokemon.Varieties.Count > 1)
+            {
+                var variety = varietyPokemon.Varieties.FirstOrDefault(v => v.pokemon.name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
+                varietyPokemon.FormNo = varietyPokemon.Varieties.IndexOf(variety).ToString();
+            }
+
+            if (pokemon == null && varietyPokemon == null && name.Contains('-'))
+            {
+                var firstPart = name.Substring(0, name.IndexOf('-'));
+
+                varietyPokemon = Pokemon.SingleOrDefault(poke => poke.Varieties.Any(p => p.pokemon.name.Equals(firstPart, StringComparison.InvariantCultureIgnoreCase)));
+            }
+
+            return pokemon ?? varietyPokemon;
 		}
 
         public List<FlavorTextEntry> GetPokedexDescriptions(Pokemon pokemon, string languageCode)
@@ -53,6 +75,15 @@ namespace Pokemon.Team.Builder
 		{
 			return Pokemon.SingleOrDefault (poke => poke.Id == id);
 		}
+
+        public Pokemon GetByIdentifier(PokemonIdentifier identifier)
+        {
+            var pokemon = GetById(identifier.MonsNo);
+
+            pokemon.FormNo = identifier.FormNo;
+
+            return pokemon;
+        }
 
 		public List<string> GetAvailableLanguages() 
 		{

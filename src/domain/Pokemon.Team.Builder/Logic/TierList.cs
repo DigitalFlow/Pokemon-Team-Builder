@@ -38,18 +38,32 @@ namespace Pokemon.Team.Builder
 			return Pokemon.GetEnumerator ();
 		}
 
-		public PokemonTierEntry GetByName(string name) 
+		public PokemonTierEntry Get(string name) 
 		{
 			return Pokemon.SingleOrDefault (poke => poke.species.Equals (name, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public PokemonTierEntry GetById(int id, string formNo) 
+        public PokemonTierEntry Get(IPokemonIdentifiable poke)
+        {
+            return Get(poke.Identifier.Name) ?? Get(poke.Identifier.MonsNo, poke.Identifier.FormNo);
+        }
+
+		public PokemonTierEntry Get(int id, string formNo) 
 		{
 			var tierEntries = Pokemon.Where (poke => poke.num == id);
+            
+            var form = 0;
+            int.TryParse(formNo, out form);
 
-			var mega = tierEntries.FirstOrDefault(tier => tier.forme != null && tier.forme.Contains("Mega"));
+            if (form != 0)
+            {
+                var formLink = tierEntries.FirstOrDefault().otherFormes[form].Replace("-", string.Empty);
+                var formEntry = Pokemon.Single(poke => poke.num == id && poke.species.Replace("-", string.Empty).Equals(formLink, StringComparison.InvariantCultureIgnoreCase));
 
-			return mega ?? tierEntries.FirstOrDefault ();
+                return formEntry;
+            }
+
+            return  tierEntries.FirstOrDefault ();
 		}
 	}
 }

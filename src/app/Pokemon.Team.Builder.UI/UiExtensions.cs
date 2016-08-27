@@ -8,6 +8,15 @@ namespace Pokemon.Team.Builder.UI
 {
 	public static class UiExtensions
 	{
+        public static Widget AsScrollable(this Widget widget)
+        {
+            var scrolledWindow = new ScrolledWindow();
+
+            scrolledWindow.Add(widget);
+
+            return scrolledWindow;
+        }
+
 		public static Image SetPicture(this Image image, Pokemon pokemon, int width = 96, int height = 96)
 		{
 			if (pokemon == null) {

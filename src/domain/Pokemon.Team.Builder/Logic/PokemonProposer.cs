@@ -4,6 +4,7 @@ using System.Linq;
 using Pokemon.Team.Builder.Model;
 using Pokemon.Team.Builder.Serialization;
 using System.Threading.Tasks;
+using Pokemon.Team.Builder.Interfaces;
 
 namespace Pokemon.Team.Builder
 {
@@ -13,6 +14,7 @@ namespace Pokemon.Team.Builder
 		private const int TEAM_SIZE = 6;
 		private TierList _tierList;
 		private Tier _activeTier;
+        private Pokedex _pokedex;
 		private int _battleType;
 		private int _season;
 		private int _rankingPokemonInCount;
@@ -20,7 +22,7 @@ namespace Pokemon.Team.Builder
         private int _languageId;
 
 		public PokemonProposer(IPokemonUsageRetriever pokemonUsageRetriever, int battleType, int season, int rankingPokemonInCount, int rankingPokemonDownCount,
-			int languageId, TierList tierList, Tier activeTier)
+			int languageId, TierList tierList, Tier activeTier, Pokedex pokedex)
 		{
 			_pokemonUsageRetriever = pokemonUsageRetriever;
 			_tierList = tierList;
@@ -30,30 +32,71 @@ namespace Pokemon.Team.Builder
 			_rankingPokemonInCount = rankingPokemonInCount;
 			_rankingPokemonDownCount = rankingPokemonDownCount;
             _languageId = languageId;
+            _pokedex = pokedex;
 		}
 
 		private readonly Func<IPokemonIdentifiable, TierList, Tier, bool> IsInActiveTierOrBelow = (proposal, tierList, activeTier) => 
 		{
-			var proposalTierEntry = tierList.GetById (proposal.MonsNo, proposal.FormNo);
+			var proposalTierEntry = tierList.Get (proposal);
 
-			return proposalTierEntry.IsInTierOrBelow(activeTier);
+			var isInTierOrBelow = proposalTierEntry.IsInTierOrBelow(activeTier);
+
+            return isInTierOrBelow;
 		};
 
-		public async Task<List<DetailedPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<DetailedPokemonInformation> pokemon = null) {
+		private static bool IsMega(PokemonTierEntry proposalTierEntry)
+		{
+			if (proposalTierEntry == null) 
+			{
+				return false;
+			}
+
+			if (string.IsNullOrEmpty(proposalTierEntry.forme))
+			{
+				return false;
+			}
+
+			if (proposalTierEntry.forme.Equals ("Mega", StringComparison.InvariantCultureIgnoreCase)) 
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		private readonly Func<IPokemonIdentifiable, TierList, Tier, List<IPokemonInformation>, bool> NoMoreThanOneMega = (proposal, tierList, activeTier, team) => 
+		{
+			var proposalTierEntry = tierList.Get (proposal);
+
+			if(!IsMega(proposalTierEntry)) 
+			{
+				return true;
+			}
+
+			var otherMega = team.Any(poke => {
+				var tierEntry = tierList.Get(poke);
+
+				return IsMega(tierEntry);
+			});
+
+			return !otherMega;
+		};
+
+		public async Task<List<IPokemonInformation>> GetProposedPokemonByUsage(List<PokemonIdentifier> initialTeam, List<IPokemonInformation> pokemon = null) {
 
 			if (initialTeam == null || initialTeam.Count == 0) {
 				throw new ArgumentException ("Initial team must not be empty or null!", "initialTeam");
 			}
 
 			if (pokemon == null) {
-				pokemon = new List<DetailedPokemonInformation> ();
+				pokemon = new List<IPokemonInformation> ();
 			}
 
-			if (pokemon.Count == TEAM_SIZE) {
+			if (pokemon.Count >= TEAM_SIZE) {
 				return pokemon;
 			}
 
-			var proposedMembers = new Dictionary<RankingPokemonIn, int> ();
+			var proposedMembers = new Dictionary<ITeamMate, int> ();
 
 			// Retrieve Information on each team member
 			foreach (var teamMember in initialTeam) 
@@ -70,7 +113,8 @@ namespace Pokemon.Team.Builder
 
 			var orderedMembers = proposedMembers
 				.Where (proposal => IsInActiveTierOrBelow(proposal.Key, _tierList, _activeTier))
-				.Where (proposal => pokemon.All(poke => (PokemonIdentifier) poke != (PokemonIdentifier) proposal.Key))
+				.Where (proposal => pokemon.All(poke => poke.Identifier.MonsNo != proposal.Key.Identifier.MonsNo))
+				.Where (proposal => NoMoreThanOneMega(proposal.Key, _tierList, _activeTier, pokemon))
 				.OrderByDescending (pair => pair.Value)
 				.ToList();
 
@@ -78,10 +122,9 @@ namespace Pokemon.Team.Builder
 
 			if (bestMember == null) {
 				return pokemon;
-			}
+			}           
 
-			initialTeam.Add (bestMember);
-			pokemon.Add (await GetPokemonDetails (bestMember).ConfigureAwait(false));
+			initialTeam.Add (bestMember.Identifier);
 
 			return await GetProposedPokemonByUsage (initialTeam, pokemon).ConfigureAwait(false);
 		}
@@ -91,13 +134,15 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The pokemon details.</returns>
 		/// <param name="pokemonId">Pokemon ID / MonsNo.</param>
-		private async Task<DetailedPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
-			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
+		private async Task<IPokemonInformation> GetPokemonDetails(PokemonIdentifier pokemonId) {
+			var information = await _pokemonUsageRetriever.GetPokemonUsageInformation(pokemonId, _activeTier, _battleType, _season, _rankingPokemonInCount, _rankingPokemonDownCount, _languageId)
 				.ConfigureAwait(false);
 
-			if (information.RankingPokemonDown != null) 
+            var counters = information.GetCounters();
+
+            if (counters != null) 
 			{
-				information.RankingPokemonDown = information.RankingPokemonDown
+				counters = counters
 					.Where (poke => IsInActiveTierOrBelow (poke, _tierList, _activeTier))
 					.ToList ();
 			}
@@ -110,15 +155,17 @@ namespace Pokemon.Team.Builder
 		/// </summary>
 		/// <returns>The ranked team members for pokemon.</returns>
 		/// <param name="pokemonInfo">Pokemon info.</param>
-		private Dictionary<RankingPokemonIn, int> GetRankedTeamMembersForPokemon(DetailedPokemonInformation pokemonInfo)
+		private Dictionary<ITeamMate, int> GetRankedTeamMembersForPokemon(IPokemonInformation pokemonInfo)
 		{
-			var rankedMembers = new Dictionary<RankingPokemonIn, int> ();
+			var rankedMembers = new Dictionary<ITeamMate, int> ();
 
-			if (pokemonInfo.RankingPokemonIn == null) {
+            var teamMates = pokemonInfo.GetTeamMates();
+
+            if (teamMates == null) {
 				return rankedMembers;
 			}
 
-			return RankingCreator.CreateRanking (pokemonInfo.RankingPokemonIn);
+			return RankingCreator.CreateRanking (teamMates);
 		}
 	}
 }

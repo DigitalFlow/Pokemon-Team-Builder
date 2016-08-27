@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder
 {
@@ -11,13 +12,13 @@ namespace Pokemon.Team.Builder
 			_tierListRetriever = tierListRetriever;
 		}
 
-		public TierList GetTierList (string fileName){
-			var tierList = TierListSerializer.LoadTierListFromFile (fileName);
+		public async Task<TierList> GetTierList (string fileName){
+			var tierList = await GenericSerializer<TierList>.LoadFromFile (fileName).ConfigureAwait(false);
 
 			if (tierList == null) {
 				tierList = new TierList(_tierListRetriever.RetrieveTierLists ());
 
-				TierListSerializer.SaveTierListToFile (tierList, fileName);
+				await GenericSerializer<TierList>.SaveToFile (tierList, fileName).ConfigureAwait(false);
 			}
 
 			return tierList;

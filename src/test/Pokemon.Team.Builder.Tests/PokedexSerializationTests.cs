@@ -73,12 +73,18 @@ namespace Pokemon.Team.Builder.Tests
                                       </Variety>
                                     </Varieties>
                                     <Url>http://pokeapi.co/api/v2/pokemon/1/</Url>
+                                    <Identifier>
+                                        <MonsNo>1</MonsNo>
+                                        <Name>Bulbasaur</Name>
+                                    </Identifier>
                                   </Pokemon>
                                 </Pokedex>".Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "");
 
             // Act
-            var xml = PokedexSerializer.SerializePokedex(pokedex)
-                        .Replace("\n", "").Replace("\r", "").Replace(" ", "");
+            var xml = GenericSerializer<Pokedex>.Serialize(pokedex).Result;
+
+            xml = xml
+                .Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
             // Assert
             xml.Should().Be(expectedXml);

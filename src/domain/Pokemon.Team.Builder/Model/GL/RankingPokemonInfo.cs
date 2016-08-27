@@ -22,7 +22,21 @@ namespace Pokemon.Team.Builder.Model
         public int SequenceNumber { get; set; }
         public string Height { get; set; }
 
-		public override bool Equals (object obj)
+        public PokemonIdentifier Identifier
+        {
+            get
+            {
+                return new PokemonIdentifier(MonsNo, FormNo);
+            }
+
+            set
+            {
+                MonsNo = value.MonsNo;
+                FormNo = value.FormNo;
+            }
+        }
+
+        public override bool Equals (object obj)
 		{
 			var otherRanking = obj as RankingPokemonInfo;
 

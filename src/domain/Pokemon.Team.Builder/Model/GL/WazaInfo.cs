@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pokemon.Team.Builder.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Pokemon.Team.Builder.Model
 	/// <summary>
 	/// Most often used Moves
 	/// </summary>
-	public class WazaInfo : IRankable
+	public class WazaInfo : IMove
     {
         public int Ranking { get; set; }
         public int TypeId { get; set; }

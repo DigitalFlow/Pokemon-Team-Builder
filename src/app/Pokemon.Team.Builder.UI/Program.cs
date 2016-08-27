@@ -23,7 +23,9 @@ namespace Pokemon.Team.Builder.UI
 
         private static void HandleException(GLib.UnhandledExceptionArgs args)
         {
-            _logger.Error(((Exception)args.ExceptionObject).Message);
+            var exception = (Exception) args.ExceptionObject;
+
+            _logger.Error($"Exception: {exception.Message}\nStack Trace: {exception.StackTrace}");
         }
     }
 }

@@ -8,23 +8,24 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using NLog;
+using Pokemon.Team.Builder.Interfaces;
 
 namespace Pokemon.Team.Builder
 {
-	public class PokemonUsageRetriever : IPokemonUsageRetriever, IDisposable
+	public class PokemonGlUsageRetriever : IPokemonUsageRetriever, IDisposable
     {
         private IHttpClient _client;
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public PokemonUsageRetriever(IHttpClient client)
+        public PokemonGlUsageRetriever(IHttpClient client)
         {
             _client = client;
         }
 
-		public async Task<DetailedPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier pokemonId, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
+		public async Task<IPokemonInformation> GetPokemonUsageInformation(PokemonIdentifier pokemonId, Tier tier = null, int battleType = 1, int seasonId = 117, int rankingPokemonInCount = 10, 
 			int rankingPokemonDownCount = 10, int languageId = 2)
         {
-			var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
+			var unixTimeStamp = (DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
 
             var request = new HttpRequestMessage
             {
@@ -36,7 +37,7 @@ namespace Pokemon.Team.Builder
 						new KeyValuePair<string, string>("seasonId", $"{seasonId}"),
 						new KeyValuePair<string, string>("battleType", $"{battleType}"),
 	                    new KeyValuePair<string, string>("timezone", "CEST"),
-						new KeyValuePair<string, string>("pokemonId", pokemonId.ToString()),
+						new KeyValuePair<string, string>("pokemonId", $"{pokemonId.MonsNo.ToString()}-0"),
 	                    new KeyValuePair<string, string>("displayNumberWaza", "10"),
 	                    new KeyValuePair<string, string>("displayNumberTokusei", "3"),
 	                    new KeyValuePair<string, string>("displayNumberSeikaku", "10"),
