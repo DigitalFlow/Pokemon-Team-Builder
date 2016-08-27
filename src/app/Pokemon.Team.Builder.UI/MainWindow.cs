@@ -44,6 +44,7 @@ public partial class MainWindow : Window, IDisposable
     private Label _chooseLabel;
     private ComboBox _chooseBox;
     private Button _dialogBoxOk;
+    private Toolbar _toolbar;
 
     private Grid _counters;
     private Grid _switchIns;
@@ -74,6 +75,7 @@ public partial class MainWindow : Window, IDisposable
             _chooseLabel = (Label)_builder.GetObject("ChooseLabel");
             _chooseBox = (ComboBox)_builder.GetObject("ChooseBox");
             _dialogBoxOk = (Button)_builder.GetObject("ChooseOk");
+            _toolbar = (Toolbar)_builder.GetObject("StatusBar");
 
             _controlSets = GetComboBoxes(new List<Tuple<string, string, string, string, string>>
             {
@@ -84,11 +86,58 @@ public partial class MainWindow : Window, IDisposable
                 Tuple.Create("PokeImage5", "PokeNrBox5", "PokeFormBox5", "PokeNameBox5", "PokeButton5"),
                 Tuple.Create("PokeImage6", "PokeNrBox6", "PokeFormBox6", "PokeNameBox6", "PokeButton6")
             });
+
+            CreateStatusItems();
         }
         catch (Exception ex)
         {
             _logger.Error(ex);
         }
+    }
+
+    private void CreateStatusItems()
+    {
+        Application.Invoke(delegate
+        {
+            _toolbar.Children.ToList().ForEach(child => child.Destroy());
+
+            var hbox = new Box(Orientation.Horizontal, 0);
+
+            var activeTierLabel = new Label { Text = "Active Tier" };
+            var activeTier = new Label { Text = ConfigManager.GetSetting(TierConfigKey) };
+
+            var activeProposerLabel = new Label { Text = "Active Provider" };
+            var activeProposer = new Label { Text = ConfigManager.GetSetting(ProviderConfigKey) };
+
+            var activeLanguageLabel = new Label { Text = "Active Language" };
+            var activeLanguage = new Label { Text = ConfigManager.GetSetting(LanguageConfigKey) };
+
+            var activeBattleTypeLabel = new Label { Text = "Active Battle Type" };
+            var activeBattleType = new Label { Text = ConfigManager.GetSetting(BattleTypeConfigKey) };
+
+            hbox.Add(activeTierLabel);
+            hbox.Add(activeTier);
+
+            hbox.Add(activeProposerLabel);
+            hbox.Add(activeProposer);
+
+            hbox.Add(activeLanguageLabel);
+            hbox.Add(activeLanguage);
+
+            hbox.Add(activeBattleTypeLabel);
+            hbox.Add(activeBattleType);
+
+            _toolbar.Add(hbox);
+
+            _toolbar.SetSizeRequest(600, 100);
+
+            _toolbar.Visible = true;
+            _toolbar.CanDefault = true;
+            _toolbar.Expand = true;
+            _toolbar.Hexpand = true;
+
+            _toolbar.ShowAll();
+        });
     }
 
     private void InitializeUsageRetrievers()
@@ -551,6 +600,7 @@ public partial class MainWindow : Window, IDisposable
 
         ConfigManager.WriteSetting(TierConfigKey, tierName);
         ResetChooseDialog();
+        CreateStatusItems();
     }
 
 	protected void OnChooseProviderOk(object sender, EventArgs e)
@@ -562,7 +612,8 @@ public partial class MainWindow : Window, IDisposable
 
 		ConfigManager.WriteSetting(ProviderConfigKey, providername);
 		ResetChooseDialog();
-	}
+        CreateStatusItems();
+    }
 
     protected void OnChooseLanguageOk(object sender, EventArgs e)
     {
@@ -576,6 +627,7 @@ public partial class MainWindow : Window, IDisposable
         FillComboBoxes(_controlSets);
 
         ResetChooseDialog();
+        CreateStatusItems();
     }
 
     protected void OnChooseBattleTypeOk(object sender, EventArgs e)
@@ -585,6 +637,7 @@ public partial class MainWindow : Window, IDisposable
         ConfigManager.WriteSetting(BattleTypeConfigKey, value.ToString());
 
         ResetChooseDialog();
+        CreateStatusItems();
     }
 
     private void ResetChooseDialog()
