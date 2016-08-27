@@ -45,14 +45,14 @@ Just click on "More information" for doing so.
 This is an example team created by the tool, where the preselection only included Blastoise. 
 The Battle Type was set to "Doubles". The tool is executed in Linux using Gnome, it might render differently at your side.
 
-Old version for team in doubles, Battle Type Double:
-![proposedteamdoubles](https://cloud.githubusercontent.com/assets/4287938/17462557/5c64856e-5cb1-11e6-90af-4e98a88edc40.png)
+English UI, Tier set to OU, Battle Type Single, Main Window
+![scizorteammainwindow](https://cloud.githubusercontent.com/assets/4287938/18030550/40f9b926-6cb9-11e6-9d21-a1f5317aff0a.png)
 
-Newest version: English UI, Tier set to OU, Battle Type Single, Main Window
-![mainwindowenglish](https://cloud.githubusercontent.com/assets/4287938/17649759/ad5621a4-623c-11e6-96ee-9dd6523dd1bd.png)
+English UI, Tier set to OU, Battle Type Single, Info Window
+![scizordetailwindow](https://cloud.githubusercontent.com/assets/4287938/18030551/4464e5d6-6cb9-11e6-9e19-3f7c3912cfb3.png)
 
-Newest version: English UI, Tier set to OU, Battle Type Single, Info Window
-![blastoiseinfo](https://cloud.githubusercontent.com/assets/4287938/17651926/16ec2ee0-6271-11e6-804f-ea8c576339cd.png)
+English UI, Tier set to OU, Battle Type Single, Showdown Export
+![scizorshowdownexport](https://cloud.githubusercontent.com/assets/4287938/18030552/46fc8114-6cb9-11e6-8f67-a902054907a0.png)
 
 ## Build Status
 [![Build status](https://ci.appveyor.com/api/projects/status/m0bvnx6ae3n2o06q/branch/master?svg=true)](https://ci.appveyor.com/project/DigitalFlow/pokemon-team-builder/branch/master)
