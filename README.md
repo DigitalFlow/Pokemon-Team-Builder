@@ -52,6 +52,7 @@ English UI, Tier set to OU, Battle Type Single, Info Window
 ![scizordetailwindow](https://cloud.githubusercontent.com/assets/4287938/18030551/4464e5d6-6cb9-11e6-9e19-3f7c3912cfb3.png)
 
 English UI, Tier set to OU, Battle Type Single, Showdown Export
+
 ![scizorshowdownexport](https://cloud.githubusercontent.com/assets/4287938/18030552/46fc8114-6cb9-11e6-8f67-a902054907a0.png)
 
 ## Build Status
