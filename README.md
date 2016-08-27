@@ -27,14 +27,13 @@ Due to the Pokemon GL API not handling all of these languages, please note that 
 The UI is still English only, but this will change soon.
 
 ## Use
-Tool for making suggestions on pokemon to use for your team based on Pokemon GL usage stats.
+Tool for making suggestions on pokemon to use for your team based on Pokemon GL and Smogon usage stats.
 
 The tool offers a simple UI, where you can select between 1 to 6 members that you definetly want in your team.
-When telling the tool to propose you a team based on your members, the free slots in your team are filled with pokemon, that fit best to your team by their usage stats in Pokemon GL.
+When telling the tool to propose you a team based on your members, the free slots in your team are filled with pokemon, that fit best to your team by their usage stats in Pokemon GL or Smogon.
 
-On the right side you can also see some general information regarding your team, for example which pokemon / attacks are great threats for your team and which are somewhat smaller threats.
+On the right side you can also see some general information regarding your team, for example which pokemon are great threats for your team.
 
-The season for the statistics is fixed to VGC2016 at the moment, but this can be changed later on. 
 You can however change the battle type (singles, doubles, and so on) in Edit => Change Battle Type.
 There is also an option to choose the tier you play in. Only Pokemon in or below your tier will then be proposed.
 The tier list entries for Pokemon are gathered from Pokemon Showdown.
@@ -45,21 +44,18 @@ Just click on "More information" for doing so.
 This is an example team created by the tool, where the preselection only included Blastoise. 
 The Battle Type was set to "Doubles". The tool is executed in Linux using Gnome, it might render differently at your side.
 
-Old version for team in doubles, Battle Type Double:
-![proposedteamdoubles](https://cloud.githubusercontent.com/assets/4287938/17462557/5c64856e-5cb1-11e6-90af-4e98a88edc40.png)
+English UI, Tier set to OU, Battle Type Single, Main Window
+![scizorteammainwindow](https://cloud.githubusercontent.com/assets/4287938/18030550/40f9b926-6cb9-11e6-9d21-a1f5317aff0a.png)
 
-Newest version: English UI, Tier set to OU, Battle Type Single, Main Window
-![mainwindowenglish](https://cloud.githubusercontent.com/assets/4287938/17649759/ad5621a4-623c-11e6-96ee-9dd6523dd1bd.png)
+English UI, Tier set to OU, Battle Type Single, Info Window
+![scizordetailwindow](https://cloud.githubusercontent.com/assets/4287938/18030551/4464e5d6-6cb9-11e6-9e19-3f7c3912cfb3.png)
 
-Newest version: English UI, Tier set to OU, Battle Type Single, Info Window
-![blastoiseinfo](https://cloud.githubusercontent.com/assets/4287938/17651926/16ec2ee0-6271-11e6-804f-ea8c576339cd.png)
+English UI, Tier set to OU, Battle Type Single, Showdown Export
+
+![scizorshowdownexport](https://cloud.githubusercontent.com/assets/4287938/18030552/46fc8114-6cb9-11e6-8f67-a902054907a0.png)
 
 ## Build Status
 [![Build status](https://ci.appveyor.com/api/projects/status/m0bvnx6ae3n2o06q/branch/master?svg=true)](https://ci.appveyor.com/project/DigitalFlow/pokemon-team-builder/branch/master)
-
-## Upcoming Features
-- Move Set Proposals
-- Export for Pokemon Showdown
 
 ## Legal notice
 Pokémon and Nintendo both are registered Trademarks and do not belong to me in any way.
