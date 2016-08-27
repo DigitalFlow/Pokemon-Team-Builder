@@ -31,6 +31,7 @@ Tool for making suggestions on pokemon to use for your team based on Pokemon GL 
 
 The tool offers a simple UI, where you can select between 1 to 6 members that you definetly want in your team.
 When telling the tool to propose you a team based on your members, the free slots in your team are filled with pokemon, that fit best to your team by their usage stats in Pokemon GL or Smogon.
+It is ensured, that only one mega Pokemon at max is added to your team, aswell as that every item is only used once.
 
 On the right side you can also see some general information regarding your team, for example which pokemon are great threats for your team.
 
@@ -39,6 +40,13 @@ There is also an option to choose the tier you play in. Only Pokemon in or below
 The tier list entries for Pokemon are gathered from Pokemon Showdown.
 As a gimmick, you can now also view the Pokedex entries for your team after getting the proposal.
 Just click on "More information" for doing so.
+
+You can select, whether you want to retrieve the usage statistics from Pokemon GL or from Smogon.
+Just click on the "Active Provider" button in the bottom bar, or via Menu "Choose Provider".
+
+There is now also an option for exporting the proposed team to Pokemon Showdown. 
+Click on Export, Choose Export to Showdown and just click copy.
+Note that this feature will only work properly at this point of time, if your active provider is set to "SmogonStatManager".
 
 ## So how does it look like?
 This is an example team created by the tool, where the preselection only included Blastoise. 
