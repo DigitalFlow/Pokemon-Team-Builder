@@ -693,12 +693,17 @@ public partial class MainWindow : Window, IDisposable
         foreach (var ctrlSet in _controlSets)
         {
             ClearControlTuple(ctrlSet);
-
-            _counters.Children.ToList().ForEach(child => child.Destroy());
-            _switchIns.Children.ToList().ForEach(child => child.Destroy());
-            _moves.Children.ToList().ForEach(child => child.Destroy());
         }
+
+		ClearGridPages ();
     }
+
+	protected void ClearGridPages() 
+	{
+		_counters.Children.ToList().ForEach(child => child.Destroy());
+		_switchIns.Children.ToList().ForEach(child => child.Destroy());
+		_moves.Children.ToList().ForEach(child => child.Destroy());
+	}
 
     protected void OnExit(object sender, EventArgs e)
     {
@@ -821,6 +826,8 @@ public partial class MainWindow : Window, IDisposable
                     return pokemonId;
                 })
             .ToList();
+
+		ClearGridPages ();
 
         await ProposeTeam(initialTeam).ConfigureAwait(false);
 

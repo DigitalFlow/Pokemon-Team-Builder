@@ -32,12 +32,12 @@ namespace Pokemon.Team.Builder.ApiConnector
                 .SingleOrDefault(p => p.Path.EndsWith(name));
         }
 
-        public static string GetFileName(string tierDescriptor)
+		public static string GetFileName(string tierDescriptor, int monthOffset = 1)
         {
             var year = DateTime.UtcNow.Year;
 
             // Newest stats are always for the previous month
-            var month = DateTime.UtcNow.Month - 1;
+			var month = DateTime.UtcNow.Month - monthOffset;
 
             var url = $"{year}-{month.ToString("00")}/chaos/{tierDescriptor}.json";
 
@@ -46,11 +46,31 @@ namespace Pokemon.Team.Builder.ApiConnector
 
         public async Task<List<SmogonPokemonStats>> RetrieveStats(string tierDescriptor)
         {
-            var url = GetFileName(tierDescriptor);
+			var response = string.Empty;
+			var monthOffset = 1;
 
-            var response = await _client.
-                GetStringAsync(url)
-                .ConfigureAwait(false);
+			do 
+			{
+				var url = GetFileName(tierDescriptor, monthOffset);
+
+				if(monthOffset > 3)
+				{
+					_logger.Error("Could not find stats even after three tries, aborting.");
+					return new List<SmogonPokemonStats>();
+				}
+
+				try 
+				{
+					response = await _client.GetStringAsync(url)
+						.ConfigureAwait(false);	
+				} 
+				catch (Exception ex) 
+				{
+					_logger.Error($"Failed to retrieve stats for fileName {url}, will try previous month, exception: {ex.Message}");
+					monthOffset++;
+				}
+			}
+			while(string.IsNullOrEmpty(response));
 
             var json = (JObject)JsonConvert.DeserializeObject(response);
 

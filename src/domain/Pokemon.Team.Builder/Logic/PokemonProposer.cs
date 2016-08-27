@@ -86,7 +86,6 @@ namespace Pokemon.Team.Builder
 			}           
 
 			initialTeam.Add (bestMember.Identifier);
-			pokemon.Add (await GetPokemonDetails (bestMember.Identifier).ConfigureAwait(false));
 
 			return await GetProposedPokemonByUsage (initialTeam, pokemon).ConfigureAwait(false);
 		}
