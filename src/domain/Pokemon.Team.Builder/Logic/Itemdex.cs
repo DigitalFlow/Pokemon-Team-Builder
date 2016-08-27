@@ -47,6 +47,11 @@ namespace Pokemon.Team.Builder.Logic
         /// <returns></returns>
         public Item GetByName(string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
             name = name
                 .Replace("-", string.Empty)
                 .Replace(" ", string.Empty);
