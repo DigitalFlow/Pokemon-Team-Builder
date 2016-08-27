@@ -680,9 +680,9 @@ public partial class MainWindow : Window, IDisposable
             _tierList = await GetTierList().ConfigureAwait(false);
             _tierHierarchy = new TierHierarchy(GetTiers());
 
-            //await InitializeItemdex().ConfigureAwait(false);
-            //await InitializeMovedex().ConfigureAwait(false);
-            //await InitializeAbilitydex().ConfigureAwait(false);
+            await InitializeItemdex().ConfigureAwait(false);
+            await InitializeMovedex().ConfigureAwait(false);
+            await InitializeAbilitydex().ConfigureAwait(false);
 
             InitializePokemonComboBoxes(_controlSets);
         }

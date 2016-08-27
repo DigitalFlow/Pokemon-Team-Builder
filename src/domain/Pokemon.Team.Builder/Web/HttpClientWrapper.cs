@@ -32,6 +32,7 @@ namespace Pokemon.Team.Builder
                 BaseAddress = baseUrl
             };
 			BaseAddress = _client.BaseAddress;
+			TimeOut = new TimeSpan (0, 10, 0);
         }
 
 		/// Using ConfigureAwait for avoiding deadlocks
