@@ -201,6 +201,7 @@ public partial class MainWindow : Window, IDisposable
         {
             _progressBar.Text = $"{progress} / {count}";
             _progressBar.Fraction = progress / count;
+			_progressBar.Window.ProcessUpdates(true);
         });
     }
 
