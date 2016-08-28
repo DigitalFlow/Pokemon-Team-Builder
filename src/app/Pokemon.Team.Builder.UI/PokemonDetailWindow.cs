@@ -123,7 +123,7 @@ namespace Pokemon.Team.Builder.UI
 			var natureGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			var abilityGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 
-			// var movesForFaintingGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
+			var commonMatesGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			// var defeatedPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			var counterPokemonGrid = new Grid { ColumnHomogeneous = true, Hexpand = true };
 			// var effectiveOpponentMoves = new Grid { ColumnHomogeneous = true, Hexpand = true };
@@ -184,15 +184,19 @@ namespace Pokemon.Team.Builder.UI
 				);
 			}
 
-            //if (_pokeInfo.RankingPokemonSuffererWaza != null) {
-            //	movesForFaintingGrid
-            //		.AddItems (_pokeInfo.RankingPokemonSuffererWaza.OrderBy (poke => poke.Ranking).ToList (),
-            //			new List<Func<RankingPokemonSuffererWaza, Widget>> {
-            //				poke => new Label (((RankingPokemonSuffererWaza)poke).WazaName),
-            //				poke => new Label ($"{Math.Round(((RankingPokemonSuffererWaza) poke).UsageRate, 2)} %")
-            //			}
-            //	);
-            //}
+            var mates = _pokeInfo.GetTeamMates();
+
+            if (mates != null)
+            {
+                commonMatesGrid
+                    .AddItems(mates.OrderBy(poke => poke.Ranking).ToList(),
+                        new List<Func<ITeamMate, Widget>> {
+                            poke => new Image ().SetPicture (_pokedex.GetById (poke.Identifier.MonsNo), 48, 48),
+                            poke => new Label (poke.Identifier.MonsNo.ToString ()),
+                            poke => new Label (_pokedex.GetById (poke.Identifier.MonsNo).GetName(_languageCode))
+                        }
+                );
+            }
 
             //if (_pokeInfo.RankingPokemonSufferer != null) {
             //	defeatedPokemonGrid
@@ -233,7 +237,7 @@ namespace Pokemon.Team.Builder.UI
 			noteBook.AppendPage (itemGrid.AsScrollable(), new Label { Text = "Item Ranking", TooltipText = "Most often used items" });
 			noteBook.AppendPage (natureGrid.AsScrollable(), new Label { Text = "Nature Ranking", TooltipText = "Most often used natures" });
 			noteBook.AppendPage (abilityGrid.AsScrollable(), new Label { Text = "Ability Ranking", TooltipText = "Most often used abilities" });
-			// noteBook.AppendPage (movesForFaintingGrid, new Label { Text = "Own Move Faint Ranking", TooltipText = "Moves that this pokemon most often uses for fainting opponents"});
+			noteBook.AppendPage (commonMatesGrid.AsScrollable(), new Label { Text = "Common Team Mates", TooltipText = "Pokemon that are often used as mates for this pokemon"});
 			// noteBook.AppendPage (defeatedPokemonGrid, new Label { Text = "Defeated Pokemon Ranking", TooltipText = "Pokemon that this pokemon most often faints" });
 			noteBook.AppendPage (counterPokemonGrid.AsScrollable(), new Label { Text = "Counter Ranking", TooltipText = "Pokemon that most often counter this pokemon" });
             // noteBook.AppendPage (effectiveOpponentMoves, new Label { Text = "Effective Opponent Moves", TooltipText = "Moves that most often kill this pokemon" });
