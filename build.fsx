@@ -6,6 +6,7 @@ open Fake.AssemblyInfoFile
 open Fake.Git
 open Fake.Testing.NUnit3
 open System.IO
+open System
 
 let projectName           = "Pokemon.Team.Builder"
 
@@ -31,6 +32,12 @@ let mutable setupVersion    = ""
 
 let gitbranch = Git.Information.getBranchName "."
 let sha = Git.Information.getCurrentHash()
+
+let WiXPath = Path.Combine("tools", "WiX.Toolset", "tools", "wix")
+let WixProductUpgradeGuid = new Guid("10A24685-C830-42A5-B813-59651114DDE1")
+let ProductVersion () = asmVersion
+let setupFileName() = sprintf "%s - %s.msi" projectName (ProductVersion ())
+let ProductPublisher = "Kroenert"
 
 Target "Clean" (fun _ ->
     CleanDirs [buildDir; deployDir; testDir]
@@ -111,6 +118,73 @@ Target "Zip" (fun _ ->
             |> Zip appBuildDir (deployDir + projectName + "." + version + ".zip")
 )
 
+Target "BuildSetup" (fun _ ->
+    // This defines, which files should be collected when running bulkComponentCreation
+    let fileFilter = fun (file : FileInfo) -> true
+        
+    // Collect Files which should be shipped. Pass directory with your deployment output for deployDir
+    // along with the targeted architecture.
+    let components = bulkComponentCreation fileFilter (DirectoryInfo appdeployDir) Architecture.X64
+             
+    // Collect component references for usage in features
+    let componentRefs = components |> Seq.map(fun comp -> comp.ToComponentRef())
+
+    let completeFeature = generateFeatureElement (fun f -> 
+                                                    {f with  
+                                                        Id = "Complete"
+                                                        Title = "Complete Feature"
+                                                        Level = 1 
+                                                        Description = "Installs all features"
+                                                        Components = componentRefs
+                                                        Display = Expand 
+                                                    })
+
+    // Generates a predefined WiX template with placeholders which will be replaced in "FillInWiXScript"
+    generateWiXScript "SetupTemplate.wxs"
+
+    let WiXUIMondo = generateUIRef (fun f ->
+                                        {f with
+                                            Id = "WixUI_Mondo"
+                                        })
+
+    let WiXUIError = generateUIRef (fun f ->
+                                        {f with
+                                            Id = "WixUI_ErrorProgressText"
+                                        })
+
+    let MajorUpgrade = generateMajorUpgradeVersion(
+                            fun f ->
+                                {f with 
+                                    Schedule = MajorUpgradeSchedule.AfterInstallExecute
+                                    DowngradeErrorMessage = "A later version is already installed, exiting."
+                                })
+
+    FillInWiXTemplate "" (fun f ->
+                            {f with
+                                // Guid which should be generated on every build
+                                ProductCode = Guid.NewGuid()
+                                ProductName = "Pokemon Team Builder"
+                                Description = "Application for building Pokemon Teams"
+                                ProductLanguage = 1031
+                                ProductVersion = ProductVersion()
+                                ProductPublisher = ProductPublisher
+                                // Set fixed upgrade guid, this should never change for this project!
+                                UpgradeGuid = WixProductUpgradeGuid
+                                MajorUpgrade = [MajorUpgrade]
+                                UIRefs = [WiXUIMondo; WiXUIError]
+                                ProgramFilesFolder = ProgramFiles64
+                                Components = components
+                                BuildNumber = build
+                                Features = [completeFeature]
+                            })
+        
+
+    // run the WiX tools
+    WiX (fun p -> {p with ToolDirectory = WiXPath}) 
+        (Path.Combine (deployDir, (setupFileName ())))
+        @".\SetupTemplate.wxs"
+)
+
 "Clean"
   ==> "RestorePackages"
   ==> "BuildVersions"
@@ -121,5 +195,6 @@ Target "Zip" (fun _ ->
   ==> "NUnit"
   ==> "Zip"
   ==> "Publish"
+  ==> "BuildSetup"
 
 RunTargetOrDefault "Publish"

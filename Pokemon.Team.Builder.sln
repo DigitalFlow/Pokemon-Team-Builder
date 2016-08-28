@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Team.Builder", "src\domain\Pokemon.Team.Builder\Pokemon.Team.Builder.csproj", "{3278BBDB-3579-4834-AAF2-491ABD607503}"
@@ -10,6 +10,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Team.Builder.Tests", "src\test\Pokemon.Team.Builder.Tests\Pokemon.Team.Builder.Tests.csproj", "{D4513E60-B1AC-49F6-B2A7-93C0AF289207}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Team.Builder.UI", "src\app\Pokemon.Team.Builder.UI\Pokemon.Team.Builder.UI.csproj", "{543F300A-19F0-4237-8624-ED2CA844C179}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14D8E174-523E-45BF-9759-3A9C02743138}"
+	ProjectSection(SolutionItems) = preProject
+		00_boot.bat = 00_boot.bat
+		01_boot_and_build.bat = 01_boot_and_build.bat
+		02_build.bat = 02_build.bat
+		build.fsx = build.fsx
+		build.sh = build.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +34,14 @@ Global
 		{42ED5075-06DE-45AE-A4DC-701D53837616}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42ED5075-06DE-45AE-A4DC-701D53837616}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42ED5075-06DE-45AE-A4DC-701D53837616}.Release|Any CPU.Build.0 = Release|Any CPU
-		{543F300A-19F0-4237-8624-ED2CA844C179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{543F300A-19F0-4237-8624-ED2CA844C179}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{543F300A-19F0-4237-8624-ED2CA844C179}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{543F300A-19F0-4237-8624-ED2CA844C179}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4513E60-B1AC-49F6-B2A7-93C0AF289207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{543F300A-19F0-4237-8624-ED2CA844C179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{543F300A-19F0-4237-8624-ED2CA844C179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{543F300A-19F0-4237-8624-ED2CA844C179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{543F300A-19F0-4237-8624-ED2CA844C179}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
