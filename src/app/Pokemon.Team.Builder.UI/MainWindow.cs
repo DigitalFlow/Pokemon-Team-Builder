@@ -26,6 +26,7 @@ public partial class MainWindow : Window, IDisposable
     private const string RankingPokemonDownCountConfigKey = "RankingPokemonDownCount";
     private const string LanguageConfigKey = "Language";
 	private const string ProviderConfigKey = "UsageProvider";
+    private const string NameBlackListConfigKey = "NamePartBlackList";
 
 	private readonly List<string> _battleTypes = new List<string> { "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
 
@@ -166,7 +167,13 @@ public partial class MainWindow : Window, IDisposable
         var glHttpClient = new HttpClientWrapper(new Uri(ConfigManager.GetSetting("PokeGLUrl")));
         var glPokemonUsageRetriever = new PokemonGlUsageRetriever(glHttpClient);
         var smogonHttpClient = new HttpClientWrapper(new Uri("http://www.smogon.com/stats/"));
-        var smogonPokemonUsageRetriever = new SmogonStatManager(_pokedex, smogonHttpClient);
+
+        var namePartBlackList = ConfigManager.GetSetting(NameBlackListConfigKey)
+            .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+            .ToList()
+            .Select(name => name.Trim());
+
+        var smogonPokemonUsageRetriever = new SmogonStatManager(_pokedex, smogonHttpClient, namePartBlackList);
 
         _usageRetrievers.Add(glPokemonUsageRetriever);
         _usageRetrievers.Add(smogonPokemonUsageRetriever);

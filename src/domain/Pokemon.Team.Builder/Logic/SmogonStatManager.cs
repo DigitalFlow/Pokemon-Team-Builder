@@ -17,11 +17,16 @@ namespace Pokemon.Team.Builder.Logic
         private IHttpClient _client;
         private Pokedex _pokedex;
         private Logger _logger = LogManager.GetCurrentClassLogger();
+        
+        /// For some pokemon (i.E. Keldo) there is a trailing description (i.E. "ordinary") in opposite to its special form
+        /// Remove this part as the Smogon Stats ommit it
+        private IEnumerable<string> _namePartBlackList;
 
-        public SmogonStatManager(Pokedex pokedex, IHttpClient client)
+        public SmogonStatManager(Pokedex pokedex, IHttpClient client, IEnumerable<string> namePartBlackList)
         {
             _client = client;
             _pokedex = pokedex;
+            _namePartBlackList = namePartBlackList;
         }
 
         public void Dispose()
@@ -93,18 +98,10 @@ namespace Pokemon.Team.Builder.Logic
             }
 
             var pokemon = _pokedex.GetByIdentifier(identifier);
-
-            // For some pokemon (i.E. Keldo) there is a trailing description (i.E. "ordinary") in opposite to its special form
-            // Remove this part as the Smogon Stats ommit it
-            var namePartBlackList = new List<string>
-            {
-                "-ordinary",
-                "-shield"
-            };
-
+            
             var pokemonName = pokemon.GetName();
 
-            foreach (var namePart in namePartBlackList)
+            foreach (var namePart in _namePartBlackList)
             {
                 pokemonName = pokemonName.Replace(namePart, string.Empty);
             }

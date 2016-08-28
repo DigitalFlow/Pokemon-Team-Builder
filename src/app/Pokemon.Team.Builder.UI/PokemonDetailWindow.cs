@@ -150,7 +150,7 @@ namespace Pokemon.Team.Builder.UI
 				moveGrid
 					.AddItems (moves.OrderBy (poke => poke.Ranking).ToList (),
 						new List<Func<IMove, Widget>> {
-							move => new Label (_movedex.GetByName(move.Name)?.GetName(_languageCode)),
+							move => new Label (_movedex.GetByName(move.Name)?.GetName(_languageCode) ?? move.Name),
                             move => new Label ($"{Math.Round(move.UsageRate.PercentageOf(moveRatingSum), 2)} %")
 					}
 				);
