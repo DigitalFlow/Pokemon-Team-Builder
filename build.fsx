@@ -144,7 +144,7 @@ Target "BuildSetup" (fun _ ->
 
     let WiXUIMondo = generateUIRef (fun f ->
                                         {f with
-                                            Id = "WixUI_Mondo"
+                                            Id = "WixUI_Minimal"
                                         })
 
     let WiXUIError = generateUIRef (fun f ->
