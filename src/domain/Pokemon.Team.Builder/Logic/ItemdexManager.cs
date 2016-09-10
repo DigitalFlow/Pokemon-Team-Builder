@@ -1,6 +1,7 @@
 ﻿using Pokemon.Team.Builder.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,9 @@ namespace Pokemon.Team.Builder.Logic
             _pokemonRetriever = pokemonMetaDataRetriever;
         }
 
-        public async Task<Itemdex> GetItems()
+        public async Task<Itemdex> GetItems(string filePath)
         {
-            var itemdex = await GenericSerializer<Itemdex>.LoadFromFile("itemdex.xml").ConfigureAwait(false);
+            var itemdex = await GenericSerializer<Itemdex>.LoadFromFile(filePath).ConfigureAwait(false);
 
             if (itemdex == null)
             {
@@ -26,7 +27,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 itemdex = new Itemdex(items);
 
-                await GenericSerializer<Itemdex>.SaveToFile(itemdex, "itemdex.xml").ConfigureAwait(false);
+                await GenericSerializer<Itemdex>.SaveToFile(itemdex, filePath).ConfigureAwait(false);
             }
 
             return itemdex;

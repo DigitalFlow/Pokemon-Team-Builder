@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Pokemon.Team.Builder
@@ -13,15 +14,15 @@ namespace Pokemon.Team.Builder
 			_pokemonRetriever = pokemonMetaDataRetriever;
 		}
 
-		public async Task<Pokedex> GetPokemon(){
-			var pokedex = await GenericSerializer<Pokedex>.LoadFromFile ("pokedex.xml").ConfigureAwait(false);
+		public async Task<Pokedex> GetPokemon(string filePath){
+            var pokedex = await GenericSerializer<Pokedex>.LoadFromFile (filePath).ConfigureAwait(false);
 
 			if (pokedex == null) {
                 var pokemon = await _pokemonRetriever.RetrieveAllPokemon().ConfigureAwait(false);
 
                 pokedex = new Pokedex(pokemon);
 
-				await GenericSerializer<Pokedex>.SaveToFile (pokedex, "pokedex.xml").ConfigureAwait(false);
+				await GenericSerializer<Pokedex>.SaveToFile (pokedex, filePath).ConfigureAwait(false);
 			}
 
 			return pokedex;

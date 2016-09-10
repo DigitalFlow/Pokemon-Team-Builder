@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ namespace Pokemon.Team.Builder.Logic
             _pokemonRetriever = pokemonMetaDataRetriever;
         }
 
-        public async Task<Movedex> GetMoves()
+        public async Task<Movedex> GetMoves(string filePath)
         {
-            var movedex = await GenericSerializer<Movedex>.LoadFromFile ("movedex.xml").ConfigureAwait(false);
+            var movedex = await GenericSerializer<Movedex>.LoadFromFile (filePath).ConfigureAwait(false);
 
             if (movedex == null)
             {
@@ -25,7 +26,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 movedex = new Movedex(items);
 
-                await GenericSerializer<Movedex>.SaveToFile(movedex, "movedex.xml").ConfigureAwait(false);
+                await GenericSerializer<Movedex>.SaveToFile(movedex, filePath).ConfigureAwait(false);
             }
 
             return movedex;

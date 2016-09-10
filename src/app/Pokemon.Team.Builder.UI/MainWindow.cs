@@ -28,7 +28,12 @@ public partial class MainWindow : Window, IDisposable
 	private const string ProviderConfigKey = "UsageProvider";
     private const string NameBlackListConfigKey = "NamePartBlackList";
 
-	private readonly List<string> _battleTypes = new List<string> { "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
+    private const string pokedexFilePath = "pokedex.xml";
+    private const string movedexFilePath = "movedex.xml";
+    private const string itemdexFilePath = "itemdex.xml";
+    private const string abilitydexFilePath = "abilitydex.xml";
+
+    private readonly List<string> _battleTypes = new List<string> { "Average of all others", "Singles", "Doubles", "Triples", "Rotation", "Specials" };
 
     private List<Tuple<Image, ComboBoxText, ComboBoxText, ComboBoxText, Button>> _controlSets;
 
@@ -247,7 +252,7 @@ public partial class MainWindow : Window, IDisposable
                     pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
                     var itemdexManager = new ItemdexManager(pokemonMetaDataRetriever);
 
-                    _itemdex = await itemdexManager.GetItems().ConfigureAwait(false);
+                    _itemdex = await itemdexManager.GetItems(itemdexFilePath).ConfigureAwait(false);
                 }
             }
         }).ConfigureAwait(false);
@@ -275,7 +280,7 @@ public partial class MainWindow : Window, IDisposable
                     pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
                     var movedexManager = new MovedexManager(pokemonMetaDataRetriever);
 
-                    _movedex = await movedexManager.GetMoves().ConfigureAwait(false);
+                    _movedex = await movedexManager.GetMoves(movedexFilePath).ConfigureAwait(false);
                 }
             }
         }).ConfigureAwait(false);
@@ -303,7 +308,7 @@ public partial class MainWindow : Window, IDisposable
                     pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
                     var abilitydexManager = new AbilitydexManager(pokemonMetaDataRetriever);
 
-                    _abilitydex = await abilitydexManager.GetAbilities().ConfigureAwait(false);
+                    _abilitydex = await abilitydexManager.GetAbilities(abilitydexFilePath).ConfigureAwait(false);
                 }
             }
         }).ConfigureAwait(false);
@@ -331,7 +336,7 @@ public partial class MainWindow : Window, IDisposable
                     pokemonMetaDataRetriever.PokemonDataRetrievedEvent += UpdateProgressBar;
                     var pokedexManager = new PokedexManager(pokemonMetaDataRetriever);
 
-                    _pokedex = await pokedexManager.GetPokemon().ConfigureAwait(false);
+                    _pokedex = await pokedexManager.GetPokemon(pokedexFilePath).ConfigureAwait(false);
                 }
             }
         }).ConfigureAwait(false);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ namespace Pokemon.Team.Builder.Logic
             _pokemonRetriever = pokemonMetaDataRetriever;
         }
 
-        public async Task<AbilityDex> GetAbilities()
+        public async Task<AbilityDex> GetAbilities(string filePath)
         {
-            var abilitydex = await GenericSerializer<AbilityDex>.LoadFromFile("abilitydex.xml").ConfigureAwait(false);
+            var abilitydex = await GenericSerializer<AbilityDex>.LoadFromFile(filePath).ConfigureAwait(false);
 
             if (abilitydex == null)
             {
@@ -25,7 +26,7 @@ namespace Pokemon.Team.Builder.Logic
 
                 abilitydex = new AbilityDex(abilities);
 
-                await GenericSerializer<AbilityDex>.SaveToFile(abilitydex, "abilitydex.xml").ConfigureAwait(false);
+                await GenericSerializer<AbilityDex>.SaveToFile(abilitydex, filePath).ConfigureAwait(false);
             }
 
             return abilitydex;
