@@ -56,7 +56,7 @@ namespace Pokemon.Team.Builder
 				return false;
 			}
 
-			if (proposalTierEntry.forme.Equals ("Mega", StringComparison.InvariantCultureIgnoreCase)) 
+			if (proposalTierEntry.forme.ToLowerInvariant().Contains ("mega")) 
 			{
 				return true;
 			}
