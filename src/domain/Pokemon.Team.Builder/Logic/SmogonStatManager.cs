@@ -73,6 +73,8 @@ namespace Pokemon.Team.Builder.Logic
             {
                 case "AG":
                     return "anythinggoes";
+                case "UBER":
+                    return "ubers";
                 default:
                     return tier.ShortName.ToLowerInvariant();
             }
